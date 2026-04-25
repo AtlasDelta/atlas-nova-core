@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      documents: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          model_id: string
+          title: string
+          updated_at: string
+          user_id: string
+          yjs_state: string | null
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          model_id: string
+          title?: string
+          updated_at?: string
+          user_id: string
+          yjs_state?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          model_id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          yjs_state?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "models"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       models: {
         Row: {
           created_at: string
