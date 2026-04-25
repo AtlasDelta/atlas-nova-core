@@ -38,7 +38,7 @@ function ModelEditor() {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       setSaving(true);
-      const { error } = await supabase.from("models").update({ name: nextName, graph: nextGraph as unknown as Record<string, unknown> }).eq("id", id);
+      const { error } = await supabase.from("models").update({ name: nextName, graph: nextGraph as unknown as import("@/integrations/supabase/types").Json }).eq("id", id);
       setSaving(false);
       if (error) setErr(error.message);
       else { setSavedAt(new Date()); setErr(null); }
