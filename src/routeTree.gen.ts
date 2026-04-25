@@ -18,8 +18,12 @@ import { Route as MigrationRouteImport } from './routes/migration'
 import { Route as InterfaceRouteImport } from './routes/interface'
 import { Route as IntelligenceRouteImport } from './routes/intelligence'
 import { Route as ExtensibilityRouteImport } from './routes/extensibility'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ArchitectureRouteImport } from './routes/architecture'
+import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppMIdRouteImport } from './routes/app.m.$id'
 
 const SimulationRoute = SimulationRouteImport.update({
   id: '/simulation',
@@ -66,9 +70,19 @@ const ExtensibilityRoute = ExtensibilityRouteImport.update({
   path: '/extensibility',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ArchitectureRoute = ArchitectureRouteImport.update({
   id: '/architecture',
   path: '/architecture',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -76,10 +90,22 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMIdRoute = AppMIdRouteImport.update({
+  id: '/m/$id',
+  path: '/m/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/architecture': typeof ArchitectureRoute
+  '/auth': typeof AuthRoute
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
@@ -89,10 +115,13 @@ export interface FileRoutesByFullPath {
   '/risks': typeof RisksRoute
   '/roadmap': typeof RoadmapRoute
   '/simulation': typeof SimulationRoute
+  '/app/': typeof AppIndexRoute
+  '/app/m/$id': typeof AppMIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/architecture': typeof ArchitectureRoute
+  '/auth': typeof AuthRoute
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
@@ -102,11 +131,15 @@ export interface FileRoutesByTo {
   '/risks': typeof RisksRoute
   '/roadmap': typeof RoadmapRoute
   '/simulation': typeof SimulationRoute
+  '/app': typeof AppIndexRoute
+  '/app/m/$id': typeof AppMIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
   '/architecture': typeof ArchitectureRoute
+  '/auth': typeof AuthRoute
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
@@ -116,12 +149,16 @@ export interface FileRoutesById {
   '/risks': typeof RisksRoute
   '/roadmap': typeof RoadmapRoute
   '/simulation': typeof SimulationRoute
+  '/app/': typeof AppIndexRoute
+  '/app/m/$id': typeof AppMIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/app'
     | '/architecture'
+    | '/auth'
     | '/extensibility'
     | '/intelligence'
     | '/interface'
@@ -131,10 +168,13 @@ export interface FileRouteTypes {
     | '/risks'
     | '/roadmap'
     | '/simulation'
+    | '/app/'
+    | '/app/m/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/architecture'
+    | '/auth'
     | '/extensibility'
     | '/intelligence'
     | '/interface'
@@ -144,10 +184,14 @@ export interface FileRouteTypes {
     | '/risks'
     | '/roadmap'
     | '/simulation'
+    | '/app'
+    | '/app/m/$id'
   id:
     | '__root__'
     | '/'
+    | '/app'
     | '/architecture'
+    | '/auth'
     | '/extensibility'
     | '/intelligence'
     | '/interface'
@@ -157,11 +201,15 @@ export interface FileRouteTypes {
     | '/risks'
     | '/roadmap'
     | '/simulation'
+    | '/app/'
+    | '/app/m/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
   ArchitectureRoute: typeof ArchitectureRoute
+  AuthRoute: typeof AuthRoute
   ExtensibilityRoute: typeof ExtensibilityRoute
   IntelligenceRoute: typeof IntelligenceRoute
   InterfaceRoute: typeof InterfaceRoute
@@ -238,11 +286,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExtensibilityRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/architecture': {
       id: '/architecture'
       path: '/architecture'
       fullPath: '/architecture'
       preLoaderRoute: typeof ArchitectureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -252,12 +314,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/m/$id': {
+      id: '/app/m/$id'
+      path: '/m/$id'
+      fullPath: '/app/m/$id'
+      preLoaderRoute: typeof AppMIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
+interface AppRouteChildren {
+  AppIndexRoute: typeof AppIndexRoute
+  AppMIdRoute: typeof AppMIdRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppIndexRoute: AppIndexRoute,
+  AppMIdRoute: AppMIdRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
   ArchitectureRoute: ArchitectureRoute,
+  AuthRoute: AuthRoute,
   ExtensibilityRoute: ExtensibilityRoute,
   IntelligenceRoute: IntelligenceRoute,
   InterfaceRoute: InterfaceRoute,

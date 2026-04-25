@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
 import { Activity } from "lucide-react";
+import { useAuth, signOut } from "@/hooks/useAuth";
 
 const NAV = [
   { to: "/", label: "00 / OVERVIEW" },
@@ -17,6 +18,7 @@ const NAV = [
 
 export function Layout() {
   const loc = useLocation();
+  const { user, loading } = useAuth();
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -32,9 +34,25 @@ export function Layout() {
           <span className="text-xs text-muted-foreground hidden md:inline">
             v2.0 · spec/2026-Q2 · build #∞
           </span>
-          <div className="ml-auto flex items-center gap-3 text-xs text-muted-foreground">
-            <Activity className="h-3.5 w-3.5 text-success" />
-            <span>SYSTEM NOMINAL</span>
+          <div className="ml-auto flex items-center gap-4 text-xs">
+            <div className="hidden sm:flex items-center gap-2 text-muted-foreground">
+              <Activity className="h-3.5 w-3.5 text-success" />
+              <span>SYSTEM NOMINAL</span>
+            </div>
+            {!loading && (user ? (
+              <div className="flex items-center gap-3">
+                <Link to="/app" className="border border-primary/40 text-primary px-3 py-1 hover:bg-primary hover:text-primary-foreground transition-colors">
+                  ▸ WORKSPACE
+                </Link>
+                <button onClick={signOut} className="text-muted-foreground hover:text-foreground">
+                  salir
+                </button>
+              </div>
+            ) : (
+              <Link to="/auth" className="border border-border-strong px-3 py-1 hover:border-primary hover:text-primary transition-colors">
+                ▸ ACCEDER
+              </Link>
+            ))}
           </div>
         </div>
       </header>
