@@ -22,12 +22,6 @@ export function Layout() {
   const { user, loading } = useAuth();
   const [navOpen, setNavOpen] = useState(true);
 
-  // Workspace routes use their own shell (full-bleed, no marketing chrome)
-  const isWorkspace = loc.pathname === "/app" || loc.pathname.startsWith("/app/");
-  if (isWorkspace) {
-    return <Outlet />;
-  }
-
   // Collapse by default on small screens
   useEffect(() => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -41,6 +35,12 @@ export function Layout() {
       setNavOpen(false);
     }
   }, [loc.pathname]);
+
+  // Workspace routes use their own shell (full-bleed, no marketing chrome)
+  const isWorkspace = loc.pathname === "/app" || loc.pathname.startsWith("/app/");
+  if (isWorkspace) {
+    return <Outlet />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
