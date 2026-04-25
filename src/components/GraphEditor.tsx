@@ -254,7 +254,7 @@ export function GraphEditor({
   const selectedBlockType = selectedNode ? getBlockType(selectedNode.blockTypeId) : null;
 
   return (
-    <div className="flex-1 min-h-0 grid grid-cols-12">
+    <div className="flex-1 min-h-0 grid grid-cols-12 select-none">
       {/* ── LIBRARY ── */}
       <aside className="col-span-3 lg:col-span-2 border-r border-border bg-surface flex flex-col min-h-0">
         <div className="p-3 border-b border-border">
@@ -421,7 +421,7 @@ export function GraphEditor({
       </div>
 
       {/* ── INSPECTOR ── */}
-      <aside className="col-span-3 lg:col-span-3 border-l border-border bg-surface flex flex-col min-h-0">
+      <aside className="col-span-3 lg:col-span-3 border-l border-border bg-surface flex flex-col min-h-0 [&_input]:select-text [&_textarea]:select-text">
         {selectedNode && selectedBlockType ? (
           <div className="flex flex-col min-h-0">
             <div className="p-3 border-b border-border">
