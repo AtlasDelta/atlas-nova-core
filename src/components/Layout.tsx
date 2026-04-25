@@ -20,6 +20,22 @@ const NAV = [
 export function Layout() {
   const loc = useLocation();
   const { user, loading } = useAuth();
+  const [navOpen, setNavOpen] = useState(true);
+
+  // Collapse by default on small screens
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setNavOpen(false);
+    }
+  }, []);
+
+  // Close on route change (mobile UX)
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      setNavOpen(false);
+    }
+  }, [loc.pathname]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -58,32 +74,43 @@ export function Layout() {
         </div>
       </header>
 
-      <div className="flex-1 max-w-[1600px] mx-auto w-full px-6 py-8 grid grid-cols-12 gap-8">
-        <nav className="col-span-12 lg:col-span-3 xl:col-span-2">
-          <div className="sticky top-20 space-y-1">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 px-2">
-              · spec index ·
-            </div>
-            {NAV.map((n) => {
-              const active = loc.pathname === n.to;
-              return (
-                <Link
-                  key={n.to}
-                  to={n.to}
-                  className={`block text-xs px-3 py-2 border-l-2 transition-all ${
-                    active
-                      ? "border-primary bg-primary/5 text-primary"
-                      : "border-border text-muted-foreground hover:border-border-strong hover:text-foreground"
-                  }`}
-                >
-                  {n.label}
-                </Link>
-              );
-            })}
+      <div className="flex-1 max-w-[1600px] mx-auto w-full px-6 py-8 flex flex-col lg:flex-row gap-6">
+        <nav className={`flex-none w-full lg:w-56 ${navOpen ? "" : "lg:w-auto"}`}>
+          <div className="sticky top-20">
+            <button
+              type="button"
+              onClick={() => setNavOpen((o) => !o)}
+              className="w-full flex items-center justify-between gap-2 text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground mb-3 px-2 py-1 border-l-2 border-transparent hover:border-border-strong transition-colors"
+              aria-expanded={navOpen}
+              aria-controls="spec-index-list"
+            >
+              <span>· spec index ·</span>
+              {navOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+            </button>
+            {navOpen && (
+              <div id="spec-index-list" className="space-y-1">
+                {NAV.map((n) => {
+                  const active = loc.pathname === n.to;
+                  return (
+                    <Link
+                      key={n.to}
+                      to={n.to}
+                      className={`block text-xs px-3 py-2 border-l-2 transition-all ${
+                        active
+                          ? "border-primary bg-primary/5 text-primary"
+                          : "border-border text-muted-foreground hover:border-border-strong hover:text-foreground"
+                      }`}
+                    >
+                      {n.label}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </nav>
 
-        <main className="col-span-12 lg:col-span-9 xl:col-span-10 min-w-0">
+        <main className="flex-1 min-w-0">
           <Outlet />
         </main>
       </div>
