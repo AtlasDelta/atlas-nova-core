@@ -24,6 +24,7 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppMIdRouteImport } from './routes/app.m.$id'
+import { Route as AppDIdRouteImport } from './routes/app.d.$id'
 
 const SimulationRoute = SimulationRouteImport.update({
   id: '/simulation',
@@ -100,6 +101,11 @@ const AppMIdRoute = AppMIdRouteImport.update({
   path: '/m/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDIdRoute = AppDIdRouteImport.update({
+  id: '/d/$id',
+  path: '/d/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -116,6 +122,7 @@ export interface FileRoutesByFullPath {
   '/roadmap': typeof RoadmapRoute
   '/simulation': typeof SimulationRoute
   '/app/': typeof AppIndexRoute
+  '/app/d/$id': typeof AppDIdRoute
   '/app/m/$id': typeof AppMIdRoute
 }
 export interface FileRoutesByTo {
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/roadmap': typeof RoadmapRoute
   '/simulation': typeof SimulationRoute
   '/app': typeof AppIndexRoute
+  '/app/d/$id': typeof AppDIdRoute
   '/app/m/$id': typeof AppMIdRoute
 }
 export interface FileRoutesById {
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/roadmap': typeof RoadmapRoute
   '/simulation': typeof SimulationRoute
   '/app/': typeof AppIndexRoute
+  '/app/d/$id': typeof AppDIdRoute
   '/app/m/$id': typeof AppMIdRoute
 }
 export interface FileRouteTypes {
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/roadmap'
     | '/simulation'
     | '/app/'
+    | '/app/d/$id'
     | '/app/m/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/roadmap'
     | '/simulation'
     | '/app'
+    | '/app/d/$id'
     | '/app/m/$id'
   id:
     | '__root__'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/roadmap'
     | '/simulation'
     | '/app/'
+    | '/app/d/$id'
     | '/app/m/$id'
   fileRoutesById: FileRoutesById
 }
@@ -328,16 +340,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/d/$id': {
+      id: '/app/d/$id'
+      path: '/d/$id'
+      fullPath: '/app/d/$id'
+      preLoaderRoute: typeof AppDIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppDIdRoute: typeof AppDIdRoute
   AppMIdRoute: typeof AppMIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppDIdRoute: AppDIdRoute,
   AppMIdRoute: AppMIdRoute,
 }
 
