@@ -73,7 +73,8 @@ export function GraphThumbnail({ graph, width = 320, height = 200, className, pa
         <line key={e.id} x1={e.x1} y1={e.y1} x2={e.x2} y2={e.y2} stroke={paper ? "#888" : "currentColor"} strokeWidth={1.5} opacity={0.6} />
       ))}
       {nodes.map(({ n, b, h }) => {
-        const color = b ? DOMAIN_COLOR[b.domain] : "#666";
+        const dom = b?.ports[0]?.domain;
+        const color = dom ? DOMAIN_COLOR[dom] : "#666";
         return (
           <g key={n.id}>
             <rect x={n.x} y={n.y} width={160} height={h} fill={paper ? "#fff" : "var(--surface, #1a1a1a)"} stroke={color} strokeWidth={1.5} />
