@@ -14,7 +14,92 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      models: {
+        Row: {
+          created_at: string
+          description: string | null
+          domain: string
+          graph: Json
+          id: string
+          name: string
+          parameters: Json
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          domain?: string
+          graph?: Json
+          id?: string
+          name: string
+          parameters?: Json
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          domain?: string
+          graph?: Json
+          id?: string
+          name?: string
+          parameters?: Json
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      simulations: {
+        Row: {
+          config: Json
+          created_at: string
+          duration_ms: number | null
+          id: string
+          metrics: Json | null
+          model_id: string
+          results: Json | null
+          solver: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          duration_ms?: number | null
+          id?: string
+          metrics?: Json | null
+          model_id: string
+          results?: Json | null
+          solver?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          duration_ms?: number | null
+          id?: string
+          metrics?: Json | null
+          model_id?: string
+          results?: Json | null
+          solver?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "simulations_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "models"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
