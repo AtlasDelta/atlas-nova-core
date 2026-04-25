@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useImperativeHandle, useRef, forwardRef } from "react";
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
 import { EditorState } from "@codemirror/state";
@@ -15,9 +15,35 @@ export interface LatexEditorProps {
   className?: string;
 }
 
-export function LatexEditor({ doc, awareness, className }: LatexEditorProps) {
+export interface LatexEditorHandle {
+  /** Inserta texto en la posición del cursor (o al final si no hay foco). */
+  insertAtCursor: (text: string) => void;
+}
+
+export const LatexEditor = forwardRef<LatexEditorHandle, LatexEditorProps>(function LatexEditor(
+  { doc, awareness, className },
+  ref,
+) {
   const hostRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
+
+  useImperativeHandle(ref, () => ({
+    insertAtCursor: (text: string) => {
+      const view = viewRef.current;
+      const ytext = doc.getText("latex");
+      if (view) {
+        const pos = view.state.selection.main.head;
+        ytext.insert(pos, text);
+        // Mover cursor tras la inserción
+        requestAnimationFrame(() => {
+          view.dispatch({ selection: { anchor: pos + text.length } });
+          view.focus();
+        });
+      } else {
+        ytext.insert(ytext.length, text);
+      }
+    },
+  }), [doc]);
 
   useEffect(() => {
     if (!hostRef.current) return;
@@ -51,4 +77,4 @@ export function LatexEditor({ doc, awareness, className }: LatexEditorProps) {
   }, [doc, awareness]);
 
   return <div ref={hostRef} className={className} />;
-}
+});

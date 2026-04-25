@@ -1,10 +1,17 @@
 import { useEffect, useRef } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import { createRoot, type Root } from "react-dom/client";
+import { GraphThumbnail } from "./GraphThumbnail";
+import type { Graph } from "./GraphEditor";
 
 interface LatexPreviewProps {
   source: string;
   className?: string;
+  /** Modelos vinculados accesibles vía \includemodel{id|name}. */
+  models?: Map<string, { name: string; graph: Graph }>;
+  /** Documentos vinculados accesibles vía \input{id|title}. */
+  docs?: Map<string, { title: string; content: string }>;
 }
 
 /**
@@ -14,17 +21,69 @@ interface LatexPreviewProps {
  * - \begin{equation}/\end{equation}, \[...\], $...$, $$...$$
  * - \begin{itemize}/\begin{enumerate}
  * - \title, \author, \date, \maketitle
- * Ignora preámbulo (\documentclass, \usepackage, \begin{document}, \end{document}).
+ * - \input{id-o-titulo} (transclusión recursiva, tope 8 niveles)
+ * - \includemodel{id-o-nombre}[caption opcional] (figura con grafo)
  */
-export function LatexPreview({ source, className }: LatexPreviewProps) {
+export function LatexPreview({ source, className, models, docs }: LatexPreviewProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const reactRoots = useRef<Map<string, Root>>(new Map());
 
   useEffect(() => {
     if (!ref.current) return;
-    ref.current.innerHTML = renderLatex(source);
-  }, [source]);
+
+    // Limpiar roots previos
+    reactRoots.current.forEach((r) => r.unmount());
+    reactRoots.current.clear();
+
+    // Resolver \input recursivamente
+    const expanded = expandInputs(source, docs ?? new Map(), 8, new Set());
+
+    const { html, modelSlots } = renderLatex(expanded, models ?? new Map());
+    ref.current.innerHTML = html;
+
+    // Montar GraphThumbnail en cada slot de modelo
+    modelSlots.forEach((slot) => {
+      const el = ref.current?.querySelector(`[data-model-slot="${slot.token}"]`);
+      if (!el) return;
+      const root = createRoot(el);
+      root.render(<GraphThumbnail graph={slot.graph} width={520} height={300} paper />);
+      reactRoots.current.set(slot.token, root);
+    });
+
+    return () => {
+      reactRoots.current.forEach((r) => r.unmount());
+      reactRoots.current.clear();
+    };
+  }, [source, models, docs]);
 
   return <div ref={ref} className={className} />;
+}
+
+function expandInputs(
+  src: string,
+  docs: Map<string, { title: string; content: string }>,
+  depth: number,
+  seen: Set<string>,
+): string {
+  if (depth <= 0) return src;
+  return src.replace(/\\input\{([^}]+)\}/g, (_m, key: string) => {
+    const k = key.trim();
+    const doc =
+      docs.get(k) ??
+      Array.from(docs.values()).find((d) => d.title.toLowerCase() === k.toLowerCase());
+    if (!doc) return `\\textit{[input no resuelto: ${escapeForLatex(k)}]}`;
+    if (seen.has(k)) return `\\textit{[ciclo en input: ${escapeForLatex(k)}]}`;
+    const next = new Set(seen);
+    next.add(k);
+    // Extraer solo el body del documento incluido
+    const body = doc.content.match(/\\begin\{document\}([\s\S]*?)\\end\{document\}/);
+    const piece = body ? body[1] : doc.content;
+    return expandInputs(piece, docs, depth - 1, next);
+  });
+}
+
+function escapeForLatex(s: string): string {
+  return s.replace(/[{}\\]/g, "");
 }
 
 function escapeHtml(s: string): string {
@@ -39,8 +98,14 @@ function renderMath(expr: string, displayMode: boolean): string {
   }
 }
 
-function renderLatex(src: string): string {
+interface ModelSlot { token: string; graph: Graph }
+
+function renderLatex(
+  src: string,
+  models: Map<string, { name: string; graph: Graph }>,
+): { html: string; modelSlots: ModelSlot[] } {
   let s = src;
+  const modelSlots: ModelSlot[] = [];
 
   // Quitar comentarios %... (preservando \%)
   s = s.replace(/(^|[^\\])%[^\n]*/g, "$1");
@@ -50,11 +115,10 @@ function renderLatex(src: string): string {
   const authorMatch = s.match(/\\author\{([^}]*)\}/);
   const dateMatch = s.match(/\\date\{([^}]*)\}/);
 
-  // Quedarnos con el body (lo que esté dentro de document, o todo si no hay)
+  // Quedarnos con el body
   const bodyMatch = s.match(/\\begin\{document\}([\s\S]*?)\\end\{document\}/);
   let body = bodyMatch ? bodyMatch[1] : s;
 
-  // Quitar comandos de preámbulo si quedan sueltos
   body = body
     .replace(/\\documentclass(\[[^\]]*\])?\{[^}]*\}/g, "")
     .replace(/\\usepackage(\[[^\]]*\])?\{[^}]*\}/g, "")
@@ -64,7 +128,6 @@ function renderLatex(src: string): string {
 
   const parts: string[] = [];
 
-  // Cabecera con \maketitle
   if (/\\maketitle/.test(body)) {
     parts.push('<div style="text-align:center;margin-bottom:1.5rem">');
     if (titleMatch) parts.push(`<h1 style="font-size:1.8rem;margin:0 0 .5rem">${escapeHtml(titleMatch[1])}</h1>`);
@@ -74,27 +137,43 @@ function renderLatex(src: string): string {
     body = body.replace(/\\maketitle/g, "");
   }
 
-  // Procesar bloques: equation, displaymath, itemize, enumerate
-  // Reemplazos por placeholders → markdown-like → html final
   const placeholders: string[] = [];
   const ph = (html: string) => {
     placeholders.push(html);
     return `\u0000PH${placeholders.length - 1}\u0000`;
   };
 
-  // \begin{equation} ... \end{equation} y equation*
+  // \includemodel{id}[caption]
+  body = body.replace(/\\includemodel\{([^}]+)\}(?:\[([^\]]*)\])?/g, (_m, key: string, caption?: string) => {
+    const k = key.trim();
+    const model =
+      models.get(k) ??
+      Array.from(models.values()).find((m) => m.name.toLowerCase() === k.toLowerCase());
+    const token = `mdl-${modelSlots.length}`;
+    if (!model) {
+      return ph(
+        `<div class="lp-figure" style="border:1px dashed #c44;padding:1rem;color:#c44;text-align:center">[modelo no resuelto: ${escapeHtml(k)}]</div>`,
+      );
+    }
+    modelSlots.push({ token, graph: model.graph });
+    const cap = caption ? caption : `Modelo: ${model.name}`;
+    return ph(
+      `<figure class="lp-figure" style="margin:1.5rem auto;text-align:center">
+         <div data-model-slot="${token}" style="display:inline-block"></div>
+         <figcaption style="font-size:.85rem;opacity:.75;margin-top:.4rem;font-style:italic">${escapeHtml(cap)}</figcaption>
+       </figure>`,
+    );
+  });
+
+  // Bloques matemáticos
   body = body.replace(/\\begin\{equation\*?\}([\s\S]*?)\\end\{equation\*?\}/g, (_m, expr) =>
-    ph(`<div class="lp-eq">${renderMath(expr.trim(), true)}</div>`)
+    ph(`<div class="lp-eq">${renderMath(expr.trim(), true)}</div>`),
   );
-  // align / align*
   body = body.replace(/\\begin\{align\*?\}([\s\S]*?)\\end\{align\*?\}/g, (_m, expr) =>
-    ph(`<div class="lp-eq">${renderMath(`\\begin{aligned}${expr}\\end{aligned}`, true)}</div>`)
+    ph(`<div class="lp-eq">${renderMath(`\\begin{aligned}${expr}\\end{aligned}`, true)}</div>`),
   );
-  // \[ ... \]
   body = body.replace(/\\\[([\s\S]*?)\\\]/g, (_m, expr) => ph(`<div class="lp-eq">${renderMath(expr.trim(), true)}</div>`));
-  // $$ ... $$
   body = body.replace(/\$\$([\s\S]*?)\$\$/g, (_m, expr) => ph(`<div class="lp-eq">${renderMath(expr.trim(), true)}</div>`));
-  // $ ... $ (inline)
   body = body.replace(/\$([^$\n]+)\$/g, (_m, expr) => ph(renderMath(expr.trim(), false)));
 
   // itemize / enumerate
@@ -108,22 +187,19 @@ function renderLatex(src: string): string {
   body = body.replace(/\\subsection\*?\{([^}]*)\}/g, (_m, t) => ph(`<h3 class="lp-h3">${escapeHtml(t)}</h3>`));
   body = body.replace(/\\subsubsection\*?\{([^}]*)\}/g, (_m, t) => ph(`<h4 class="lp-h4">${escapeHtml(t)}</h4>`));
 
-  // Texto enriquecido inline
+  // Texto inline
   body = body.replace(/\\textbf\{([^}]*)\}/g, "<strong>$1</strong>");
   body = body.replace(/\\textit\{([^}]*)\}/g, "<em>$1</em>");
   body = body.replace(/\\emph\{([^}]*)\}/g, "<em>$1</em>");
   body = body.replace(/\\texttt\{([^}]*)\}/g, '<code class="lp-code">$1</code>');
   body = body.replace(/\\\\/g, "<br/>");
 
-  // Escape resto y párrafos por dobles saltos
   const paragraphs = body
     .split(/\n\s*\n/)
     .map((p) => p.trim())
     .filter(Boolean)
     .map((p) => {
-      // Si el párrafo es solo un placeholder, no lo envolvemos en <p>
       if (/^\u0000PH\d+\u0000$/.test(p.trim())) return p;
-      // Escapar HTML manteniendo placeholders
       const tokens = p.split(/(\u0000PH\d+\u0000)/g);
       const html = tokens
         .map((tok) => (tok.startsWith("\u0000PH") ? tok : escapeHtml(tok).replace(/\n/g, " ")))
@@ -132,7 +208,6 @@ function renderLatex(src: string): string {
     });
 
   let out = parts.join("") + paragraphs.join("\n");
-  // Restaurar placeholders
   out = out.replace(/\u0000PH(\d+)\u0000/g, (_m, i) => placeholders[Number(i)] ?? "");
-  return out;
+  return { html: out, modelSlots };
 }
