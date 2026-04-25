@@ -103,7 +103,7 @@ function Roadmap() {
                 <div className="border-l-2 border-border pl-6 space-y-3">
                   {ph.items.map((it) => (
                     <div key={it} className="relative flex gap-3 items-start">
-                      <span className={`absolute -left-[27px] top-2 w-2 h-2 rounded-full bg-${ph.color}`} />
+                      <span className={`absolute -left-[27px] top-2 w-2 h-2 rounded-full ${ph.color === "primary" ? "bg-primary" : "bg-accent"}`} />
                       <span className="text-sm text-foreground">{it}</span>
                     </div>
                   ))}
