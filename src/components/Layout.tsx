@@ -1,6 +1,7 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
-import { Activity } from "lucide-react";
+import { Activity, ChevronDown, ChevronRight } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/useAuth";
+import { useState, useEffect } from "react";
 
 const NAV = [
   { to: "/", label: "00 / OVERVIEW" },
