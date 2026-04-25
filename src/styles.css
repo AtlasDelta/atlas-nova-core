@@ -127,3 +127,33 @@
   background: linear-gradient(90deg, transparent, var(--primary), transparent);
   animation: scan 4s linear infinite;
 }
+
+/* ─── LaTeX preview (paper-like) ─── */
+.lp-doc {
+  font-family: 'Cambria', 'Georgia', 'Times New Roman', serif;
+  font-size: 11pt;
+  line-height: 1.55;
+  color: #111;
+}
+.lp-doc p { margin: 0 0 .8em; text-align: justify; }
+.lp-doc .lp-h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 600; margin: 1.5em 0 .5em; border-bottom: 1px solid #ddd; padding-bottom: .2em; }
+.lp-doc .lp-h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 600; margin: 1.2em 0 .4em; }
+.lp-doc .lp-h4 { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 600; margin: 1em 0 .3em; }
+.lp-doc .lp-eq { margin: 1em 0; text-align: center; overflow-x: auto; }
+.lp-doc ul, .lp-doc ol { margin: .5em 0 1em 1.5em; padding: 0; }
+.lp-doc li { margin: .25em 0; }
+.lp-doc .lp-code { font-family: 'JetBrains Mono', monospace; background: #f3f3f3; padding: 1px 4px; border-radius: 2px; font-size: .9em; }
+.lp-doc .katex { font-size: 1.05em; }
+
+/* ─── Yjs collaborative cursors ─── */
+.cm-ySelection { opacity: 0.3; }
+.cm-ySelectionCaret { position: relative; border-left: 2px solid; margin-left: -1px; margin-right: -1px; box-sizing: border-box; }
+.cm-ySelectionCaretDot { display: none; }
+.cm-ySelectionInfo {
+  position: absolute; top: -1.05em; left: -2px;
+  font-size: 10px; font-family: 'JetBrains Mono', monospace;
+  padding: 1px 4px; color: #000; white-space: nowrap;
+  border-radius: 2px 2px 2px 0;
+  z-index: 10;
+}
+
