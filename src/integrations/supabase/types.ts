@@ -14,6 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
+      document_links: {
+        Row: {
+          alias: string | null
+          created_at: string
+          id: string
+          source_document_id: string
+          target_document_id: string
+          user_id: string
+        }
+        Insert: {
+          alias?: string | null
+          created_at?: string
+          id?: string
+          source_document_id: string
+          target_document_id: string
+          user_id: string
+        }
+        Update: {
+          alias?: string | null
+          created_at?: string
+          id?: string
+          source_document_id?: string
+          target_document_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_links_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_links_target_document_id_fkey"
+            columns: ["target_document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_models: {
+        Row: {
+          alias: string | null
+          created_at: string
+          document_id: string
+          id: string
+          model_id: string
+          user_id: string
+        }
+        Insert: {
+          alias?: string | null
+          created_at?: string
+          document_id: string
+          id?: string
+          model_id: string
+          user_id: string
+        }
+        Update: {
+          alias?: string | null
+          created_at?: string
+          document_id?: string
+          id?: string
+          model_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_models_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_models_model_id_fkey"
+            columns: ["model_id"]
+            isOneToOne: false
+            referencedRelation: "models"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           content: string
