@@ -3,10 +3,13 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
 import { supabase } from "@/integrations/supabase/client";
-import { LatexEditor } from "@/components/LatexEditor";
+import { LatexEditor, type LatexEditorHandle } from "@/components/LatexEditor";
 import { LatexPreview } from "@/components/LatexPreview";
+import { LinksDialog, LinksSidebar } from "@/components/DocumentLinks";
+import { fetchLinkedModels, fetchLinkedDocuments, type LinkedModel, type LinkedDocument } from "@/lib/document-links";
 import { YjsSupabaseProvider } from "@/lib/yjs-supabase-provider";
-import { ChevronLeft, Loader2, Users, Wifi, WifiOff, Download } from "lucide-react";
+import type { Graph } from "@/components/GraphEditor";
+import { ChevronLeft, Loader2, Users, Wifi, WifiOff, Download, Link2, PanelRightClose, PanelRightOpen } from "lucide-react";
 
 export const Route = createFileRoute("/app/d/$id")({
   component: DocumentEditor,
@@ -33,6 +36,10 @@ Escribe aquí. Soporta \\textbf{negrita}, \\emph{cursiva} y matemáticas en lín
   \\item Segundo punto
 \\end{itemize}
 
+% Vincula modelos y documentos desde el panel lateral, después insértalos:
+% \\includemodel{<id-del-modelo>}[Esquema del sistema]
+% \\input{<id-del-documento>}
+
 \\end{document}
 `;
 
@@ -58,22 +65,52 @@ function DocumentEditor() {
   const [exporting, setExporting] = useState(false);
   const [view, setView] = useState<"split" | "editor" | "preview">("split");
 
-  const previewRef = useRef<HTMLDivElement>(null);
+  // Vínculos
+  const [linkedModels, setLinkedModels] = useState<LinkedModel[]>([]);
+  const [linkedDocs, setLinkedDocs] = useState<LinkedDocument[]>([]);
+  const [linksOpen, setLinksOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  // Yjs doc + awareness se crean una sola vez por documento
+  const previewRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<LatexEditorHandle>(null);
+
   const { doc, awareness } = useMemo(() => {
     const d = new Y.Doc();
     const a = new Awareness(d);
     return { doc: d, awareness: a };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  // Cargar snapshot inicial desde DB y arrancar provider
+  // Cargar vínculos al montar y construir mapas para el preview
+  useEffect(() => {
+    (async () => {
+      try {
+        const [m, d] = await Promise.all([fetchLinkedModels(id), fetchLinkedDocuments(id)]);
+        setLinkedModels(m);
+        setLinkedDocs(d);
+      } catch (e) {
+        console.warn("Failed to load links", e);
+      }
+    })();
+  }, [id]);
+
+  const modelMap = useMemo(() => {
+    const m = new Map<string, { name: string; graph: Graph }>();
+    linkedModels.forEach((lm) => m.set(lm.model_id, { name: lm.model.name, graph: lm.model.graph }));
+    return m;
+  }, [linkedModels]);
+
+  const docMap = useMemo(() => {
+    const m = new Map<string, { title: string; content: string }>();
+    linkedDocs.forEach((ld) => m.set(ld.target_document_id, { title: ld.target.title, content: ld.target.content }));
+    return m;
+  }, [linkedDocs]);
+
   useEffect(() => {
     let cancelled = false;
     let provider: YjsSupabaseProvider | null = null;
 
     (async () => {
-      // 1. Metadata + snapshot
       const { data, error } = await supabase
         .from("documents")
         .select("id,title,model_id,yjs_state,content,models(name)")
@@ -90,11 +127,9 @@ function DocumentEditor() {
       const modelName = (data.models as { name?: string } | null)?.name;
       setMeta({ id: data.id, title: data.title, model_id: data.model_id, model_name: modelName });
 
-      // 2. Aplicar snapshot Yjs si existe
       if (data.yjs_state) {
         try {
           const raw = data.yjs_state as string;
-          // Postgres devuelve bytea como '\xHEX'
           const hex = raw.startsWith("\\x") ? raw.slice(2) : raw;
           const u = new Uint8Array(hex.length / 2);
           for (let i = 0; i < u.length; i++) u[i] = parseInt(hex.substr(i * 2, 2), 16);
@@ -103,7 +138,6 @@ function DocumentEditor() {
           console.warn("Failed to load yjs snapshot", e);
         }
       }
-      // 3. Si el doc está vacío, sembrar con plantilla
       const ytext = doc.getText("latex");
       if (ytext.length === 0 && !data.content) {
         ytext.insert(0, STARTER);
@@ -111,14 +145,12 @@ function DocumentEditor() {
         ytext.insert(0, data.content);
       }
 
-      // 4. Awareness: identidad del usuario
       const { data: userData } = await supabase.auth.getUser();
       const email = userData.user?.email ?? "anónimo";
       const name = email.split("@")[0];
       const color = PALETTE[Math.abs(hash(userData.user?.id ?? "x")) % PALETTE.length];
       awareness.setLocalStateField("user", { name, color });
 
-      // 5. Provider
       provider = new YjsSupabaseProvider({
         documentId: id,
         doc,
@@ -131,7 +163,6 @@ function DocumentEditor() {
         onSynced: () => !cancelled && setSynced(true),
       });
 
-      // 6. Suscripción a cambios del texto → preview
       const updatePreview = () => setPreviewSrc(doc.getText("latex").toString());
       updatePreview();
       doc.on("update", updatePreview);
@@ -173,6 +204,10 @@ function DocumentEditor() {
     }
   }
 
+  function insertSnippet(snippet: string) {
+    editorRef.current?.insertAtCursor(snippet);
+  }
+
   if (loading) {
     return <div className="flex-1 flex items-center justify-center"><Loader2 className="h-6 w-6 text-primary animate-spin" /></div>;
   }
@@ -187,7 +222,6 @@ function DocumentEditor() {
     );
   }
 
-  // Lista de peers desde awareness
   const states = Array.from(awareness.getStates().values()) as Array<{ user?: { name: string; color: string } }>;
   const collaborators = states.map((s) => s.user).filter(Boolean) as Array<{ name: string; color: string }>;
 
@@ -207,7 +241,13 @@ function DocumentEditor() {
           </Link>
         )}
         <div className="ml-auto flex items-center gap-3 text-[11px] text-muted-foreground">
-          {/* View toggle */}
+          <button
+            onClick={() => setLinksOpen(true)}
+            className="flex items-center gap-1 border border-border px-2 py-1 hover:border-primary hover:text-foreground"
+            title="Gestionar vínculos"
+          >
+            <Link2 className="h-3 w-3" /> vínculos ({linkedModels.length + linkedDocs.length})
+          </button>
           <div className="flex border border-border">
             {(["editor", "split", "preview"] as const).map((v) => (
               <button
@@ -219,7 +259,6 @@ function DocumentEditor() {
               </button>
             ))}
           </div>
-          {/* Collaborators */}
           <div className="flex items-center gap-1">
             <Users className="h-3 w-3" />
             <div className="flex -space-x-1">
@@ -236,13 +275,11 @@ function DocumentEditor() {
             </div>
             <span>{peers}</span>
           </div>
-          {/* Status */}
           {connected ? (
             <span className="flex items-center gap-1 text-success"><Wifi className="h-3 w-3" /> {synced ? "sync" : "…"}</span>
           ) : (
             <span className="flex items-center gap-1 text-muted-foreground"><WifiOff className="h-3 w-3" /> off</span>
           )}
-          {/* Export */}
           <button
             onClick={exportPDF}
             disabled={exporting}
@@ -250,26 +287,59 @@ function DocumentEditor() {
           >
             {exporting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Download className="h-3 w-3" />} PDF
           </button>
+          <button
+            onClick={() => setSidebarOpen((v) => !v)}
+            className="text-muted-foreground hover:text-foreground"
+            title={sidebarOpen ? "Ocultar panel" : "Mostrar panel"}
+          >
+            {sidebarOpen ? <PanelRightClose className="h-4 w-4" /> : <PanelRightOpen className="h-4 w-4" />}
+          </button>
         </div>
       </div>
 
       {/* Body */}
-      <div className="flex-1 min-h-0 grid" style={{
-        gridTemplateColumns: view === "split" ? "1fr 1fr" : view === "editor" ? "1fr 0fr" : "0fr 1fr",
-      }}>
-        {view !== "preview" && (
-          <div className="border-r border-border min-h-0 overflow-hidden bg-[#282c34]">
-            <LatexEditor doc={doc} awareness={awareness} className="h-full" />
-          </div>
-        )}
-        {view !== "editor" && (
-          <div className="min-h-0 overflow-auto bg-white">
-            <div ref={previewRef} className="lp-doc max-w-3xl mx-auto p-10 text-black">
-              <LatexPreview source={previewSrc} />
+      <div className="flex-1 min-h-0 flex">
+        <div
+          className="flex-1 min-h-0 grid"
+          style={{
+            gridTemplateColumns: view === "split" ? "1fr 1fr" : view === "editor" ? "1fr 0fr" : "0fr 1fr",
+          }}
+        >
+          {view !== "preview" && (
+            <div className="border-r border-border min-h-0 overflow-hidden bg-[#282c34]">
+              <LatexEditor ref={editorRef} doc={doc} awareness={awareness} className="h-full" />
             </div>
-          </div>
+          )}
+          {view !== "editor" && (
+            <div className="min-h-0 overflow-auto bg-white">
+              <div ref={previewRef} className="lp-doc max-w-3xl mx-auto p-10 text-black">
+                <LatexPreview source={previewSrc} models={modelMap} docs={docMap} />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {sidebarOpen && (
+          <LinksSidebar
+            models={linkedModels}
+            docs={linkedDocs}
+            onOpenManager={() => setLinksOpen(true)}
+            onInsertModel={(lm) => insertSnippet(`\n\\includemodel{${lm.model_id}}[${lm.model.name}]\n`)}
+            onInsertDoc={(ld) => insertSnippet(`\n\\input{${ld.target_document_id}}\n`)}
+          />
         )}
       </div>
+
+      <LinksDialog
+        documentId={id}
+        open={linksOpen}
+        onClose={() => setLinksOpen(false)}
+        onChange={({ models, docs }) => {
+          setLinkedModels(models);
+          setLinkedDocs(docs);
+        }}
+        onInsert={insertSnippet}
+      />
     </div>
   );
 }
