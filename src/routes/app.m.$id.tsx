@@ -27,7 +27,7 @@ function ModelEditor() {
         setErr(error?.message ?? "Modelo no encontrado");
       } else {
         setName(data.name);
-        setGraph((data.graph as Graph) ?? { nodes: [], edges: [] });
+        setGraph((data.graph as unknown as Graph) ?? { nodes: [], edges: [] });
       }
       setLoading(false);
     })();
@@ -38,7 +38,7 @@ function ModelEditor() {
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(async () => {
       setSaving(true);
-      const { error } = await supabase.from("models").update({ name: nextName, graph: nextGraph }).eq("id", id);
+      const { error } = await supabase.from("models").update({ name: nextName, graph: nextGraph as unknown as Record<string, unknown> }).eq("id", id);
       setSaving(false);
       if (error) setErr(error.message);
       else { setSavedAt(new Date()); setErr(null); }
