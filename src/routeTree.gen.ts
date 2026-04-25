@@ -9,8 +9,68 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SimulationRouteImport } from './routes/simulation'
+import { Route as RoadmapRouteImport } from './routes/roadmap'
+import { Route as RisksRouteImport } from './routes/risks'
+import { Route as PerformanceRouteImport } from './routes/performance'
+import { Route as ModulesRouteImport } from './routes/modules'
+import { Route as MigrationRouteImport } from './routes/migration'
+import { Route as InterfaceRouteImport } from './routes/interface'
+import { Route as IntelligenceRouteImport } from './routes/intelligence'
+import { Route as ExtensibilityRouteImport } from './routes/extensibility'
+import { Route as ArchitectureRouteImport } from './routes/architecture'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SimulationRoute = SimulationRouteImport.update({
+  id: '/simulation',
+  path: '/simulation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoadmapRoute = RoadmapRouteImport.update({
+  id: '/roadmap',
+  path: '/roadmap',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RisksRoute = RisksRouteImport.update({
+  id: '/risks',
+  path: '/risks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PerformanceRoute = PerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ModulesRoute = ModulesRouteImport.update({
+  id: '/modules',
+  path: '/modules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MigrationRoute = MigrationRouteImport.update({
+  id: '/migration',
+  path: '/migration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InterfaceRoute = InterfaceRouteImport.update({
+  id: '/interface',
+  path: '/interface',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IntelligenceRoute = IntelligenceRouteImport.update({
+  id: '/intelligence',
+  path: '/intelligence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExtensibilityRoute = ExtensibilityRouteImport.update({
+  id: '/extensibility',
+  path: '/extensibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchitectureRoute = ArchitectureRouteImport.update({
+  id: '/architecture',
+  path: '/architecture',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -19,28 +79,172 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
+  '/extensibility': typeof ExtensibilityRoute
+  '/intelligence': typeof IntelligenceRoute
+  '/interface': typeof InterfaceRoute
+  '/migration': typeof MigrationRoute
+  '/modules': typeof ModulesRoute
+  '/performance': typeof PerformanceRoute
+  '/risks': typeof RisksRoute
+  '/roadmap': typeof RoadmapRoute
+  '/simulation': typeof SimulationRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
+  '/extensibility': typeof ExtensibilityRoute
+  '/intelligence': typeof IntelligenceRoute
+  '/interface': typeof InterfaceRoute
+  '/migration': typeof MigrationRoute
+  '/modules': typeof ModulesRoute
+  '/performance': typeof PerformanceRoute
+  '/risks': typeof RisksRoute
+  '/roadmap': typeof RoadmapRoute
+  '/simulation': typeof SimulationRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/architecture': typeof ArchitectureRoute
+  '/extensibility': typeof ExtensibilityRoute
+  '/intelligence': typeof IntelligenceRoute
+  '/interface': typeof InterfaceRoute
+  '/migration': typeof MigrationRoute
+  '/modules': typeof ModulesRoute
+  '/performance': typeof PerformanceRoute
+  '/risks': typeof RisksRoute
+  '/roadmap': typeof RoadmapRoute
+  '/simulation': typeof SimulationRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/architecture'
+    | '/extensibility'
+    | '/intelligence'
+    | '/interface'
+    | '/migration'
+    | '/modules'
+    | '/performance'
+    | '/risks'
+    | '/roadmap'
+    | '/simulation'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/architecture'
+    | '/extensibility'
+    | '/intelligence'
+    | '/interface'
+    | '/migration'
+    | '/modules'
+    | '/performance'
+    | '/risks'
+    | '/roadmap'
+    | '/simulation'
+  id:
+    | '__root__'
+    | '/'
+    | '/architecture'
+    | '/extensibility'
+    | '/intelligence'
+    | '/interface'
+    | '/migration'
+    | '/modules'
+    | '/performance'
+    | '/risks'
+    | '/roadmap'
+    | '/simulation'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ArchitectureRoute: typeof ArchitectureRoute
+  ExtensibilityRoute: typeof ExtensibilityRoute
+  IntelligenceRoute: typeof IntelligenceRoute
+  InterfaceRoute: typeof InterfaceRoute
+  MigrationRoute: typeof MigrationRoute
+  ModulesRoute: typeof ModulesRoute
+  PerformanceRoute: typeof PerformanceRoute
+  RisksRoute: typeof RisksRoute
+  RoadmapRoute: typeof RoadmapRoute
+  SimulationRoute: typeof SimulationRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/simulation': {
+      id: '/simulation'
+      path: '/simulation'
+      fullPath: '/simulation'
+      preLoaderRoute: typeof SimulationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/roadmap': {
+      id: '/roadmap'
+      path: '/roadmap'
+      fullPath: '/roadmap'
+      preLoaderRoute: typeof RoadmapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/risks': {
+      id: '/risks'
+      path: '/risks'
+      fullPath: '/risks'
+      preLoaderRoute: typeof RisksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/performance': {
+      id: '/performance'
+      path: '/performance'
+      fullPath: '/performance'
+      preLoaderRoute: typeof PerformanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/modules': {
+      id: '/modules'
+      path: '/modules'
+      fullPath: '/modules'
+      preLoaderRoute: typeof ModulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/migration': {
+      id: '/migration'
+      path: '/migration'
+      fullPath: '/migration'
+      preLoaderRoute: typeof MigrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interface': {
+      id: '/interface'
+      path: '/interface'
+      fullPath: '/interface'
+      preLoaderRoute: typeof InterfaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intelligence': {
+      id: '/intelligence'
+      path: '/intelligence'
+      fullPath: '/intelligence'
+      preLoaderRoute: typeof IntelligenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/extensibility': {
+      id: '/extensibility'
+      path: '/extensibility'
+      fullPath: '/extensibility'
+      preLoaderRoute: typeof ExtensibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/architecture': {
+      id: '/architecture'
+      path: '/architecture'
+      fullPath: '/architecture'
+      preLoaderRoute: typeof ArchitectureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -53,6 +257,16 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ArchitectureRoute: ArchitectureRoute,
+  ExtensibilityRoute: ExtensibilityRoute,
+  IntelligenceRoute: IntelligenceRoute,
+  InterfaceRoute: InterfaceRoute,
+  MigrationRoute: MigrationRoute,
+  ModulesRoute: ModulesRoute,
+  PerformanceRoute: PerformanceRoute,
+  RisksRoute: RisksRoute,
+  RoadmapRoute: RoadmapRoute,
+  SimulationRoute: SimulationRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
