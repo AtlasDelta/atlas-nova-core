@@ -36,6 +36,12 @@ export function Layout() {
     }
   }, [loc.pathname]);
 
+  // Workspace routes use their own shell (full-bleed, no marketing chrome)
+  const isWorkspace = loc.pathname === "/app" || loc.pathname.startsWith("/app/");
+  if (isWorkspace) {
+    return <Outlet />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
