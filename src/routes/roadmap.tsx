@@ -94,7 +94,7 @@ function Roadmap() {
             <div className="grid grid-cols-12 gap-6">
               <div className="col-span-12 md:col-span-3">
                 <div className="sticky top-20">
-                  <div className={`text-5xl font-display font-bold text-${ph.color}`}>{ph.p}</div>
+                  <div className={`text-5xl font-display font-bold ${ph.color === "primary" ? "text-primary" : "text-accent"}`}>{ph.p}</div>
                   <div className="text-xs text-muted-foreground mt-1 tracking-widest">{ph.range}</div>
                   <div className="font-display font-semibold mt-1">{ph.name}</div>
                 </div>
