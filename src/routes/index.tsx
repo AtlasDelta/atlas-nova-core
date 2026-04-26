@@ -1,118 +1,178 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Panel, KeyVal, Tag, Bullet } from "../components/ui-bits";
-import { ArrowRight, Cpu, Atom, Brain, Network, Layers, Zap } from "lucide-react";
+import { ArrowRight, BookOpen, FileText, Workflow, FlaskConical } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "AtlasDelta Revamped — Overview" },
-      { name: "description", content: "Visión general de AtlasDelta Revamped: el sucesor universal de Simulink, OpenFOAM y Modelica con IA integrada." },
+      { title: "AtlasDelta — Modelado y simulación física" },
+      {
+        name: "description",
+        content:
+          "Plataforma para construir modelos físicos por bloques, redactar documentos científicos en LaTeX y consultar artículos explicativos de Física, Química, Matemática e Ingeniería.",
+      },
+      { property: "og:title", content: "AtlasDelta — Modelado y simulación física" },
+      {
+        property: "og:description",
+        content:
+          "Editor visual de modelos, documentos LaTeX colaborativos y un repositorio científico abierto.",
+      },
     ],
   }),
-  component: Overview,
+  component: Home,
 });
 
-function Overview() {
+function Home() {
   return (
     <div className="space-y-12">
       {/* Hero */}
       <section className="relative border border-border bg-surface overflow-hidden corner-marks">
-        <div className="absolute inset-0 bg-grid-fade pointer-events-none" style={{ background: "var(--gradient-conic)" }} />
-        <div className="absolute inset-0 scanline pointer-events-none" />
-        <div className="scan-line" />
+        <div className="absolute inset-0 bg-grid-fade pointer-events-none" />
         <div className="relative p-10 md:p-14">
           <div className="flex items-center gap-3 mb-6">
-            <Tag tone="primary">RFC AD-2.0-001</Tag>
-            <Tag tone="accent">SPEC COMPLETA</Tag>
-            <Tag tone="muted">2026 → 2036</Tag>
+            <Tag tone="muted">Beta</Tag>
+            <Tag tone="primary">Modelado · Simulación · Documentación</Tag>
           </div>
-          <h1 className="text-5xl md:text-7xl font-display font-semibold text-balance leading-[0.95]">
-            AtlasDelta<br />
-            <span className="text-primary">Revamped.</span>
+          <h1 className="text-4xl md:text-6xl font-display font-semibold text-balance leading-[1.05]">
+            Una plataforma para
+            <br />
+            <span className="text-primary">modelar fenómenos físicos</span>
+            <br />y documentarlos con rigor.
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl text-balance">
-            Un <span className="text-foreground">digital twin universal</span> para
-            modelado físico-matemático avanzado, simulación multi-dominio y
-            diseño asistido por IA. El sucesor conceptual de
-            <span className="text-foreground"> Simulink + OpenFOAM + Modelica</span>,
-            unificado en un único kernel extensible.
+          <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl text-balance">
+            AtlasDelta combina un editor visual de modelos por bloques (fluido,
+            térmico, mecánico, eléctrico…), un editor colaborativo de documentos
+            LaTeX y un repositorio abierto de artículos científicos
+            explicativos. Pensado para estudiantes, investigadores e ingenieros.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link to="/architecture" className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:glow-primary transition-all">
-              ▸ Explorar arquitectura
+            <Link
+              to="/app"
+              className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-all"
+            >
+              Abrir workspace
               <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
             </Link>
-            <Link to="/roadmap" className="inline-flex items-center gap-2 border border-border-strong px-5 py-2.5 text-sm hover:border-primary hover:text-primary transition-colors">
-              Visión a 10 años
+            <Link
+              to="/library"
+              className="inline-flex items-center gap-2 border border-border-strong px-5 py-2.5 text-sm hover:border-primary hover:text-primary transition-colors"
+            >
+              <BookOpen className="h-4 w-4" />
+              Explorar el repositorio
             </Link>
-          </div>
-
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-px bg-border border border-border">
-            {[
-              ["KERNEL", "Hybrid ODE/PDE"],
-              ["DOMINIOS", "7 acoplados"],
-              ["BACKENDS", "CPU·GPU·HPC"],
-              ["IA", "Co-designer"],
-            ].map(([k, v]) => (
-              <div key={k} className="bg-surface p-4">
-                <div className="text-[10px] text-muted-foreground tracking-widest">{k}</div>
-                <div className="text-foreground font-display text-lg mt-1">{v}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
 
-      {/* Pillars */}
+      {/* Tres herramientas */}
       <section>
         <div className="flex items-baseline justify-between mb-6">
-          <h2 className="text-2xl font-display font-semibold">Seis pilares fundamentales</h2>
-          <span className="text-xs text-muted-foreground">§ 0.1</span>
+          <h2 className="text-2xl font-display font-semibold">Tres herramientas, un mismo lugar</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
-            { Icon: Atom, title: "Physics Core", desc: "Solver diferencial híbrido ODE/PDE, multi-escala (macro↔micro↔nano), estocástico integrado." },
-            { Icon: Network, title: "Coupled Engine", desc: "Fluidos, térmica, estructural, química, EM y control en interacción tiempo-real." },
-            { Icon: Brain, title: "AI Co-Designer", desc: "Asistente de modelado, detección de inconsistencias físicas, NL → modelo." },
-            { Icon: Layers, title: "Engineering Abstraction", desc: "Bloques reutilizables tipo Modelica++ con ecuaciones declarativas." },
-            { Icon: Zap, title: "HPC Native", desc: "Paralelización CPU/GPU/cluster, MOR adaptativa, ejecución real-time." },
-            { Icon: Cpu, title: "Plugin Universe", desc: "Física custom, dominios futuros (cuántico, relativista), hardware-in-loop." },
-          ].map(({ Icon, title, desc }) => (
+            {
+              Icon: Workflow,
+              title: "Editor de modelos",
+              desc: "Construye modelos físicos por bloques con puertos tipados (fluido, térmico, mecánico, eléctrico, control). Cada bloque expone parámetros y ecuaciones explícitas.",
+              href: "/app" as const,
+              cta: "Crear un modelo",
+            },
+            {
+              Icon: FileText,
+              title: "Documentos LaTeX colaborativos",
+              desc: "Edita en tiempo real con varios autores. Vincula modelos, inserta gráficos, exporta a PDF. Sintaxis LaTeX estándar.",
+              href: "/app" as const,
+              cta: "Abrir editor",
+            },
+            {
+              Icon: BookOpen,
+              title: "Repositorio científico",
+              desc: "Artículos breves de Física, Química, Matemática e Ingeniería. Material de referencia con notación cuidada y ecuaciones renderizadas.",
+              href: "/library" as const,
+              cta: "Ver artículos",
+            },
+          ].map(({ Icon, title, desc, href, cta }) => (
             <Panel key={title}>
-              <div className="flex gap-3">
-                <Icon className="h-5 w-5 text-primary flex-none mt-0.5" />
-                <div>
-                  <div className="font-display font-medium text-base mb-1">{title}</div>
-                  <p className="text-muted-foreground text-sm">{desc}</p>
-                </div>
+              <div className="flex flex-col h-full gap-3">
+                <Icon className="h-5 w-5 text-primary" />
+                <div className="font-display font-medium text-base">{title}</div>
+                <p className="text-muted-foreground text-sm flex-1">{desc}</p>
+                <Link
+                  to={href}
+                  className="text-xs text-primary hover:underline mt-2 inline-flex items-center gap-1"
+                >
+                  {cta} <ArrowRight className="h-3 w-3" />
+                </Link>
               </div>
             </Panel>
           ))}
         </div>
       </section>
 
-      {/* What this spec covers */}
+      {/* Para quién */}
       <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <Panel title="Qué cubre esta especificación" tag="§ 0.2">
+          <Panel title="¿Para quién es esto?">
             <ul>
-              <Bullet>Arquitectura completa por capas con contratos de interfaz.</Bullet>
-              <Bullet>Diferencias clave vs AtlasDelta legacy y plan de migración.</Bullet>
-              <Bullet>Flujo end-to-end: parsing → compilación simbólica → solver → post-proceso.</Bullet>
-              <Bullet>Componentes críticos nuevos: Symbolic IR, Coupling Manager, MOR Engine.</Bullet>
-              <Bullet>Riesgos técnicos clasificados con mitigaciones explícitas.</Bullet>
-              <Bullet>Roadmap de evolución 2026 → 2036 en 5 fases.</Bullet>
+              <Bullet>
+                <strong className="text-foreground">Estudiantes</strong> que necesitan
+                construir intuición sobre sistemas físicos y entregar trabajos formateados.
+              </Bullet>
+              <Bullet>
+                <strong className="text-foreground">Investigadores</strong> que prototipan
+                modelos rápidamente y redactan papers en colaboración.
+              </Bullet>
+              <Bullet>
+                <strong className="text-foreground">Ingenieros</strong> que documentan
+                sistemas (térmicos, hidráulicos, eléctricos) junto al diagrama que los describe.
+              </Bullet>
+              <Bullet>
+                <strong className="text-foreground">Profesores</strong> que preparan material
+                didáctico ejecutable, no solo texto.
+              </Bullet>
             </ul>
           </Panel>
         </div>
-        <Panel title="Metadata" tag="REV 2.0">
+        <Panel title="Estado del producto">
           <div className="space-y-1">
-            <KeyVal k="Versión" v="2.0.0-draft" />
-            <KeyVal k="Status" v={<Tag tone="warn">DRAFT</Tag>} />
-            <KeyVal k="Compat" v="AtlasDelta 1.x ✓" />
-            <KeyVal k="Lenguajes" v="Rust · C++ · Py" />
-            <KeyVal k="Licencia" v="Dual" />
-            <KeyVal k="Target HW" v="x86 · ARM · CUDA · ROCm" />
+            <KeyVal k="Versión" v="0.2 · Beta" />
+            <KeyVal k="Editor de modelos" v={<Tag tone="success">Disponible</Tag>} />
+            <KeyVal k="Documentos LaTeX" v={<Tag tone="success">Disponible</Tag>} />
+            <KeyVal k="Simulación numérica" v={<Tag tone="warn">En desarrollo</Tag>} />
+            <KeyVal k="Asistente IA" v={<Tag tone="muted">Planeado</Tag>} />
+          </div>
+        </Panel>
+      </section>
+
+      {/* Repositorio destacado */}
+      <section>
+        <Panel>
+          <div className="flex flex-col md:flex-row gap-6 items-start">
+            <FlaskConical className="h-8 w-8 text-accent flex-none" />
+            <div className="flex-1">
+              <h3 className="font-display font-medium text-lg mb-2">
+                Repositorio científico abierto
+              </h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Una colección curada de artículos breves y autocontenidos sobre
+                conceptos fundamentales en cuatro áreas. Pensados para refrescar
+                un tema rápidamente o servir de referencia mientras modelas.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {["Física", "Química", "Matemática", "Ingeniería"].map((c) => (
+                  <Tag key={c} tone="muted">
+                    {c}
+                  </Tag>
+                ))}
+              </div>
+              <Link
+                to="/library"
+                className="mt-4 inline-flex items-center gap-2 text-sm text-primary hover:underline"
+              >
+                Ir al repositorio <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </Panel>
       </section>

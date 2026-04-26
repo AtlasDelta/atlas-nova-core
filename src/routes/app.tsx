@@ -45,10 +45,13 @@ function AppShell() {
       <header className="sticky top-0 z-50 border-b border-border bg-background/85 backdrop-blur-md">
         <div className="px-6 h-12 flex items-center gap-6">
           <Link to="/app" className="font-display font-semibold text-sm">
-            ATLASDELTA<span className="text-primary">·workspace</span>
+            AtlasDelta<span className="text-primary"> · workspace</span>
           </Link>
           <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
-            ← spec
+            ← Inicio
+          </Link>
+          <Link to="/library" className="text-xs text-muted-foreground hover:text-foreground hidden sm:inline">
+            Repositorio
           </Link>
           <div className="ml-auto flex items-center gap-4 text-xs">
             <span className="text-muted-foreground hidden sm:inline">{email}</span>
