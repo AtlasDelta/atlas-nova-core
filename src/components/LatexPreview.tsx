@@ -136,7 +136,7 @@ function renderLatex(
   const parts: string[] = [];
 
   if (/\\maketitle/.test(body)) {
-    parts.push('<div style="text-align:center;margin-bottom:1.5rem">');
+    parts.push('<div data-pdf-section style="text-align:center;margin-bottom:1.5rem">');
     if (titleMatch) parts.push(`<h1 style="font-size:1.8rem;margin:0 0 .5rem">${escapeHtml(titleMatch[1])}</h1>`);
     if (authorMatch) parts.push(`<div style="opacity:.85">${escapeHtml(authorMatch[1])}</div>`);
     if (dateMatch) parts.push(`<div style="opacity:.65;font-size:.85rem;margin-top:.25rem">${escapeHtml(dateMatch[1])}</div>`);
