@@ -157,3 +157,84 @@
   z-index: 10;
 }
 
+/* ─── Article body (repositorio científico) ─── */
+.article-body {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--foreground);
+}
+.article-body p { margin: 0 0 1.1em; }
+.article-body h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 2em 0 .6em;
+  padding-bottom: .3em;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+}
+.article-body h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 1.6em 0 .5em;
+  color: var(--foreground);
+}
+.article-body h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 1.3em 0 .4em;
+  color: var(--foreground);
+}
+.article-body ul, .article-body ol {
+  margin: .5em 0 1.2em 1.5em;
+  padding: 0;
+}
+.article-body li { margin: .35em 0; }
+.article-body strong { color: var(--foreground); font-weight: 600; }
+.article-body em { color: var(--foreground); font-style: italic; }
+.article-body code {
+  font-family: 'JetBrains Mono', monospace;
+  background: color-mix(in oklab, var(--muted) 50%, transparent);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: .9em;
+  color: var(--accent);
+}
+.article-body blockquote {
+  border-left: 3px solid var(--primary);
+  padding: .25em 0 .25em 1em;
+  margin: 1em 0;
+  color: var(--muted-foreground);
+  background: color-mix(in oklab, var(--primary) 5%, transparent);
+}
+.article-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: .9em;
+}
+.article-body th, .article-body td {
+  border: 1px solid var(--border);
+  padding: .5em .75em;
+  text-align: left;
+}
+.article-body th {
+  background: color-mix(in oklab, var(--muted) 40%, transparent);
+  font-weight: 600;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.article-body .katex-display {
+  margin: 1.4em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.article-body .katex {
+  font-size: 1.05em;
+}
+.article-body a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
