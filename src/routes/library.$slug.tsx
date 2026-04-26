@@ -29,7 +29,8 @@ export const Route = createFileRoute("/library/$slug")({
 });
 
 function ArticleView() {
-  const { article } = Route.useLoaderData();
+  const data = Route.useLoaderData() as { article: Article };
+  const article = data.article;
   const meta = CATEGORY_META[article.category];
   const related = ARTICLES.filter(
     (a) => a.category === article.category && a.slug !== article.slug,
