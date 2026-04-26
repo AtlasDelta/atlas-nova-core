@@ -91,25 +91,31 @@ export function Layout() {
               aria-expanded={navOpen}
               aria-controls="spec-index-list"
             >
-              <span>· spec index ·</span>
+              <span>· navegación ·</span>
               {navOpen ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
             </button>
             {navOpen && (
-              <div id="spec-index-list" className="space-y-1">
+              <div id="spec-index-list" className="space-y-0.5">
                 {NAV.map((n) => {
                   const active = loc.pathname === n.to;
                   return (
-                    <Link
-                      key={n.to}
-                      to={n.to}
-                      className={`block text-xs px-3 py-2 border-l-2 transition-all ${
-                        active
-                          ? "border-primary bg-primary/5 text-primary"
-                          : "border-border text-muted-foreground hover:border-border-strong hover:text-foreground"
-                      }`}
-                    >
-                      {n.label}
-                    </Link>
+                    <div key={n.to}>
+                      {n.section && (
+                        <div className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mt-4 mb-1.5 px-3">
+                          {n.section}
+                        </div>
+                      )}
+                      <Link
+                        to={n.to}
+                        className={`block text-xs px-3 py-1.5 border-l-2 transition-all ${
+                          active
+                            ? "border-primary bg-primary/5 text-primary"
+                            : "border-border text-muted-foreground hover:border-border-strong hover:text-foreground"
+                        }`}
+                      >
+                        {n.label}
+                      </Link>
+                    </div>
                   );
                 })}
               </div>
