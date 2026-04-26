@@ -128,11 +128,11 @@ export function Layout() {
 
       <footer className="border-t border-border mt-12">
         <div className="max-w-[1600px] mx-auto px-6 py-6 flex flex-wrap items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div>ATLASDELTA REVAMPED · System Specification</div>
+          <div>AtlasDelta · Plataforma de modelado físico-matemático</div>
           <div className="flex gap-6">
-            <span>RFC: AD-2.0-001</span>
-            <span>STATUS: <span className="text-accent">DRAFT</span></span>
-            <span>CLASS: ENGINEERING</span>
+            <Link to="/library" className="hover:text-foreground">Repositorio</Link>
+            <Link to="/architecture" className="hover:text-foreground">Documentación</Link>
+            <Link to="/roadmap" className="hover:text-foreground">Hoja de ruta</Link>
           </div>
         </div>
       </footer>
