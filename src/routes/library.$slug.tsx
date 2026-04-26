@@ -1,5 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ARTICLES, CATEGORY_META, getArticle } from "@/lib/articles";
+import { ARTICLES, CATEGORY_META, getArticle, type Article } from "@/lib/articles";
 import { MarkdownArticle } from "@/components/MarkdownArticle";
 import { ArrowLeft, Clock } from "lucide-react";
 import { Tag } from "@/components/ui-bits";
