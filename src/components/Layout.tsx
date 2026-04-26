@@ -3,19 +3,20 @@ import { Activity, ChevronDown, ChevronRight } from "lucide-react";
 import { useAuth, signOut } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 
-const NAV = [
-  { to: "/", label: "00 / OVERVIEW" },
-  { to: "/architecture", label: "01 / ARCHITECTURE" },
-  { to: "/modules", label: "02 / MODULES" },
-  { to: "/simulation", label: "03 / SIMULATION" },
-  { to: "/intelligence", label: "04 / INTELLIGENCE" },
-  { to: "/performance", label: "05 / PERFORMANCE" },
-  { to: "/interface", label: "06 / INTERFACE" },
-  { to: "/extensibility", label: "07 / EXTENSIBILITY" },
-  { to: "/migration", label: "08 / MIGRATION" },
-  { to: "/risks", label: "09 / RISKS" },
-  { to: "/roadmap", label: "10 / ROADMAP" },
-] as const;
+const NAV: { to: string; label: string; section?: string }[] = [
+  { to: "/", label: "Inicio", section: "PRODUCTO" },
+  { to: "/library", label: "Repositorio científico" },
+  { to: "/architecture", label: "Arquitectura", section: "DOCUMENTACIÓN TÉCNICA" },
+  { to: "/modules", label: "Módulos" },
+  { to: "/simulation", label: "Motor de simulación" },
+  { to: "/intelligence", label: "Asistente IA" },
+  { to: "/performance", label: "Rendimiento" },
+  { to: "/interface", label: "Interfaz de usuario" },
+  { to: "/extensibility", label: "Extensibilidad" },
+  { to: "/migration", label: "Migración" },
+  { to: "/risks", label: "Riesgos" },
+  { to: "/roadmap", label: "Hoja de ruta" },
+];
 
 export function Layout() {
   const loc = useLocation();
