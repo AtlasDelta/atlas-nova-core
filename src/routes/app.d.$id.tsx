@@ -188,17 +188,72 @@ function DocumentEditor() {
     if (!previewRef.current) return;
     setExporting(true);
     try {
-      const html2pdf = (await import("html2pdf.js")).default;
-      await html2pdf()
-        .set({
-          margin: [15, 15, 15, 15],
-          filename: `${meta?.title ?? "documento"}.pdf`,
-          image: { type: "jpeg", quality: 0.98 },
-          html2canvas: { scale: 2, backgroundColor: "#ffffff" },
-          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-        })
-        .from(previewRef.current)
-        .save();
+      const [{ default: jsPDF }, { default: html2canvas }] = await Promise.all([
+        import("jspdf"),
+        import("html2canvas"),
+      ]);
+
+      const A4_W = 210;
+      const A4_H = 297;
+      const MARGIN = 15;
+      const CONTENT_W = A4_W - MARGIN * 2;
+      const PAGE_USABLE_H = A4_H - MARGIN * 2;
+      const GAP = 3;
+
+      const sections = Array.from(
+        previewRef.current.querySelectorAll<HTMLElement>("[data-pdf-section]"),
+      );
+      const targets = sections.length > 0 ? sections : [previewRef.current];
+
+      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+      let cursorY = MARGIN;
+
+      for (const node of targets) {
+        const canvas = await html2canvas(node, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: "#ffffff",
+          logging: false,
+        });
+        const wPx = canvas.width / 2;
+        const hPx = canvas.height / 2;
+        const scale = CONTENT_W / wPx;
+        const hMM = hPx * scale;
+
+        // Si la sección no cabe en lo que queda, salto de página
+        const remaining = A4_H - MARGIN - cursorY;
+        if (hMM > remaining && cursorY > MARGIN) {
+          pdf.addPage();
+          cursorY = MARGIN;
+        }
+
+        // Si la sección es más alta que una página entera, troceo en bandas
+        if (hMM > PAGE_USABLE_H) {
+          const pages = Math.ceil(hMM / PAGE_USABLE_H);
+          const sliceHpx = canvas.height / pages;
+          for (let i = 0; i < pages; i++) {
+            const slice = document.createElement("canvas");
+            slice.width = canvas.width;
+            slice.height = sliceHpx;
+            const ctx = slice.getContext("2d")!;
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, slice.width, slice.height);
+            ctx.drawImage(canvas, 0, -i * sliceHpx);
+            const sliceMM = (sliceHpx / 2) * scale;
+            if (i > 0) {
+              pdf.addPage();
+              cursorY = MARGIN;
+            }
+            pdf.addImage(slice.toDataURL("image/jpeg", 0.95), "JPEG", MARGIN, cursorY, CONTENT_W, sliceMM);
+            cursorY += sliceMM;
+          }
+        } else {
+          pdf.addImage(canvas.toDataURL("image/jpeg", 0.95), "JPEG", MARGIN, cursorY, CONTENT_W, hMM);
+          cursorY += hMM + GAP;
+        }
+      }
+
+      pdf.save(`${meta?.title ?? "documento"}.pdf`);
     } finally {
       setExporting(false);
     }
