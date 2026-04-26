@@ -31,9 +31,13 @@ export function LatexPreview({ source, className, models, docs }: LatexPreviewPr
   useEffect(() => {
     if (!ref.current) return;
 
-    // Limpiar roots previos
-    reactRoots.current.forEach((r) => r.unmount());
-    reactRoots.current.clear();
+    // Desmontar roots previos de forma asíncrona para evitar el warning
+    // "synchronously unmount a root while React was already rendering"
+    const prev = reactRoots.current;
+    reactRoots.current = new Map();
+    if (prev.size > 0) {
+      queueMicrotask(() => prev.forEach((r) => r.unmount()));
+    }
 
     // Resolver \input recursivamente
     const expanded = expandInputs(source, docs ?? new Map(), 8, new Set());
@@ -51,8 +55,11 @@ export function LatexPreview({ source, className, models, docs }: LatexPreviewPr
     });
 
     return () => {
-      reactRoots.current.forEach((r) => r.unmount());
-      reactRoots.current.clear();
+      const roots = reactRoots.current;
+      reactRoots.current = new Map();
+      if (roots.size > 0) {
+        queueMicrotask(() => roots.forEach((r) => r.unmount()));
+      }
     };
   }, [source, models, docs]);
 
