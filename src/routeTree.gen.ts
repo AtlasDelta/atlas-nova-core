@@ -15,6 +15,7 @@ import { Route as RisksRouteImport } from './routes/risks'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as ModulesRouteImport } from './routes/modules'
 import { Route as MigrationRouteImport } from './routes/migration'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as InterfaceRouteImport } from './routes/interface'
 import { Route as IntelligenceRouteImport } from './routes/intelligence'
 import { Route as ExtensibilityRouteImport } from './routes/extensibility'
@@ -54,6 +55,11 @@ const ModulesRoute = ModulesRouteImport.update({
 const MigrationRoute = MigrationRouteImport.update({
   id: '/migration',
   path: '/migration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InterfaceRoute = InterfaceRouteImport.update({
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
+  '/library': typeof LibraryRoute
   '/migration': typeof MigrationRoute
   '/modules': typeof ModulesRoute
   '/performance': typeof PerformanceRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
+  '/library': typeof LibraryRoute
   '/migration': typeof MigrationRoute
   '/modules': typeof ModulesRoute
   '/performance': typeof PerformanceRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
+  '/library': typeof LibraryRoute
   '/migration': typeof MigrationRoute
   '/modules': typeof ModulesRoute
   '/performance': typeof PerformanceRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/extensibility'
     | '/intelligence'
     | '/interface'
+    | '/library'
     | '/migration'
     | '/modules'
     | '/performance'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/extensibility'
     | '/intelligence'
     | '/interface'
+    | '/library'
     | '/migration'
     | '/modules'
     | '/performance'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/extensibility'
     | '/intelligence'
     | '/interface'
+    | '/library'
     | '/migration'
     | '/modules'
     | '/performance'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   ExtensibilityRoute: typeof ExtensibilityRoute
   IntelligenceRoute: typeof IntelligenceRoute
   InterfaceRoute: typeof InterfaceRoute
+  LibraryRoute: typeof LibraryRoute
   MigrationRoute: typeof MigrationRoute
   ModulesRoute: typeof ModulesRoute
   PerformanceRoute: typeof PerformanceRoute
@@ -275,6 +288,13 @@ declare module '@tanstack/react-router' {
       path: '/migration'
       fullPath: '/migration'
       preLoaderRoute: typeof MigrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interface': {
@@ -372,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExtensibilityRoute: ExtensibilityRoute,
   IntelligenceRoute: IntelligenceRoute,
   InterfaceRoute: InterfaceRoute,
+  LibraryRoute: LibraryRoute,
   MigrationRoute: MigrationRoute,
   ModulesRoute: ModulesRoute,
   PerformanceRoute: PerformanceRoute,
@@ -382,3 +403,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
