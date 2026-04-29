@@ -11,7 +11,7 @@ import {
 import { Panel, Tag } from "@/components/ui-bits";
 import { ArrowRight, Clock, Search, X } from "lucide-react";
 
-export const Route = createFileRoute("/library")({
+export const Route = createFileRoute("/library/")({
   head: () => ({
     meta: [
       { title: "Repositorio científico — AtlasDelta" },
