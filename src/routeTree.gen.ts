@@ -15,6 +15,7 @@ import { Route as RisksRouteImport } from './routes/risks'
 import { Route as PerformanceRouteImport } from './routes/performance'
 import { Route as ModulesRouteImport } from './routes/modules'
 import { Route as MigrationRouteImport } from './routes/migration'
+import { Route as LibraryRouteImport } from './routes/library'
 import { Route as InterfaceRouteImport } from './routes/interface'
 import { Route as IntelligenceRouteImport } from './routes/intelligence'
 import { Route as ExtensibilityRouteImport } from './routes/extensibility'
@@ -58,6 +59,11 @@ const MigrationRoute = MigrationRouteImport.update({
   path: '/migration',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LibraryRoute = LibraryRouteImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InterfaceRoute = InterfaceRouteImport.update({
   id: '/interface',
   path: '/interface',
@@ -94,9 +100,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const LibraryIndexRoute = LibraryIndexRouteImport.update({
-  id: '/library/',
-  path: '/library/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => LibraryRoute,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
+  '/library': typeof LibraryRouteWithChildren
   '/migration': typeof MigrationRoute
   '/modules': typeof ModulesRoute
   '/performance': typeof PerformanceRoute
@@ -167,6 +174,7 @@ export interface FileRoutesById {
   '/extensibility': typeof ExtensibilityRoute
   '/intelligence': typeof IntelligenceRoute
   '/interface': typeof InterfaceRoute
+  '/library': typeof LibraryRouteWithChildren
   '/migration': typeof MigrationRoute
   '/modules': typeof ModulesRoute
   '/performance': typeof PerformanceRoute
@@ -189,6 +197,7 @@ export interface FileRouteTypes {
     | '/extensibility'
     | '/intelligence'
     | '/interface'
+    | '/library'
     | '/migration'
     | '/modules'
     | '/performance'
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/extensibility'
     | '/intelligence'
     | '/interface'
+    | '/library'
     | '/migration'
     | '/modules'
     | '/performance'
@@ -249,13 +259,13 @@ export interface RootRouteChildren {
   ExtensibilityRoute: typeof ExtensibilityRoute
   IntelligenceRoute: typeof IntelligenceRoute
   InterfaceRoute: typeof InterfaceRoute
+  LibraryRoute: typeof LibraryRouteWithChildren
   MigrationRoute: typeof MigrationRoute
   ModulesRoute: typeof ModulesRoute
   PerformanceRoute: typeof PerformanceRoute
   RisksRoute: typeof RisksRoute
   RoadmapRoute: typeof RoadmapRoute
   SimulationRoute: typeof SimulationRoute
-  LibraryIndexRoute: typeof LibraryIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -300,6 +310,13 @@ declare module '@tanstack/react-router' {
       path: '/migration'
       fullPath: '/migration'
       preLoaderRoute: typeof MigrationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/interface': {
@@ -353,10 +370,10 @@ declare module '@tanstack/react-router' {
     }
     '/library/': {
       id: '/library/'
-      path: '/library'
+      path: '/'
       fullPath: '/library/'
       preLoaderRoute: typeof LibraryIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof LibraryRoute
     }
     '/app/': {
       id: '/app/'
@@ -403,6 +420,19 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface LibraryRouteChildren {
+  LibrarySlugRoute: typeof LibrarySlugRoute
+  LibraryIndexRoute: typeof LibraryIndexRoute
+}
+
+const LibraryRouteChildren: LibraryRouteChildren = {
+  LibrarySlugRoute: LibrarySlugRoute,
+  LibraryIndexRoute: LibraryIndexRoute,
+}
+
+const LibraryRouteWithChildren =
+  LibraryRoute._addFileChildren(LibraryRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
@@ -411,13 +441,13 @@ const rootRouteChildren: RootRouteChildren = {
   ExtensibilityRoute: ExtensibilityRoute,
   IntelligenceRoute: IntelligenceRoute,
   InterfaceRoute: InterfaceRoute,
+  LibraryRoute: LibraryRouteWithChildren,
   MigrationRoute: MigrationRoute,
   ModulesRoute: ModulesRoute,
   PerformanceRoute: PerformanceRoute,
   RisksRoute: RisksRoute,
   RoadmapRoute: RoadmapRoute,
   SimulationRoute: SimulationRoute,
-  LibraryIndexRoute: LibraryIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
