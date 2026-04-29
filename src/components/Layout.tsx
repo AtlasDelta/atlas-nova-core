@@ -32,10 +32,6 @@ export function Layout() {
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-[1600px] mx-auto px-6 h-14 flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2 font-display font-semibold">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inset-0 rounded-full bg-primary pulse-dot text-primary" />
-              <span className="relative rounded-full bg-primary h-2 w-2" />
-            </span>
             <span className="text-foreground">AtlasDelta</span>
           </Link>
 
