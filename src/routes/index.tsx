@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Panel, KeyVal, Tag, Bullet } from "../components/ui-bits";
-import { ArrowRight, BookOpen, FileText, Workflow, FlaskConical } from "lucide-react";
+import { Tag } from "../components/ui-bits";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -22,7 +23,35 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
+const ROTATING_HEADLINES: { pre: string; highlight: string; post: string }[] = [
+  { pre: "Una plataforma para", highlight: "modelar fenómenos físicos", post: "y documentarlos con rigor." },
+  { pre: "Un entorno para", highlight: "construir sistemas por bloques", post: "con puertos físicos tipados." },
+  { pre: "Un espacio para", highlight: "redactar papers en LaTeX", post: "junto a tus colegas en tiempo real." },
+  { pre: "Un repositorio de", highlight: "artículos científicos abiertos", post: "en Física, Química, Matemática e Ingeniería." },
+  { pre: "Una herramienta para", highlight: "simular sistemas dinámicos", post: "sin escribir una sola línea de código." },
+  { pre: "Un lugar donde", highlight: "el diagrama y la ecuación", post: "viven en el mismo documento." },
+  { pre: "Un asistente para", highlight: "explorar intuiciones físicas", post: "antes de comprometerlas en código." },
+  { pre: "Una IDE pensada para", highlight: "ingenieros e investigadores", post: "que necesitan rigor y velocidad." },
+];
+
 function Home() {
+  const [idx, setIdx] = useState(0);
+  const [fade, setFade] = useState(true);
+
+  useEffect(() => {
+    const tick = setInterval(() => {
+      setFade(false);
+      const swap = setTimeout(() => {
+        setIdx((i) => (i + 1) % ROTATING_HEADLINES.length);
+        setFade(true);
+      }, 350);
+      return () => clearTimeout(swap);
+    }, 4500);
+    return () => clearInterval(tick);
+  }, []);
+
+  const current = ROTATING_HEADLINES[idx];
+
   return (
     <div className="space-y-12">
       {/* Hero */}
@@ -33,18 +62,30 @@ function Home() {
             <Tag tone="muted">Beta</Tag>
             <Tag tone="primary">Modelado · Simulación · Documentación</Tag>
           </div>
-          <h1 className="text-4xl md:text-6xl font-display font-semibold text-balance leading-[1.05]">
-            Una plataforma para
+          <h1
+            aria-live="polite"
+            className={`text-4xl md:text-6xl font-display font-semibold text-balance leading-[1.05] min-h-[180px] md:min-h-[260px] transition-opacity duration-300 ${
+              fade ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            {current.pre}
             <br />
-            <span className="text-primary">modelar fenómenos físicos</span>
-            <br />y documentarlos con rigor.
+            <span className="text-primary">{current.highlight}</span>
+            <br />
+            {current.post}
           </h1>
-          <p className="mt-6 text-base md:text-lg text-muted-foreground max-w-2xl text-balance">
-            AtlasDelta combina un editor visual de modelos por bloques (fluido,
-            térmico, mecánico, eléctrico…), un editor colaborativo de documentos
-            LaTeX y un repositorio abierto de artículos científicos
-            explicativos. Pensado para estudiantes, investigadores e ingenieros.
-          </p>
+
+          <div className="mt-4 flex gap-1.5" aria-hidden="true">
+            {ROTATING_HEADLINES.map((_, i) => (
+              <span
+                key={i}
+                className={`h-1 w-6 transition-colors ${
+                  i === idx ? "bg-primary" : "bg-border"
+                }`}
+              />
+            ))}
+          </div>
+
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               to="/app"
@@ -62,119 +103,6 @@ function Home() {
             </Link>
           </div>
         </div>
-      </section>
-
-      {/* Tres herramientas */}
-      <section>
-        <div className="flex items-baseline justify-between mb-6">
-          <h2 className="text-2xl font-display font-semibold">Tres herramientas, un mismo lugar</h2>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            {
-              Icon: Workflow,
-              title: "Editor de modelos",
-              desc: "Construye modelos físicos por bloques con puertos tipados (fluido, térmico, mecánico, eléctrico, control). Cada bloque expone parámetros y ecuaciones explícitas.",
-              href: "/app" as const,
-              cta: "Crear un modelo",
-            },
-            {
-              Icon: FileText,
-              title: "Documentos LaTeX colaborativos",
-              desc: "Edita en tiempo real con varios autores. Vincula modelos, inserta gráficos, exporta a PDF. Sintaxis LaTeX estándar.",
-              href: "/app" as const,
-              cta: "Abrir editor",
-            },
-            {
-              Icon: BookOpen,
-              title: "Repositorio científico",
-              desc: "Artículos breves de Física, Química, Matemática e Ingeniería. Material de referencia con notación cuidada y ecuaciones renderizadas.",
-              href: "/library" as const,
-              cta: "Ver artículos",
-            },
-          ].map(({ Icon, title, desc, href, cta }) => (
-            <Panel key={title}>
-              <div className="flex flex-col h-full gap-3">
-                <Icon className="h-5 w-5 text-primary" />
-                <div className="font-display font-medium text-base">{title}</div>
-                <p className="text-muted-foreground text-sm flex-1">{desc}</p>
-                <Link
-                  to={href}
-                  className="text-xs text-primary hover:underline mt-2 inline-flex items-center gap-1"
-                >
-                  {cta} <ArrowRight className="h-3 w-3" />
-                </Link>
-              </div>
-            </Panel>
-          ))}
-        </div>
-      </section>
-
-      {/* Para quién */}
-      <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <Panel title="¿Para quién es esto?">
-            <ul>
-              <Bullet>
-                <strong className="text-foreground">Estudiantes</strong> que necesitan
-                construir intuición sobre sistemas físicos y entregar trabajos formateados.
-              </Bullet>
-              <Bullet>
-                <strong className="text-foreground">Investigadores</strong> que prototipan
-                modelos rápidamente y redactan papers en colaboración.
-              </Bullet>
-              <Bullet>
-                <strong className="text-foreground">Ingenieros</strong> que documentan
-                sistemas (térmicos, hidráulicos, eléctricos) junto al diagrama que los describe.
-              </Bullet>
-              <Bullet>
-                <strong className="text-foreground">Profesores</strong> que preparan material
-                didáctico ejecutable, no solo texto.
-              </Bullet>
-            </ul>
-          </Panel>
-        </div>
-        <Panel title="Estado del producto">
-          <div className="space-y-1">
-            <KeyVal k="Versión" v="0.2 · Beta" />
-            <KeyVal k="Editor de modelos" v={<Tag tone="success">Disponible</Tag>} />
-            <KeyVal k="Documentos LaTeX" v={<Tag tone="success">Disponible</Tag>} />
-            <KeyVal k="Simulación numérica" v={<Tag tone="warn">En desarrollo</Tag>} />
-            <KeyVal k="Asistente IA" v={<Tag tone="muted">Planeado</Tag>} />
-          </div>
-        </Panel>
-      </section>
-
-      {/* Repositorio destacado */}
-      <section>
-        <Panel>
-          <div className="flex flex-col md:flex-row gap-6 items-start">
-            <FlaskConical className="h-8 w-8 text-accent flex-none" />
-            <div className="flex-1">
-              <h3 className="font-display font-medium text-lg mb-2">
-                Repositorio científico abierto
-              </h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Una colección curada de artículos breves y autocontenidos sobre
-                conceptos fundamentales en cuatro áreas. Pensados para refrescar
-                un tema rápidamente o servir de referencia mientras modelas.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Física", "Química", "Matemática", "Ingeniería"].map((c) => (
-                  <Tag key={c} tone="muted">
-                    {c}
-                  </Tag>
-                ))}
-              </div>
-              <Link
-                to="/library"
-                className="mt-4 inline-flex items-center gap-2 text-sm text-primary hover:underline"
-              >
-                Ir al repositorio <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-        </Panel>
       </section>
     </div>
   );
