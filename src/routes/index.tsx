@@ -1,6 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-
-import { ArrowRight, BookOpen } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
@@ -54,9 +52,7 @@ function Home() {
 
   return (
     <div className="space-y-12">
-      {/* Hero */}
-      <section className="relative border border-border bg-surface overflow-hidden corner-marks">
-        <div className="absolute inset-0 bg-grid-fade pointer-events-none" />
+      <section className="relative overflow-hidden">
         <div className="relative p-10 md:p-14">
           <h1
             aria-live="polite"
@@ -70,34 +66,6 @@ function Home() {
             <br />
             {current.post}
           </h1>
-
-          <div className="mt-4 flex gap-1.5" aria-hidden="true">
-            {ROTATING_HEADLINES.map((_, i) => (
-              <span
-                key={i}
-                className={`h-1 w-6 transition-colors ${
-                  i === idx ? "bg-primary" : "bg-border"
-                }`}
-              />
-            ))}
-          </div>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/app"
-              className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-5 py-2.5 text-sm font-medium hover:opacity-90 transition-all"
-            >
-              Abrir workspace
-              <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              to="/library"
-              className="inline-flex items-center gap-2 border border-border-strong px-5 py-2.5 text-sm hover:border-primary hover:text-primary transition-colors"
-            >
-              <BookOpen className="h-4 w-4" />
-              Explorar el repositorio
-            </Link>
-          </div>
         </div>
       </section>
     </div>
