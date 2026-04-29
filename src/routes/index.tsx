@@ -58,10 +58,6 @@ function Home() {
       <section className="relative border border-border bg-surface overflow-hidden corner-marks">
         <div className="absolute inset-0 bg-grid-fade pointer-events-none" />
         <div className="relative p-10 md:p-14">
-          <div className="flex items-center gap-3 mb-6">
-            <Tag tone="muted">Beta</Tag>
-            <Tag tone="primary">Modelado · Simulación · Documentación</Tag>
-          </div>
           <h1
             aria-live="polite"
             className={`text-4xl md:text-6xl font-display font-semibold text-balance leading-[1.05] min-h-[180px] md:min-h-[260px] transition-opacity duration-300 ${
