@@ -86,8 +86,8 @@ export function InteractiveDotsBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      const primary = readCss("--primary", "oklch(0.7 0.15 250)");
-      const fg = readCss("--foreground", "oklch(0.9 0 0)");
+      const primaryRGB = "45, 212, 191"; // teal accent
+      const fgRGB = "226, 232, 240"; // light foreground
 
       const points = pointsRef.current;
       const influence = 140;
@@ -130,8 +130,8 @@ export function InteractiveDotsBackground() {
           const dy = a.y - b.y;
           const d = Math.hypot(dx, dy);
           if (d < linkDist) {
-            const alpha = (1 - d / linkDist) * 0.35;
-            ctx.strokeStyle = `color-mix(in oklab, ${fg} ${Math.round(alpha * 100)}%, transparent)`;
+            const alpha = (1 - d / linkDist) * 0.6;
+            ctx.strokeStyle = `rgba(${fgRGB}, ${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -147,10 +147,10 @@ export function InteractiveDotsBackground() {
         const dy = p.y - cursor.y;
         const dist = Math.hypot(dx, dy);
         const near = dist < influence;
-        const r = near ? 2.2 : 1.4;
-        const color = near ? primary : fg;
-        const alpha = near ? 0.9 : 0.55;
-        ctx.fillStyle = `color-mix(in oklab, ${color} ${Math.round(alpha * 100)}%, transparent)`;
+        const r = near ? 2.6 : 1.8;
+        const color = near ? primaryRGB : fgRGB;
+        const alpha = near ? 1.0 : 0.85;
+        ctx.fillStyle = `rgba(${color}, ${alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
         ctx.fill();
@@ -198,7 +198,15 @@ export function InteractiveDotsBackground() {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className="fixed inset-0 -z-10 pointer-events-none"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
     />
   );
 }
