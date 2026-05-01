@@ -86,8 +86,8 @@ export function InteractiveDotsBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      const primary = "rgb(45, 212, 191)"; // teal accent
-      const fg = "rgb(226, 232, 240)"; // light foreground
+      const primaryRGB = "45, 212, 191"; // teal accent
+      const fgRGB = "226, 232, 240"; // light foreground
 
       const points = pointsRef.current;
       const influence = 140;
@@ -131,7 +131,7 @@ export function InteractiveDotsBackground() {
           const d = Math.hypot(dx, dy);
           if (d < linkDist) {
             const alpha = (1 - d / linkDist) * 0.35;
-            ctx.strokeStyle = `color-mix(in oklab, ${fg} ${Math.round(alpha * 100)}%, transparent)`;
+            ctx.strokeStyle = `rgba(${fgRGB}, ${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
@@ -148,9 +148,9 @@ export function InteractiveDotsBackground() {
         const dist = Math.hypot(dx, dy);
         const near = dist < influence;
         const r = near ? 2.2 : 1.4;
-        const color = near ? primary : fg;
+        const color = near ? primaryRGB : fgRGB;
         const alpha = near ? 0.9 : 0.55;
-        ctx.fillStyle = `color-mix(in oklab, ${color} ${Math.round(alpha * 100)}%, transparent)`;
+        ctx.fillStyle = `rgba(${color}, ${alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
         ctx.fill();
