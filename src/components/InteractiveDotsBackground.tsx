@@ -8,6 +8,7 @@ interface Point {
 }
 
 export function InteractiveDotsBackground() {
+  console.log("[InteractiveDotsBackground] render");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointsRef = useRef<Point[]>([]);
   const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
