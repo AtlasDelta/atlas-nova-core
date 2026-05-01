@@ -86,8 +86,8 @@ export function InteractiveDotsBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      const primary = readCss("--primary", "oklch(0.7 0.15 250)");
-      const fg = readCss("--foreground", "oklch(0.9 0 0)");
+      const primary = "rgb(45, 212, 191)"; // teal accent
+      const fg = "rgb(226, 232, 240)"; // light foreground
 
       const points = pointsRef.current;
       const influence = 140;
