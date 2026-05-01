@@ -1,5 +1,6 @@
 import { Link, Outlet, useLocation } from "@tanstack/react-router";
 import { useAuth, signOut } from "@/hooks/useAuth";
+import { InteractiveDotsBackground } from "@/components/InteractiveDotsBackground";
 
 export function Layout() {
   const loc = useLocation();
@@ -28,7 +29,8 @@ export function Layout() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative">
+      <InteractiveDotsBackground />
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-[1600px] mx-auto px-6 h-14 flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2 font-display font-semibold">
