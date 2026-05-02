@@ -19,6 +19,11 @@ export type WidgetKey =
   | "phys-decay"
   | "phys-rc"
   | "phys-snell"
+  | "phys-energy"
+  | "phys-collision"
+  | "phys-em-wave"
+  | "phys-lens"
+  | "phys-fluid"
   // Química
   | "chem-arrhenius"
   | "chem-firstorder"
@@ -26,6 +31,9 @@ export type WidgetKey =
   | "chem-ph"
   | "chem-gas"
   | "chem-titration"
+  | "chem-lechatelier"
+  | "chem-orbitals"
+  | "chem-buffer"
   // Matemática
   | "math-derivative"
   | "math-taylor"
@@ -33,13 +41,20 @@ export type WidgetKey =
   | "math-newton-raphson"
   | "math-logistic"
   | "math-eigen"
+  | "math-riemann"
+  | "math-vectorfield"
+  | "math-distribution"
+  | "math-conic"
   // Ingeniería
   | "eng-pid"
   | "eng-bode"
   | "eng-beam"
   | "eng-heat"
   | "eng-rankine"
-  | "eng-queue";
+  | "eng-queue"
+  | "eng-rlc"
+  | "eng-moody"
+  | "eng-thevenin";
 
 export interface Section {
   id: string;          // slug-friendly, único dentro del artículo

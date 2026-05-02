@@ -847,6 +847,642 @@ function EngQueue() {
   );
 }
 
+/* ───── Nuevos: Física ───── */
+
+function PhysEnergy() {
+  return (
+    <InteractiveChart
+      title="Conservación de energía — péndulo"
+      sliders={[
+        { key: "L", label: "Longitud L", min: 0.2, max: 3, step: 0.05, initial: 1, unit: "m" },
+        { key: "th0", label: "θ₀", min: 5, max: 80, step: 1, initial: 40, unit: "°" },
+        { key: "g", label: "g", min: 1.6, max: 25, step: 0.1, initial: 9.81, unit: "m/s²" },
+      ]}
+      series={[
+        { key: "K", label: "E. cinética", color: C.primary },
+        { key: "U", label: "E. potencial", color: C.warn },
+        { key: "E", label: "E. total", color: C.success, dashed: true },
+      ]}
+      xKey="t"
+      xLabel="t (s)"
+      yLabel="E (J/kg)"
+      compute={({ L, th0, g }) => {
+        const w0 = Math.sqrt(g / L);
+        const th = (th0 * Math.PI) / 180;
+        const T = (2 * Math.PI) / w0;
+        return range(80, 0, 2 * T).map((t) => {
+          const a = th * Math.cos(w0 * t);
+          const va = -th * w0 * Math.sin(w0 * t);
+          const h = L * (1 - Math.cos(a));
+          const v = L * va;
+          const K = 0.5 * v * v;
+          const U = g * h;
+          return { t: +t.toFixed(3), K: +K.toFixed(3), U: +U.toFixed(3), E: +(K + U).toFixed(3) };
+        });
+      }}
+      caption="K + U = constante en oscilaciones sin disipación. El intercambio entre ambas es continuo."
+    />
+  );
+}
+
+function PhysCollision() {
+  return (
+    <PhysicsCanvas
+      title="Colisión 1D — elástica vs perfectamente inelástica"
+      sliders={[
+        { key: "m1", label: "m₁", min: 0.5, max: 5, step: 0.1, initial: 1, unit: "kg" },
+        { key: "m2", label: "m₂", min: 0.5, max: 5, step: 0.1, initial: 2, unit: "kg" },
+        { key: "v1", label: "v₁ inicial", min: 0.5, max: 6, step: 0.1, initial: 3, unit: "m/s" },
+        { key: "e", label: "Coef. restitución e", min: 0, max: 1, step: 0.05, initial: 1 },
+      ]}
+      draw={(ctx, w, h, t, p) => {
+        // Cinemática: choque en t = tc; antes movimiento libre
+        const x10 = 100, x20 = w - 200;
+        const u1 = p.v1 * 60; // px/s
+        const u2 = 0;
+        const tc = (x20 - x10 - 60) / (u1 - u2);
+        let x1: number, x2: number;
+        if (t < tc) {
+          x1 = x10 + u1 * t;
+          x2 = x20 + u2 * t;
+        } else {
+          // post-colisión con restitución e
+          const v1f = ((p.m1 - p.e * p.m2) * u1 + (1 + p.e) * p.m2 * u2) / (p.m1 + p.m2);
+          const v2f = ((p.m2 - p.e * p.m1) * u2 + (1 + p.e) * p.m1 * u1) / (p.m1 + p.m2);
+          x1 = x10 + u1 * tc + v1f * (t - tc);
+          x2 = x20 + u2 * tc + v2f * (t - tc);
+        }
+        const cy = h / 2;
+        // suelo
+        ctx.strokeStyle = "rgba(180,200,220,0.6)";
+        ctx.beginPath(); ctx.moveTo(0, cy + 30); ctx.lineTo(w, cy + 30); ctx.stroke();
+        // bloques
+        const s1 = 18 + p.m1 * 6, s2 = 18 + p.m2 * 6;
+        ctx.fillStyle = "rgba(0,200,220,0.85)";
+        ctx.fillRect(x1, cy + 30 - s1, s1, s1);
+        ctx.fillStyle = "rgba(220,160,60,0.85)";
+        ctx.fillRect(x2, cy + 30 - s2, s2, s2);
+        ctx.fillStyle = "rgba(200,210,220,0.9)";
+        ctx.font = "11px JetBrains Mono, monospace";
+        const v1f = ((p.m1 - p.e * p.m2) * u1) / (p.m1 + p.m2) / 60;
+        const v2f = ((1 + p.e) * p.m1 * u1) / (p.m1 + p.m2) / 60;
+        ctx.fillText(`e = ${p.e.toFixed(2)}  →  v₁' = ${v1f.toFixed(2)} m/s, v₂' = ${v2f.toFixed(2)} m/s`, 12, 18);
+        const Ki = 0.5 * p.m1 * p.v1 * p.v1;
+        const Kf = 0.5 * p.m1 * v1f * v1f + 0.5 * p.m2 * v2f * v2f;
+        ctx.fillText(`Energía: ${(Kf / Ki * 100).toFixed(1)}% conservada`, 12, 34);
+      }}
+      caption="e = 1: elástica, energía conservada. e = 0: perfectamente inelástica, los cuerpos quedan unidos."
+    />
+  );
+}
+
+function PhysEMWave() {
+  return (
+    <PhysicsCanvas
+      title="Onda electromagnética plana"
+      sliders={[
+        { key: "f", label: "Frecuencia f", min: 0.2, max: 3, step: 0.1, initial: 1, unit: "Hz" },
+        { key: "A", label: "Amplitud", min: 0.2, max: 1.5, step: 0.05, initial: 1 },
+      ]}
+      draw={(ctx, w, h, t, p) => {
+        const cy = h / 2;
+        const k = 0.04;
+        const w0 = 2 * Math.PI * p.f;
+        // E (azul, vertical)
+        ctx.strokeStyle = "rgba(0,180,255,0.9)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let x = 0; x < w; x += 2) {
+          const y = cy - p.A * 60 * Math.sin(k * x - w0 * t);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        // B (rojo, horizontal proyectado)
+        ctx.strokeStyle = "rgba(255,120,80,0.9)";
+        ctx.beginPath();
+        for (let x = 0; x < w; x += 2) {
+          const y = cy + p.A * 30 * Math.sin(k * x - w0 * t);
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        // axis
+        ctx.strokeStyle = "rgba(180,200,220,0.4)";
+        ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+        ctx.fillStyle = "rgba(0,180,255,0.95)";
+        ctx.font = "11px JetBrains Mono, monospace";
+        ctx.fillText("E (campo eléctrico)", 12, 18);
+        ctx.fillStyle = "rgba(255,120,80,0.95)";
+        ctx.fillText("B (campo magnético)", 12, 34);
+        ctx.fillStyle = "rgba(200,210,220,0.7)";
+        ctx.fillText("dirección de propagación →", w - 200, h - 12);
+      }}
+      caption="E ⊥ B ⊥ k, ambos en fase. La luz visible corresponde a f ≈ 4–7·10¹⁴ Hz."
+    />
+  );
+}
+
+function PhysLens() {
+  return (
+    <PhysicsCanvas
+      title="Lente delgada convergente — formación de imagen"
+      animate={false}
+      sliders={[
+        { key: "f", label: "Distancia focal f", min: 30, max: 180, step: 5, initial: 80, unit: "px" },
+        { key: "so", label: "s_o (objeto)", min: 50, max: 350, step: 5, initial: 200, unit: "px" },
+        { key: "ho", label: "Altura h_o", min: 20, max: 80, step: 1, initial: 50, unit: "px" },
+      ]}
+      draw={(ctx, w, h, _t, p) => {
+        const cy = h / 2;
+        const cx = w / 2;
+        // axis
+        ctx.strokeStyle = "rgba(180,200,220,0.5)";
+        ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke();
+        // lens
+        ctx.strokeStyle = "rgba(0,200,220,0.9)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(cx, cy, 8, 80, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        // focal points
+        ctx.fillStyle = "rgba(220,160,60,0.95)";
+        ctx.beginPath(); ctx.arc(cx - p.f, cy, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + p.f, cy, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "rgba(180,200,220,0.7)";
+        ctx.font = "10px JetBrains Mono, monospace";
+        ctx.fillText("F", cx - p.f - 4, cy + 14);
+        ctx.fillText("F'", cx + p.f - 4, cy + 14);
+        // object
+        const ox = cx - p.so;
+        const oyTop = cy - p.ho;
+        ctx.strokeStyle = "rgba(0,220,140,0.95)";
+        ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(ox, cy); ctx.lineTo(ox, oyTop); ctx.stroke();
+        // image position via 1/f = 1/so + 1/si
+        const si = 1 / (1 / p.f - 1 / p.so);
+        const M = -si / p.so;
+        const ix = cx + si;
+        const iyTop = cy - M * p.ho;
+        // image (magenta if real, dashed if virtual)
+        const real = si > 0;
+        ctx.strokeStyle = real ? "rgba(255,80,180,0.95)" : "rgba(255,80,180,0.6)";
+        if (!real) ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(ix, cy); ctx.lineTo(ix, iyTop); ctx.stroke();
+        ctx.setLineDash([]);
+        // rays: paralelo → pasa por F'
+        ctx.strokeStyle = "rgba(255,255,255,0.4)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(ox, oyTop); ctx.lineTo(cx, oyTop); ctx.lineTo(ix, iyTop); ctx.stroke();
+        // ray por centro óptico
+        ctx.beginPath();
+        ctx.moveTo(ox, oyTop); ctx.lineTo(ix, iyTop); ctx.stroke();
+        // info
+        ctx.fillStyle = "rgba(200,210,220,0.95)";
+        ctx.font = "11px JetBrains Mono, monospace";
+        ctx.fillText(`s_i = ${si.toFixed(1)} px,  M = ${M.toFixed(2)} (${real ? "real, invertida" : "virtual, derecha"})`, 12, 20);
+      }}
+      caption="Si s_o > f, imagen real e invertida. Si s_o < f, imagen virtual, derecha y aumentada (lupa)."
+    />
+  );
+}
+
+function PhysFluid() {
+  return (
+    <InteractiveChart
+      title="Bernoulli — presión vs velocidad en tubo Venturi"
+      sliders={[
+        { key: "v1", label: "v₁ entrada", min: 0.5, max: 10, step: 0.1, initial: 2, unit: "m/s" },
+        { key: "rho", label: "ρ", min: 500, max: 13000, step: 50, initial: 1000, unit: "kg/m³" },
+        { key: "rA", label: "Radio máx", min: 0.05, max: 0.3, step: 0.005, initial: 0.1, unit: "m" },
+        { key: "rB", label: "Radio garganta", min: 0.01, max: 0.1, step: 0.005, initial: 0.04, unit: "m" },
+      ]}
+      series={[
+        { key: "v", label: "v (m/s)", color: C.primary },
+        { key: "p", label: "p − p₁ (kPa)", color: C.warn, dashed: true },
+      ]}
+      xKey="x"
+      xLabel="x (posición)"
+      compute={({ v1, rho, rA, rB }) => {
+        return range(60, 0, 1).map((x) => {
+          const r = rA - (rA - rB) * Math.exp(-((x - 0.5) ** 2) / 0.02);
+          const A1 = Math.PI * rA * rA;
+          const A = Math.PI * r * r;
+          const v = (v1 * A1) / A;
+          const dp = 0.5 * rho * (v1 * v1 - v * v);
+          return { x: +x.toFixed(2), v: +v.toFixed(2), p: +(dp / 1000).toFixed(2) };
+        });
+      }}
+      caption="A·v = cte (continuidad). Donde el área baja, v sube y p baja: principio del efecto Venturi."
+    />
+  );
+}
+
+/* ───── Nuevos: Química ───── */
+
+function ChemLeChatelier() {
+  return (
+    <InteractiveChart
+      title="Le Chatelier — efecto de T y concentración sobre [C]"
+      sliders={[
+        { key: "K", label: "K base (T₀)", min: 0.1, max: 100, step: 0.1, initial: 5 },
+        { key: "dH", label: "ΔH (kJ/mol)", min: -100, max: 100, step: 5, initial: -40 },
+        { key: "A0", label: "[A]₀", min: 0.1, max: 2, step: 0.05, initial: 1, unit: "M" },
+      ]}
+      series={[{ key: "C", label: "[C]_eq (M)", color: C.success }]}
+      xKey="T"
+      xLabel="T (K)"
+      yLabel="[C]_eq"
+      compute={({ K, dH, A0 }) => {
+        const T0 = 298;
+        const R = 8.314;
+        return range(60, 250, 600).map((T) => {
+          const Kt = K * Math.exp((-dH * 1000 / R) * (1 / T - 1 / T0));
+          // A ⇌ C, K = [C]/[A] → [C] = K·[A], conservación A0 = [A] + [C]
+          const C = (Kt * A0) / (1 + Kt);
+          return { T, C: +C.toFixed(4) };
+        });
+      }}
+      caption="ΔH < 0 (exotérmica): T↑ desplaza a reactivos, [C] baja. ΔH > 0 (endotérmica): T↑ favorece productos."
+    />
+  );
+}
+
+function ChemOrbitals() {
+  // Diagrama estático de niveles de energía
+  return (
+    <figure className="not-prose my-6 border border-border bg-surface">
+      <figcaption className="px-4 py-2 text-xs uppercase tracking-widest text-muted-foreground border-b border-border">
+        Diagrama de orbitales — orden de llenado (Aufbau)
+      </figcaption>
+      <div className="p-6">
+        <svg viewBox="0 0 480 280" className="w-full" style={{ maxHeight: 320 }}>
+          {[
+            ["1s", 1, 0],
+            ["2s", 2, 0], ["2p", 2, 1],
+            ["3s", 3, 0], ["3p", 3, 1], ["3d", 3, 2],
+            ["4s", 4, 0], ["4p", 4, 1], ["4d", 4, 2], ["4f", 4, 3],
+            ["5s", 5, 0], ["5p", 5, 1],
+            ["6s", 6, 0],
+          ].map(([label, n, l], i) => {
+            const x = 60 + (l as number) * 100;
+            const y = 250 - (n as number) * 28 - (l as number) * 6;
+            const cap = [2, 6, 10, 14][l as number];
+            return (
+              <g key={i}>
+                <rect x={x} y={y - 10} width={70} height={20} fill="var(--surface-2)" stroke="var(--border-strong)" />
+                <text x={x + 35} y={y + 4} textAnchor="middle" fontSize={11} fontFamily="monospace" fill="var(--foreground)">
+                  {label} ({cap}e⁻)
+                </text>
+              </g>
+            );
+          })}
+          {["s (ℓ=0)", "p (ℓ=1)", "d (ℓ=2)", "f (ℓ=3)"].map((t, i) => (
+            <text key={i} x={60 + i * 100 + 35} y={270} textAnchor="middle" fontSize={10} fill="var(--muted-foreground)">{t}</text>
+          ))}
+          {/* flecha de orden */}
+          <text x={400} y={30} fontSize={11} fill="var(--accent)" fontFamily="monospace">orden: 1s→2s→2p→3s→3p→4s→3d→4p→5s…</text>
+        </svg>
+      </div>
+      <div className="px-4 py-2 text-[11px] text-muted-foreground border-t border-border">
+        El 4s se llena antes que el 3d (regla de Madelung: menor n+ℓ; con empate, menor n).
+      </div>
+    </figure>
+  );
+}
+
+function ChemBuffer() {
+  return (
+    <InteractiveChart
+      title="Buffer — pH ante adición de ácido/base fuerte"
+      sliders={[
+        { key: "pKa", label: "pKa", min: 2, max: 12, step: 0.1, initial: 4.75 },
+        { key: "HA", label: "[HA]₀", min: 0.01, max: 1, step: 0.01, initial: 0.1, unit: "M" },
+        { key: "A", label: "[A⁻]₀", min: 0.01, max: 1, step: 0.01, initial: 0.1, unit: "M" },
+      ]}
+      series={[
+        { key: "pH", label: "pH del buffer", color: C.primary },
+        { key: "pHw", label: "pH agua pura (ref.)", color: C.muted, dashed: true },
+      ]}
+      xKey="n"
+      xLabel="mmol HCl añadidos"
+      compute={({ pKa, HA, A }) => {
+        // 1 L de buffer
+        return range(40, 0, Math.min(HA, A) * 0.9 * 1000).map((nH) => {
+          const HAn = HA + nH / 1000;
+          const An = A - nH / 1000;
+          const pH = pKa + Math.log10(An / HAn);
+          // agua pura: pH = -log10(nH/V)
+          const pHw = nH > 0 ? -Math.log10(nH / 1000) : 7;
+          return { n: +nH.toFixed(1), pH: +pH.toFixed(2), pHw: +pHw.toFixed(2) };
+        });
+      }}
+      caption="El buffer absorbe protones convirtiendo A⁻ en HA. Capacidad máxima cerca de pH = pKa."
+    />
+  );
+}
+
+/* ───── Nuevos: Matemática ───── */
+
+function MathRiemann() {
+  return (
+    <PhysicsCanvas
+      title="Suma de Riemann — área bajo f(x) = sin(x) + 1.2"
+      animate={false}
+      sliders={[
+        { key: "n", label: "Particiones n", min: 2, max: 80, step: 1, initial: 12 },
+      ]}
+      draw={(ctx, w, h, _t, p) => {
+        const a = 0, b = Math.PI * 2;
+        const padL = 40, padR = 16, padT = 20, padB = 30;
+        const W = w - padL - padR;
+        const H = h - padT - padB;
+        const f = (x: number) => Math.sin(x) + 1.2;
+        const yMax = 2.5;
+        const sx = (x: number) => padL + ((x - a) / (b - a)) * W;
+        const sy = (y: number) => padT + H - (y / yMax) * H;
+        // axes
+        ctx.strokeStyle = "rgba(180,200,220,0.5)";
+        ctx.beginPath(); ctx.moveTo(padL, sy(0)); ctx.lineTo(w - padR, sy(0)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(padL, padT); ctx.lineTo(padL, sy(0)); ctx.stroke();
+        // bars (midpoint rule)
+        const dx = (b - a) / p.n;
+        let sum = 0;
+        ctx.fillStyle = "rgba(0,200,220,0.35)";
+        ctx.strokeStyle = "rgba(0,200,220,0.85)";
+        for (let i = 0; i < p.n; i++) {
+          const xm = a + (i + 0.5) * dx;
+          const fv = f(xm);
+          sum += fv * dx;
+          const x0 = sx(a + i * dx);
+          const x1 = sx(a + (i + 1) * dx);
+          const y0 = sy(fv);
+          const y1 = sy(0);
+          ctx.fillRect(x0, y0, x1 - x0, y1 - y0);
+          ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+        }
+        // curve
+        ctx.strokeStyle = "rgba(255,200,80,0.95)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        for (let i = 0; i <= 200; i++) {
+          const x = a + ((b - a) * i) / 200;
+          const y = f(x);
+          if (i === 0) ctx.moveTo(sx(x), sy(y));
+          else ctx.lineTo(sx(x), sy(y));
+        }
+        ctx.stroke();
+        // info
+        ctx.fillStyle = "rgba(200,210,220,0.95)";
+        ctx.font = "11px JetBrains Mono, monospace";
+        ctx.fillText(`Σ ≈ ${sum.toFixed(4)}    exacto: ${(2.4 * Math.PI).toFixed(4)}`, padL, 14);
+      }}
+      caption="Al aumentar n, la suma de áreas converge a la integral definida (definición de Riemann)."
+    />
+  );
+}
+
+function MathVectorField() {
+  return (
+    <PhysicsCanvas
+      title="Campo vectorial F(x,y) = (−y, x) (rotacional)"
+      animate={false}
+      sliders={[
+        { key: "g", label: "Densidad", min: 8, max: 30, step: 1, initial: 16 },
+      ]}
+      draw={(ctx, w, h, _t, p) => {
+        const cx = w / 2, cy = h / 2;
+        const span = Math.min(w, h) * 0.45;
+        ctx.strokeStyle = "rgba(180,200,220,0.4)";
+        ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
+        const N = Math.round(p.g);
+        const step = (2 * span) / N;
+        for (let i = 0; i <= N; i++) {
+          for (let j = 0; j <= N; j++) {
+            const x = -span + i * step;
+            const y = -span + j * step;
+            const fx = -y, fy = x;
+            const mag = Math.hypot(fx, fy);
+            if (mag < 1e-3) continue;
+            const len = Math.min(step * 0.45, mag * 0.06);
+            const ux = (fx / mag) * len;
+            const uy = (fy / mag) * len;
+            const px = cx + x;
+            const py = cy - y;
+            const ex = px + ux;
+            const ey = py - uy;
+            const t = Math.min(1, mag / span);
+            ctx.strokeStyle = `rgba(${Math.round(40 + t * 200)}, ${Math.round(220 - t * 80)}, 220, 0.85)`;
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(ex, ey); ctx.stroke();
+            // arrowhead
+            const ang = Math.atan2(-uy, ux);
+            ctx.beginPath();
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(ex - 4 * Math.cos(ang - 0.4), ey + 4 * Math.sin(ang - 0.4));
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(ex - 4 * Math.cos(ang + 0.4), ey + 4 * Math.sin(ang + 0.4));
+            ctx.stroke();
+          }
+        }
+      }}
+      caption="Las líneas de campo rodean el origen: ∇·F = 0 (no hay fuente), ∇×F = 2k̂ (rotacional puro)."
+    />
+  );
+}
+
+function MathDistribution() {
+  return (
+    <InteractiveChart
+      title="Distribución normal — efecto de μ y σ"
+      sliders={[
+        { key: "mu", label: "μ", min: -3, max: 3, step: 0.1, initial: 0 },
+        { key: "sig", label: "σ", min: 0.3, max: 3, step: 0.05, initial: 1 },
+      ]}
+      series={[
+        { key: "p", label: "N(μ, σ²)", color: C.primary },
+        { key: "n01", label: "N(0, 1) ref", color: C.muted, dashed: true },
+      ]}
+      xKey="x"
+      xLabel="x"
+      yLabel="densidad"
+      compute={({ mu, sig }) => {
+        const pdf = (x: number, m: number, s: number) =>
+          Math.exp(-((x - m) ** 2) / (2 * s * s)) / (s * Math.sqrt(2 * Math.PI));
+        return range(120, -6, 6).map((x) => ({
+          x: +x.toFixed(2),
+          p: +pdf(x, mu, sig).toFixed(4),
+          n01: +pdf(x, 0, 1).toFixed(4),
+        }));
+      }}
+      caption="μ traslada el pico; σ controla la dispersión (~68% en [μ−σ, μ+σ])."
+    />
+  );
+}
+
+function MathConic() {
+  return (
+    <PhysicsCanvas
+      title="Cónicas — clasificación por excentricidad"
+      animate={false}
+      sliders={[
+        { key: "e", label: "Excentricidad e", min: 0, max: 1.6, step: 0.02, initial: 0.5 },
+        { key: "p", label: "Semilatus p", min: 30, max: 120, step: 5, initial: 70 },
+      ]}
+      draw={(ctx, w, h, _t, par) => {
+        const cx = w / 2, cy = h / 2;
+        ctx.strokeStyle = "rgba(180,200,220,0.4)";
+        ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke();
+        ctx.fillStyle = "rgba(220,160,60,0.95)";
+        ctx.beginPath(); ctx.arc(cx, cy, 4, 0, Math.PI * 2); ctx.fill();
+        // r = p / (1 + e cosθ)
+        ctx.strokeStyle = "rgba(0,200,220,0.95)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        let started = false;
+        for (let deg = 0; deg <= 360; deg += 1) {
+          const th = (deg * Math.PI) / 180;
+          const denom = 1 + par.e * Math.cos(th);
+          if (denom <= 0.05) { started = false; continue; }
+          const r = par.p / denom;
+          if (r > 600) { started = false; continue; }
+          const x = cx + r * Math.cos(th);
+          const y = cy - r * Math.sin(th);
+          if (!started) { ctx.moveTo(x, y); started = true; }
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+        const tipo = par.e < 0.01 ? "circunferencia" : par.e < 1 ? "elipse" : par.e === 1 ? "parábola" : "hipérbola";
+        ctx.fillStyle = "rgba(200,210,220,0.95)";
+        ctx.font = "11px JetBrains Mono, monospace";
+        ctx.fillText(`e = ${par.e.toFixed(2)} → ${tipo}`, 12, 18);
+      }}
+      caption="e = 0: circunferencia · 0 < e < 1: elipse · e = 1: parábola · e > 1: hipérbola."
+    />
+  );
+}
+
+/* ───── Nuevos: Ingeniería ───── */
+
+function EngRLC() {
+  return (
+    <InteractiveChart
+      title="Respuesta de un circuito RLC en serie a un escalón"
+      sliders={[
+        { key: "R", label: "R", min: 0.1, max: 200, step: 0.5, initial: 20, unit: "Ω" },
+        { key: "L", label: "L", min: 0.001, max: 1, step: 0.001, initial: 0.05, unit: "H" },
+        { key: "C", label: "C", min: 1e-6, max: 1e-3, step: 1e-6, initial: 1e-4, unit: "F" },
+      ]}
+      series={[
+        { key: "Vc", label: "V_C(t)", color: C.primary },
+        { key: "ref", label: "ref. 1 V", color: C.muted, dashed: true },
+      ]}
+      xKey="t"
+      xLabel="t (ms)"
+      compute={({ R, L, C: Cap }) => {
+        const w0 = 1 / Math.sqrt(L * Cap);
+        const z = R / 2 * Math.sqrt(Cap / L);
+        const T = 6 / (z * w0 + 1e-3);
+        return range(80, 0, T).map((t) => {
+          let v = 0;
+          if (z < 1) {
+            const wd = w0 * Math.sqrt(1 - z * z);
+            v = 1 - Math.exp(-z * w0 * t) * (Math.cos(wd * t) + (z * w0 / wd) * Math.sin(wd * t));
+          } else if (z === 1) {
+            v = 1 - (1 + w0 * t) * Math.exp(-w0 * t);
+          } else {
+            const r = w0 * Math.sqrt(z * z - 1);
+            const A = 0.5 * (1 + (z * w0) / r);
+            const B = 0.5 * (1 - (z * w0) / r);
+            v = 1 - A * Math.exp((-z * w0 + r) * t) - B * Math.exp((-z * w0 - r) * t);
+          }
+          return { t: +(t * 1000).toFixed(2), Vc: +v.toFixed(4), ref: 1 };
+        });
+      }}
+      caption="ζ = (R/2)√(C/L). Subamortiguado (ζ<1): oscila. Crítico (ζ=1): respuesta más rápida sin overshoot."
+    />
+  );
+}
+
+function EngMoody() {
+  return (
+    <InteractiveChart
+      title="Factor de fricción f vs Reynolds (rugosidad relativa fija)"
+      sliders={[
+        { key: "eps", label: "ε/D", min: 0, max: 0.05, step: 0.0005, initial: 0.001 },
+      ]}
+      series={[{ key: "f", label: "f (Darcy)", color: C.warn }]}
+      xKey="logRe"
+      xLabel="log₁₀ Re"
+      yLabel="f"
+      compute={({ eps }) => {
+        return range(60, 2.5, 8).map((lr) => {
+          const Re = Math.pow(10, lr);
+          let f: number;
+          if (Re < 2300) f = 64 / Re; // laminar
+          else {
+            // Swamee-Jain (aprox. de Colebrook)
+            f = 0.25 / Math.pow(Math.log10(eps / 3.7 + 5.74 / Math.pow(Re, 0.9)), 2);
+          }
+          return { logRe: +lr.toFixed(2), f: +f.toFixed(4) };
+        });
+      }}
+      caption="Régimen laminar f = 64/Re; turbulento depende fuertemente de la rugosidad relativa."
+    />
+  );
+}
+
+function EngThevenin() {
+  return (
+    <figure className="not-prose my-6 border border-border bg-surface">
+      <figcaption className="px-4 py-2 text-xs uppercase tracking-widest text-muted-foreground border-b border-border">
+        Equivalente Thévenin ↔ Norton
+      </figcaption>
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        <svg viewBox="0 0 240 160" className="w-full">
+          <text x={120} y={16} textAnchor="middle" fontSize={11} fill="var(--muted-foreground)" fontFamily="monospace">Thévenin</text>
+          <line x1={40} y1={120} x2={40} y2={50} stroke="var(--foreground)" strokeWidth={1.5} />
+          <line x1={30} y1={50} x2={50} y2={50} stroke="var(--foreground)" strokeWidth={2} />
+          <line x1={34} y1={42} x2={46} y2={42} stroke="var(--foreground)" strokeWidth={2} />
+          <text x={20} y={70} fontSize={10} fontFamily="monospace" fill="var(--primary)">V_th</text>
+          <line x1={40} y1={42} x2={40} y2={30} stroke="var(--foreground)" />
+          <line x1={40} y1={30} x2={120} y2={30} stroke="var(--foreground)" />
+          <rect x={120} y={20} width={50} height={20} fill="none" stroke="var(--foreground)" strokeWidth={1.5} />
+          <text x={145} y={15} textAnchor="middle" fontSize={10} fontFamily="monospace" fill="var(--accent)">R_th</text>
+          <line x1={170} y1={30} x2={210} y2={30} stroke="var(--foreground)" />
+          <circle cx={210} cy={30} r={3} fill="var(--foreground)" />
+          <line x1={40} y1={120} x2={210} y2={120} stroke="var(--foreground)" />
+          <circle cx={210} cy={120} r={3} fill="var(--foreground)" />
+          <text x={220} y={75} fontSize={10} fontFamily="monospace" fill="var(--muted-foreground)">carga</text>
+        </svg>
+        <svg viewBox="0 0 240 160" className="w-full">
+          <text x={120} y={16} textAnchor="middle" fontSize={11} fill="var(--muted-foreground)" fontFamily="monospace">Norton</text>
+          <circle cx={60} cy={75} r={18} fill="none" stroke="var(--foreground)" strokeWidth={1.5} />
+          <line x1={50} y1={75} x2={70} y2={75} stroke="var(--foreground)" />
+          <line x1={70} y1={75} x2={64} y2={70} stroke="var(--foreground)" />
+          <line x1={70} y1={75} x2={64} y2={80} stroke="var(--foreground)" />
+          <text x={60} y={110} textAnchor="middle" fontSize={10} fontFamily="monospace" fill="var(--success)">I_N</text>
+          <line x1={60} y1={57} x2={60} y2={30} stroke="var(--foreground)" />
+          <line x1={60} y1={30} x2={140} y2={30} stroke="var(--foreground)" />
+          <line x1={60} y1={93} x2={60} y2={120} stroke="var(--foreground)" />
+          <line x1={60} y1={120} x2={210} y2={120} stroke="var(--foreground)" />
+          <line x1={140} y1={30} x2={140} y2={50} stroke="var(--foreground)" />
+          <rect x={130} y={50} width={20} height={50} fill="none" stroke="var(--foreground)" strokeWidth={1.5} />
+          <text x={160} y={80} fontSize={10} fontFamily="monospace" fill="var(--accent)">R_N</text>
+          <line x1={140} y1={100} x2={140} y2={120} stroke="var(--foreground)" />
+          <line x1={140} y1={30} x2={210} y2={30} stroke="var(--foreground)" />
+          <circle cx={210} cy={30} r={3} fill="var(--foreground)" />
+          <circle cx={210} cy={120} r={3} fill="var(--foreground)" />
+        </svg>
+      </div>
+      <div className="px-4 py-2 text-[11px] text-muted-foreground border-t border-border">
+        Conversión: I_N = V_th / R_th, R_N = R_th. Ambas redes producen la misma corriente y tensión en cualquier carga conectada a sus terminales.
+      </div>
+    </figure>
+  );
+}
+
 const REGISTRY: Record<WidgetKey, () => ReactElement> = {
   "phys-projectile": PhysProjectile,
   "phys-friction": PhysFriction,
@@ -876,6 +1512,21 @@ const REGISTRY: Record<WidgetKey, () => ReactElement> = {
   "eng-heat": EngHeat,
   "eng-rankine": EngRankine,
   "eng-queue": EngQueue,
+  "phys-energy": PhysEnergy,
+  "phys-collision": PhysCollision,
+  "phys-em-wave": PhysEMWave,
+  "phys-lens": PhysLens,
+  "phys-fluid": PhysFluid,
+  "chem-lechatelier": ChemLeChatelier,
+  "chem-orbitals": ChemOrbitals,
+  "chem-buffer": ChemBuffer,
+  "math-riemann": MathRiemann,
+  "math-vectorfield": MathVectorField,
+  "math-distribution": MathDistribution,
+  "math-conic": MathConic,
+  "eng-rlc": EngRLC,
+  "eng-moody": EngMoody,
+  "eng-thevenin": EngThevenin,
 };
 
 export function Widget({ name }: { name: WidgetKey }) {

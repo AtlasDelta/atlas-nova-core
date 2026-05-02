@@ -7,7 +7,7 @@ export const PHYSICS_ARTICLES: Article[] = [
     title: "Mecánica clásica",
     category: "fisica",
     level: "introductorio",
-    readingMinutes: 22,
+    readingMinutes: 28,
     summary:
       "Cinemática, leyes de Newton, fuerzas, fricción, trabajo, energía y momento. La columna vertebral de la física no relativista.",
     sections: [
@@ -16,19 +16,29 @@ export const PHYSICS_ARTICLES: Article[] = [
         title: "Cinemática: posición, velocidad y aceleración",
         keywords: ["cinemática", "MRU", "MRUA", "velocidad", "aceleración", "posición"],
         body: `
-La **cinemática** describe el movimiento sin preocuparse por sus causas. La posición $x(t)$ define una trayectoria; la **velocidad** es su derivada y la **aceleración** la derivada de la velocidad:
+La **cinemática** es la rama de la mecánica que describe *cómo* se mueven los cuerpos sin entrar en *por qué* lo hacen. Reduce el cuerpo a un punto material y estudia tres magnitudes acopladas por derivación: posición, velocidad y aceleración.
+
+La **posición** $x(t)$ ubica al cuerpo en cada instante; su derivada temporal es la **velocidad** y la derivada de ésta, la **aceleración**:
 
 $$v(t) = \\frac{dx}{dt}, \\qquad a(t) = \\frac{dv}{dt} = \\frac{d^2 x}{dt^2}$$
 
-Para aceleración constante $a_0$, integrando dos veces:
+Esta cadena de derivadas es la base de toda la mecánica clásica. Si conocemos $a(t)$ y dos condiciones iniciales $x_0$, $v_0$, integramos dos veces y reconstruimos completamente la trayectoria. Para aceleración constante $a_0$ obtenemos las ecuaciones que aparecen en cualquier libro de bachillerato:
 
 $$v(t) = v_0 + a_0\\,t, \\qquad x(t) = x_0 + v_0\\,t + \\tfrac{1}{2}\\,a_0\\,t^2$$
+
+Y, eliminando el tiempo, una identidad muy útil cuando no nos importa $t$:
+
+$$v^2 = v_0^2 + 2 a_0 (x - x_0)$$
+
+> **Intuición:** la velocidad mide *cuánto cambia la posición por unidad de tiempo*; la aceleración, *cuánto cambia la velocidad por unidad de tiempo*. Que un cuerpo tenga velocidad cero **no implica** aceleración cero (piensa en una pelota lanzada al aire en su altura máxima).
 
 | Movimiento | Condición | Ejemplo |
 |------------|-----------|---------|
 | Uniforme (MRU) | $a = 0$ | Auto en autopista a velocidad constante |
 | Uniformemente acelerado (MRUA) | $a$ constante | Caída libre en vacío |
 | Variado | $a(t)$ no constante | Cohete con masa variable |
+
+En tres dimensiones todas estas magnitudes son **vectores**: $\\vec r(t)$, $\\vec v = d\\vec r/dt$, $\\vec a = d\\vec v/dt$. Eso permite descomponer movimientos complicados en problemas más simples por componentes (lo que haremos enseguida con el tiro parabólico).
 `,
       },
       {
@@ -36,15 +46,23 @@ $$v(t) = v_0 + a_0\\,t, \\qquad x(t) = x_0 + v_0\\,t + \\tfrac{1}{2}\\,a_0\\,t^2
         title: "Tiro parabólico",
         keywords: ["tiro parabólico", "proyectil", "alcance", "altura máxima"],
         body: `
-Un proyectil lanzado con velocidad inicial $v_0$ y ángulo $\\theta$ describe una parábola. Las componentes son:
+El tiro parabólico es el ejemplo prototípico de un movimiento bidimensional: en horizontal no actúa fuerza (MRU) y en vertical actúa la gravedad (MRUA). Como las componentes son **independientes**, podemos analizarlas por separado.
+
+Si lanzamos un proyectil con velocidad inicial $v_0$ y ángulo $\\theta$ respecto a la horizontal:
 
 $$x(t) = v_0\\cos\\theta\\,t, \\qquad y(t) = v_0\\sin\\theta\\,t - \\tfrac{1}{2}g\\,t^2$$
 
-El **alcance** (terreno horizontal) y la **altura máxima**:
+Eliminando el tiempo entre ambas obtenemos la ecuación de la trayectoria, que es una **parábola**:
+
+$$y(x) = x\\tan\\theta - \\frac{g\\,x^2}{2v_0^2\\cos^2\\theta}$$
+
+Las dos magnitudes que más se preguntan en problemas son el **alcance** (distancia horizontal recorrida sobre terreno horizontal) y la **altura máxima**:
 
 $$R = \\frac{v_0^2 \\sin(2\\theta)}{g}, \\qquad H = \\frac{v_0^2 \\sin^2\\theta}{2g}$$
 
-El alcance es máximo en $\\theta = 45°$.
+> **Resultado clave:** el alcance es máximo en $\\theta = 45°$ porque $\\sin(2\\theta)$ alcanza su máximo allí. Además, ángulos complementarios ($30°$ y $60°$, por ejemplo) producen el mismo alcance pero distinta altura y tiempo de vuelo.
+
+Mueve los sliders de la simulación y observa cómo cambia el perfil de la trayectoria al variar $v_0$, $\\theta$ y $g$ (prueba $g = 1{,}6$ para simular la Luna).
 `,
         widget: "phys-projectile",
       },
@@ -53,17 +71,25 @@ El alcance es máximo en $\\theta = 45°$.
         title: "Las tres leyes de Newton",
         keywords: ["Newton", "inercia", "F=ma", "acción reacción"],
         body: `
-**Primera ley (inercia):** un cuerpo libre permanece en reposo o MRU.
+Las leyes de Newton son los axiomas que conectan **fuerza** con **movimiento**. Sin ellas la cinemática sería puramente descriptiva; con ellas se vuelve predictiva.
+
+**Primera ley (inercia).** Un cuerpo libre permanece en reposo o en MRU. Esta ley define implícitamente los **sistemas inerciales** y rompe la intuición aristotélica de que "para mantener algo en movimiento hay que empujarlo".
 
 $$\\sum \\vec{F} = 0 \\;\\Longleftrightarrow\\; \\vec{v} = \\text{cte}$$
 
-**Segunda ley (dinámica):** la fuerza neta es la tasa de cambio del momento.
+**Segunda ley (dinámica).** La fuerza neta sobre un cuerpo es la tasa de cambio de su momento lineal:
 
 $$\\vec{F}_{\\text{neta}} = \\frac{d\\vec{p}}{dt} = m\\,\\vec{a} \\quad \\text{(masa constante)}$$
 
-**Tercera ley (acción-reacción):** $\\vec{F}_{A\\to B} = -\\vec{F}_{B\\to A}$.
+Esta es la ecuación más importante de la mecánica clásica: dada la fuerza sobre un cuerpo, predice su trayectoria. La forma con $d\\vec p/dt$ es preferible a $m\\vec a$ porque sigue siendo válida cuando la masa varía (cohetes).
 
-> Las dos fuerzas del par acción-reacción nunca actúan sobre el mismo cuerpo: por eso no se cancelan en un diagrama de fuerzas individual.
+**Tercera ley (acción-reacción).** Si A ejerce una fuerza sobre B, B ejerce sobre A una fuerza igual y opuesta:
+
+$$\\vec{F}_{A\\to B} = -\\vec{F}_{B\\to A}$$
+
+> **Trampa típica:** las dos fuerzas del par acción-reacción **nunca actúan sobre el mismo cuerpo**. Por eso no se cancelan en el diagrama de fuerzas individual. Que el suelo te empuje hacia arriba con la misma fuerza con que tú lo empujas hacia abajo no significa que tu peso "desaparezca": tu peso lo ejerce la Tierra entera, y su reacción es la fuerza que tú ejerces sobre la Tierra (que tampoco se cancela con tu peso, porque actúan sobre cuerpos distintos).
+
+Estas tres leyes valen en cualquier sistema inercial. En un sistema acelerado (un autobús que frena) aparecen *fuerzas ficticias* que son artefactos del cambio de marco: matemáticamente útiles, físicamente inexistentes.
 `,
       },
       {
@@ -71,20 +97,26 @@ $$\\vec{F}_{\\text{neta}} = \\frac{d\\vec{p}}{dt} = m\\,\\vec{a} \\quad \\text{(
         title: "Fuerza de fricción",
         keywords: ["fricción", "rozamiento", "estática", "cinética", "coeficiente", "μ"],
         body: `
-Cuando dos superficies en contacto deslizan o tienden a deslizar, aparece una fuerza tangencial **opuesta al movimiento (o a la tendencia)**:
+La fricción es lo que hace que la mecánica del mundo real sea *interesante*. Sin ella ningún coche frenaría, ningún clavo se sostendría y caminar sería imposible.
+
+Cuando dos superficies en contacto deslizan o tienden a deslizar, aparece una fuerza tangencial **opuesta al movimiento (o a la tendencia)**. Hay dos regímenes:
 
 $$f_s \\le \\mu_s\\,N \\qquad\\text{(estática, antes de deslizar)}$$
 $$f_k = \\mu_k\\,N \\qquad\\text{(cinética, durante el deslizamiento)}$$
 
-donde $N$ es la fuerza normal y $\\mu_s > \\mu_k$ típicamente. **No depende del área aparente de contacto** (modelo de Coulomb).
+donde $N$ es la **fuerza normal** (la que comprime las superficies) y los coeficientes $\\mu_s$, $\\mu_k$ dependen del par de materiales. Típicamente $\\mu_s > \\mu_k$, por eso *cuesta* arrancar un mueble pesado pero, una vez en movimiento, mantenerlo deslizando es más fácil.
 
-En un plano inclinado de ángulo $\\theta$, el bloque comienza a deslizar cuando:
+> **Hecho contraintuitivo:** la fricción de Coulomb **no depende del área aparente de contacto**. Lo que importa es la fuerza normal. Microscópicamente, las superficies solo se tocan en pequeñas asperezas; mayor área aparente reparte la presión sin cambiar la fuerza total de adhesión.
+
+**Plano inclinado.** En un plano de ángulo $\\theta$, el bloque empieza a deslizar cuando la componente del peso paralela al plano supera a la fricción estática máxima:
 
 $$\\tan\\theta > \\mu_s$$
 
-y, una vez en movimiento, su aceleración es:
+Una vez en movimiento, su aceleración es:
 
 $$a = g(\\sin\\theta - \\mu_k\\cos\\theta)$$
+
+Si $\\tan\\theta \\le \\mu_s$, el bloque se queda en reposo y la fricción se ajusta exactamente para equilibrar las fuerzas (pero nunca más allá del máximo $\\mu_s N$). Juega con los sliders del simulador para encontrar la transición.
 `,
         widget: "phys-friction",
       },
@@ -93,15 +125,25 @@ $$a = g(\\sin\\theta - \\mu_k\\cos\\theta)$$
         title: "Trabajo y energía cinética",
         keywords: ["trabajo", "energía cinética", "teorema trabajo-energía", "potencia"],
         body: `
-El **trabajo** de una fuerza $\\vec{F}$ sobre un desplazamiento $\\vec{d}$:
+La idea de **energía** unifica fenómenos que parecían distintos. En mecánica nace del concepto de trabajo.
+
+El **trabajo** de una fuerza $\\vec{F}$ sobre un desplazamiento es la integral de línea:
 
 $$W = \\int_C \\vec{F} \\cdot d\\vec{r}$$
 
-El **teorema del trabajo y la energía** establece:
+Solo la componente de la fuerza paralela al desplazamiento hace trabajo. Una fuerza perpendicular (la normal sobre un cuerpo que desliza, la tensión de una cuerda en un péndulo) hace trabajo cero.
+
+El **teorema del trabajo y la energía** establece que el trabajo neto sobre un cuerpo es igual al cambio de su energía cinética:
 
 $$W_{\\text{neto}} = \\Delta E_c = \\tfrac{1}{2} m v_f^2 - \\tfrac{1}{2} m v_i^2$$
 
-La **potencia** instantánea: $P = \\vec{F} \\cdot \\vec{v}$, en watts (1 W = 1 J/s).
+Es una consecuencia directa de $F = ma$, no un postulado independiente. Pero su forma escalar lo hace mucho más útil: en muchos problemas (caída por una rampa con curvas) calcular $\\int \\vec F\\cdot d\\vec r$ es trivial mientras que resolver la trayectoria con Newton es tortuoso.
+
+La **potencia** instantánea mide la rapidez con que se transfiere energía:
+
+$$P = \\frac{dW}{dt} = \\vec{F} \\cdot \\vec{v}$$
+
+en watts (1 W = 1 J/s). Un coche de 100 kW que sube una pendiente larga puede producir más trabajo total que uno de 200 kW si circula más tiempo: potencia y energía no son lo mismo.
 `,
       },
       {
@@ -109,33 +151,53 @@ La **potencia** instantánea: $P = \\vec{F} \\cdot \\vec{v}$, en watts (1 W = 1 
         title: "Energía potencial y conservación",
         keywords: ["energía potencial", "conservación", "energía mecánica"],
         body: `
-Para fuerzas **conservativas** existe una función $U(\\vec{r})$ tal que $\\vec{F} = -\\nabla U$.
+Cuando una fuerza es **conservativa**, el trabajo que realiza al ir de A a B no depende del camino, solo de los puntos extremos. Eso permite definir una función escalar $U(\\vec r)$ —la **energía potencial**— tal que:
 
-- **Gravitatoria** (cerca de la Tierra): $U = mgh$.
-- **Elástica** (Hooke): $U = \\tfrac{1}{2} k x^2$.
+$$\\vec{F} = -\\nabla U$$
 
-Si solo actúan fuerzas conservativas, la energía mecánica se conserva:
+El signo menos es convención: la fuerza apunta hacia donde $U$ disminuye (las cosas tienden a "rodar cuesta abajo" en el paisaje energético).
+
+Ejemplos canónicos:
+
+- **Gravitatoria** cerca de la Tierra: $U = mgh$ (el cero es arbitrario; solo importan diferencias).
+- **Elástica** (resorte de Hooke): $U = \\tfrac{1}{2} k x^2$.
+- **Gravitatoria entre cuerpos**: $U = -GMm/r$.
+- **Eléctrica** entre cargas puntuales: $U = kq_1q_2/r$.
+
+Si **solo** actúan fuerzas conservativas, la suma cinética + potencial se conserva:
 
 $$E = E_c + U = \\text{cte}$$
 
-Las fuerzas no conservativas (fricción) la disipan en forma de calor.
+Esta es la **conservación de la energía mecánica**, una herramienta poderosísima: convierte problemas dinámicos en algebraicos. ¿Velocidad de un péndulo en el punto bajo? Iguala $mgh$ inicial a $\\tfrac{1}{2}mv^2$ final. Listo, sin integrar nada.
+
+Las fuerzas **no conservativas** (fricción cinética, resistencia del aire) sí dependen del camino y no admiten una $U$. En su presencia la energía mecánica se disipa, normalmente como calor. Pero la energía total (incluyendo el calor) sigue conservándose: ese es el primer principio de la termodinámica.
 `,
+        widget: "phys-energy",
       },
       {
         id: "momento-lineal",
         title: "Momento lineal y colisiones",
         keywords: ["momento lineal", "impulso", "colisión elástica", "inelástica"],
         body: `
-Momento lineal $\\vec{p} = m\\vec{v}$. **Impulso**: $\\vec{J} = \\int \\vec{F}\\,dt = \\Delta \\vec{p}$.
+El **momento lineal** $\\vec{p} = m\\vec{v}$ es —junto con la energía— la magnitud conservada más útil. Procede directamente de la segunda ley en su forma original: $\\vec F = d\\vec p/dt$.
 
-En un sistema **aislado**, $\\sum \\vec{p}$ se conserva. En una colisión:
+Si integramos en el tiempo la fuerza:
 
-| Tipo | Conservación de $E_c$ | Ejemplo |
-|------|------------------------|---------|
-| Elástica | Sí | Bolas de billar idealizadas |
-| Inelástica | No | Choque de plastilinas |
-| Perfectamente inelástica | No (los cuerpos quedan unidos) | Carro acoplándose a un tren |
+$$\\vec{J} = \\int \\vec{F}\\,dt = \\Delta \\vec{p}$$
+
+es el **impulso**. Permite analizar choques sin conocer en detalle la fuerza durante el impacto: solo importa su integral. Por eso un airbag salva vidas: estira el tiempo de desaceleración y reduce la fuerza máxima para el mismo impulso.
+
+En un sistema **aislado** (suma de fuerzas externas igual a cero), el momento total se conserva. Esto es independiente de la energía: el momento siempre se conserva en colisiones, la energía no necesariamente.
+
+| Tipo | $\\vec p$ | $E_c$ | Ejemplo |
+|------|----------|--------|---------|
+| Elástica | conservado | conservada | Bolas de billar idealizadas |
+| Inelástica | conservado | parcialmente perdida | Choque de coches con deformación |
+| Perfectamente inelástica | conservado | máxima pérdida | Meteorito que se incrusta en la Tierra |
+
+El **coeficiente de restitución** $e$ cuantifica la "elasticidad": $e = 1$ elástica, $e = 0$ perfectamente inelástica. La animación interactiva permite variarlo y comprobar cuánta energía se pierde en cada caso.
 `,
+        widget: "phys-collision",
       },
     ],
   },
@@ -146,7 +208,7 @@ En un sistema **aislado**, $\\sum \\vec{p}$ se conserva. En una colisión:
     title: "Oscilaciones y ondas",
     category: "fisica",
     level: "intermedio",
-    readingMinutes: 18,
+    readingMinutes: 24,
     summary:
       "Oscilador armónico, péndulos, ondas mecánicas, superposición, efecto Doppler.",
     sections: [
@@ -155,11 +217,25 @@ En un sistema **aislado**, $\\sum \\vec{p}$ se conserva. En una colisión:
         title: "Oscilador armónico simple",
         keywords: ["oscilador", "armónico", "MAS", "frecuencia natural"],
         body: `
-Un sistema gobernado por $F = -kx$ obedece:
+El **oscilador armónico** es el modelo más recurrente de la física. Cualquier sistema cerca de un mínimo de energía potencial se comporta —en primera aproximación— como un oscilador armónico. Por eso aparece en mecánica, electromagnetismo, mecánica cuántica y procesamiento de señales.
 
-$$m\\ddot{x} + kx = 0 \\;\\Longrightarrow\\; x(t) = A\\cos(\\omega_n t + \\varphi)$$
+Un sistema gobernado por una fuerza restauradora lineal $F = -kx$ obedece la ecuación diferencial:
 
-con frecuencia natural $\\omega_n = \\sqrt{k/m}$ y periodo $T = 2\\pi/\\omega_n$.
+$$m\\ddot{x} + kx = 0$$
+
+cuya solución general es:
+
+$$x(t) = A\\cos(\\omega_n t + \\varphi)$$
+
+con **frecuencia natural** $\\omega_n = \\sqrt{k/m}$ y **periodo** $T = 2\\pi/\\omega_n$. Los parámetros $A$ y $\\varphi$ se fijan con las condiciones iniciales.
+
+> **Observación clave:** el periodo **no depende de la amplitud**. Esta propiedad —el *isocronismo*— es lo que hizo a Galileo proponer el péndulo como medidor de tiempo. Solo es exacta para el oscilador armónico ideal; se viola en cuanto la fuerza deja de ser exactamente lineal.
+
+La **energía mecánica** total se conserva y oscila entre cinética y potencial:
+
+$$E = \\tfrac{1}{2}kA^2 = \\tfrac{1}{2}mv_{\\max}^2$$
+
+con $v_{\\max} = \\omega_n A$. Cuanto mayor es la amplitud, mayor es la velocidad máxima y la energía almacenada.
 `,
       },
       {
@@ -167,17 +243,21 @@ con frecuencia natural $\\omega_n = \\sqrt{k/m}$ y periodo $T = 2\\pi/\\omega_n$
         title: "Oscilador amortiguado",
         keywords: ["amortiguamiento", "subamortiguado", "crítico", "sobreamortiguado", "ζ"],
         body: `
-Añadiendo fricción viscosa $-c\\dot x$:
+En el mundo real toda oscilación se extingue: el aire roza, los rodamientos disipan, el material se calienta. Modelamos esa pérdida con un término de fricción viscosa $-c\\dot x$ proporcional a la velocidad:
 
 $$m\\ddot x + c\\dot x + k x = 0$$
 
-Definimos $\\zeta = c/(2\\sqrt{km})$. Tres regímenes:
+Definimos el **factor de amortiguamiento adimensional** $\\zeta = c/(2\\sqrt{km})$. Según su valor obtenemos tres regímenes cualitativamente distintos:
 
 | Régimen | Condición | Comportamiento |
 |---------|-----------|----------------|
-| Subamortiguado | $\\zeta < 1$ | Oscila con envolvente exponencial |
-| Crítico | $\\zeta = 1$ | Vuelve al reposo lo más rápido posible sin oscilar |
+| Subamortiguado | $\\zeta < 1$ | Oscila con envolvente exponencial decreciente |
+| Crítico | $\\zeta = 1$ | Vuelve al reposo lo más rápido posible **sin oscilar** |
 | Sobreamortiguado | $\\zeta > 1$ | Vuelve al reposo lentamente, sin oscilar |
+
+El amortiguamiento crítico es el ideal en aplicaciones de ingeniería: las suspensiones de un coche se diseñan cerca de $\\zeta = 1$ para que el chasis vuelva al equilibrio rápidamente sin rebotar.
+
+En el régimen subamortiguado la frecuencia angular real es $\\omega_d = \\omega_n\\sqrt{1-\\zeta^2}$, ligeramente menor que $\\omega_n$, y la amplitud decae como $e^{-\\zeta\\omega_n t}$. La animación permite recorrer los tres regímenes deslizando $c$.
 `,
         widget: "phys-spring",
       },
@@ -186,11 +266,19 @@ Definimos $\\zeta = c/(2\\sqrt{km})$. Tres regímenes:
         title: "Péndulo simple",
         keywords: ["péndulo", "pequeñas oscilaciones", "isocronismo"],
         body: `
-Para un péndulo de longitud $L$ y ángulos pequeños:
+El péndulo simple —una masa puntual colgando de un hilo inextensible sin masa— es el segundo oscilador clásico. Su ecuación exacta es:
+
+$$\\ddot\\theta + \\frac{g}{L}\\sin\\theta = 0$$
+
+que **no es lineal** y, en general, no tiene solución elemental. Pero para ángulos pequeños, $\\sin\\theta \\approx \\theta$, y recuperamos el oscilador armónico:
 
 $$\\ddot\\theta + \\frac{g}{L}\\theta = 0, \\qquad T = 2\\pi\\sqrt{L/g}$$
 
-El periodo no depende de la amplitud (ley de **isocronismo**), siempre que $\\theta_0 \\lesssim 15°$. Para amplitudes mayores hay correcciones (serie de potencias en $\\sin^2(\\theta_0/2)$).
+El periodo **no depende de la amplitud** ni de la masa: solo de la longitud y de $g$. Esta es la ley de **isocronismo** que descubrió Galileo observando una lámpara en la catedral de Pisa, y que dio origen al reloj de péndulo.
+
+> **¿Hasta qué ángulo es válida la aproximación?** El error en el periodo crece con $\\theta_0^2$. Para $\\theta_0 = 15°$ es ~0,4 %; para $30°$ ya ~1,7 %; para $90°$ ~18 %. La corrección a primer orden es $T \\approx T_0(1 + \\theta_0^2/16)$.
+
+Como el periodo depende de $L$ y $g$, un péndulo es también un **gravímetro**: mediciones precisas del periodo permiten medir variaciones locales de $g$ (útil en geofísica). La animación permite explorar cómo cambia $T$ con $L$ y $g$ (prueba simular Marte con $g = 3{,}7$).
 `,
         widget: "phys-pendulum",
       },
@@ -199,13 +287,24 @@ El periodo no depende de la amplitud (ley de **isocronismo**), siempre que $\\th
         title: "Ondas armónicas y ecuación de onda",
         keywords: ["onda", "longitud de onda", "frecuencia", "número de onda"],
         body: `
-Una onda armónica unidimensional:
+Una **onda** es una perturbación que se propaga transportando energía y cantidad de movimiento, pero **no materia**. La forma más sencilla es la onda armónica unidimensional:
 
 $$y(x, t) = A\\sin(kx - \\omega t + \\varphi)$$
 
-con número de onda $k = 2\\pi/\\lambda$, pulsación $\\omega = 2\\pi f$ y velocidad de fase $v = \\omega/k = \\lambda f$. Satisface la ecuación de onda:
+con cuatro magnitudes interrelacionadas:
+
+- **Amplitud** $A$: máximo desplazamiento desde el equilibrio.
+- **Número de onda** $k = 2\\pi/\\lambda$: cuántos radianes de fase entran en un metro.
+- **Pulsación** $\\omega = 2\\pi f$: cuántos radianes de fase pasan por un punto fijo en un segundo.
+- **Velocidad de fase** $v = \\omega/k = \\lambda f$: velocidad a la que se propaga un patrón de fase constante.
+
+La ecuación que las ondas satisfacen, deducible de leyes locales (Newton para una cuerda, Maxwell para la luz), es la **ecuación de onda** clásica:
 
 $$\\frac{\\partial^2 y}{\\partial t^2} = v^2 \\frac{\\partial^2 y}{\\partial x^2}$$
+
+Es lineal: cualquier combinación de soluciones es solución (principio de superposición). Y admite no solo armónicas sino *cualquier* función de la forma $f(x - vt)$ —pulsos arbitrarios que viajan a velocidad $v$ sin deformarse.
+
+> **Confusión típica:** una onda transversal no transporta materia. Las moléculas del medio oscilan localmente alrededor de su posición de equilibrio; lo que viaja es la perturbación, no las partículas. Por eso una boya en el mar sube y baja, no se va con la ola.
 `,
         widget: "phys-wave",
       },
@@ -214,12 +313,22 @@ $$\\frac{\\partial^2 y}{\\partial t^2} = v^2 \\frac{\\partial^2 y}{\\partial x^2
         title: "Superposición e interferencia",
         keywords: ["interferencia", "constructiva", "destructiva", "batidos"],
         body: `
-Dos ondas coherentes de igual frecuencia interfieren. La diferencia de fase $\\Delta\\varphi$ determina:
+Como la ecuación de onda es lineal, dos ondas que coexisten en una región se **suman algebraicamente**. La onda resultante depende crucialmente de la diferencia de fase entre ambas.
 
-- **Constructiva**: $\\Delta\\varphi = 2\\pi n$, amplitudes se suman.
-- **Destructiva**: $\\Delta\\varphi = (2n+1)\\pi$, amplitudes se restan.
+Para dos ondas armónicas coherentes (igual frecuencia, fase relativa estable) de amplitudes $A_1$ y $A_2$:
 
-Frecuencias muy próximas producen **batidos** de frecuencia $|f_1 - f_2|$.
+$$A_R^2 = A_1^2 + A_2^2 + 2A_1 A_2 \\cos\\Delta\\varphi$$
+
+Casos extremos:
+
+- **Interferencia constructiva**: $\\Delta\\varphi = 2\\pi n$. Las amplitudes se suman: $A_R = A_1 + A_2$. Si $A_1 = A_2$, la intensidad se cuadruplica (no se duplica).
+- **Interferencia destructiva**: $\\Delta\\varphi = (2n+1)\\pi$. Las amplitudes se restan: $A_R = |A_1 - A_2|$. Si $A_1 = A_2$, anulación total.
+
+La interferencia es la huella digital del comportamiento ondulatorio. Cuando se observó interferencia con electrones (Davisson–Germer, 1927) quedó probado que las partículas tienen también naturaleza ondulatoria.
+
+**Batidos.** Si las dos ondas tienen frecuencias muy próximas $f_1 \\approx f_2$, la suma se modula: la amplitud envolvente oscila a frecuencia $|f_1 - f_2|$. Por eso un afinador de oído puede igualar dos cuerdas de guitarra escuchando los batidos: cuando desaparecen, las frecuencias coinciden.
+
+$$\\sin(2\\pi f_1 t) + \\sin(2\\pi f_2 t) = 2\\cos\\!\\left(2\\pi\\frac{f_1-f_2}{2}t\\right)\\sin\\!\\left(2\\pi\\frac{f_1+f_2}{2}t\\right)$$
 `,
       },
       {
@@ -227,11 +336,23 @@ Frecuencias muy próximas producen **batidos** de frecuencia $|f_1 - f_2|$.
         title: "Efecto Doppler",
         keywords: ["doppler", "frecuencia percibida", "fuente", "observador"],
         body: `
-Cuando emisor y receptor se mueven respecto al medio, la frecuencia percibida cambia:
+Cuando emisor y receptor se mueven respecto al medio, la frecuencia percibida no coincide con la emitida. Es lo que provoca el cambio característico de tono cuando una ambulancia pasa a tu lado.
+
+La fórmula general (movimientos a lo largo de la línea fuente-observador):
 
 $$f' = f_0 \\,\\frac{c + v_o}{c - v_s}$$
 
-con $c$ la velocidad de propagación, $v_o$ del observador (positiva si se acerca a la fuente) y $v_s$ de la fuente (positiva si se acerca al observador).
+donde:
+
+- $c$ es la velocidad de propagación de la onda en el medio (343 m/s para sonido en aire).
+- $v_o$ es la velocidad del observador, **positiva si se acerca** a la fuente.
+- $v_s$ es la velocidad de la fuente, **positiva si se acerca** al observador.
+
+Cuando la fuente se acerca, $f' > f_0$ (sonido más agudo). Cuando se aleja, $f' < f_0$ (más grave). Lo mismo si quien se mueve es el observador.
+
+> **Aplicaciones reales:** medición de velocidad por radar (luz reflejada en un coche), ecografía Doppler para medir flujo sanguíneo, corrimiento al rojo cosmológico (galaxias alejándose) que llevó a Hubble a postular la expansión del universo. En ese caso la fórmula es relativista, no la de arriba.
+
+Caso especial: si la fuente alcanza a la propia onda ($v_s \\to c$), la fórmula explota. Es la onda de choque (Mach cone): una concentración brusca de energía que percibimos como un *bang* sónico. Aviones supersónicos, balas y rayos producen este fenómeno.
 `,
         widget: "phys-doppler",
       },
@@ -244,7 +365,7 @@ con $c$ la velocidad de propagación, $v_o$ del observador (positiva si se acerc
     title: "Termodinámica",
     category: "fisica",
     level: "intermedio",
-    readingMinutes: 16,
+    readingMinutes: 22,
     summary:
       "Temperatura, calor, leyes de la termodinámica, ciclos y entropía.",
     sections: [
@@ -253,11 +374,21 @@ con $c$ la velocidad de propagación, $v_o$ del observador (positiva si se acerc
         title: "Temperatura, calor y trabajo",
         keywords: ["temperatura", "calor", "capacidad calorífica"],
         body: `
-La **temperatura** mide la energía cinética media de las partículas. El **calor** $Q$ es energía en tránsito por diferencia de temperatura. El **trabajo** $W$ es energía intercambiada por desplazamiento de fronteras o ejes. Para calentar una masa $m$ una temperatura $\\Delta T$:
+La termodinámica es la teoría que relaciona magnitudes macroscópicas (presión, temperatura, volumen) sin necesidad de seguir cada átomo individualmente. Tres conceptos fundamentales:
+
+- **Temperatura** $T$: mide la energía cinética media de las partículas. No es energía, sino una medida estadística. Su escala absoluta es el kelvin: $T = 0$ K corresponde al mínimo posible (no a la ausencia total de movimiento, por la mecánica cuántica).
+- **Calor** $Q$: energía en tránsito por **diferencia de temperatura**. Fluye espontáneamente del cuerpo caliente al frío. No es una propiedad almacenada en el cuerpo (ese sería su *energía interna*).
+- **Trabajo** $W$: energía intercambiada por **desplazamiento de fronteras** o ejes. Un pistón que comprime un gas le transfiere energía como trabajo.
+
+La distinción calor/trabajo es histórica: ambos son formas de energía en tránsito, pero termodinámicamente se cuentan por separado porque son cualitativamente distintos (el segundo principio dirá que no son intercambiables sin pérdida).
+
+Para calentar una masa $m$ de una sustancia una temperatura $\\Delta T$ sin cambio de fase:
 
 $$Q = m c \\Delta T$$
 
-con $c$ el calor específico (J/kg·K).
+donde $c$ es el **calor específico** (J/kg·K). El agua tiene un $c$ excepcionalmente alto (4186 J/kg·K), por eso modera el clima costero y la usamos como refrigerante.
+
+Para cambios de fase a temperatura constante: $Q = m L$, con $L$ el **calor latente** de fusión o vaporización.
 `,
       },
       {
@@ -265,11 +396,21 @@ con $c$ el calor específico (J/kg·K).
         title: "Primer principio",
         keywords: ["primer principio", "energía interna", "ΔU = Q − W"],
         body: `
-La energía se conserva:
+El primer principio es **la conservación de la energía** aplicada a sistemas termodinámicos. Establece que existe una función de estado $U$ —la **energía interna**— tal que:
 
 $$\\Delta U = Q - W$$
 
-En forma diferencial $dU = \\delta Q - \\delta W$. La entalpía $H = U + pV$ es útil a presión constante: $\\Delta H = Q_p$.
+donde $Q$ es el calor entrante (positivo si el sistema lo absorbe) y $W$ es el trabajo hecho **por** el sistema (positivo si se expande contra el entorno). En forma diferencial:
+
+$$dU = \\delta Q - \\delta W$$
+
+(usamos $\\delta$ para señalar que $Q$ y $W$ no son funciones de estado: dependen del camino).
+
+> **Trampa de signos:** algunos textos definen $W$ como trabajo *hecho sobre* el sistema; entonces aparece $\\Delta U = Q + W$. No es un error físico, solo de convenio. Comprueba siempre la convención antes de aplicar la fórmula.
+
+La **entalpía** $H = U + pV$ es una función de estado especialmente útil cuando el proceso ocurre a presión constante: en ese caso $\\Delta H = Q_p$. Por eso las tablas químicas dan entalpías de reacción: la presión atmosférica es prácticamente constante en el laboratorio.
+
+Una consecuencia inmediata es la imposibilidad de un **móvil perpetuo de primera especie**: una máquina que produzca trabajo sin consumir energía violaría el primer principio.
 `,
       },
       {
@@ -277,16 +418,26 @@ En forma diferencial $dU = \\delta Q - \\delta W$. La entalpía $H = U + pV$ es 
         title: "Gas ideal",
         keywords: ["gas ideal", "pV=nRT", "isoterma", "adiabática"],
         body: `
-Ecuación de estado: $pV = nRT$ con $R = 8{,}314\\,\\mathrm{J/(mol\\cdot K)}$.
+Un **gas ideal** es un modelo: partículas puntuales sin interacciones más allá de choques elásticos. Real para gases reales a baja presión y alta temperatura.
 
-Procesos típicos:
+La ecuación de estado:
 
-| Proceso | Constante | Trabajo |
-|---------|-----------|---------|
-| Isócoro | $V$ | $0$ |
-| Isobárico | $p$ | $p\\Delta V$ |
-| Isotermo | $T$ | $nRT\\ln(V_2/V_1)$ |
-| Adiabático | $Q = 0$ | $(p_1V_1 - p_2V_2)/(\\gamma - 1)$ |
+$$pV = nRT$$
+
+con $R = 8{,}314\\,\\mathrm{J/(mol\\cdot K)}$. Establece una relación rígida entre las tres variables; solo dos son independientes.
+
+Procesos típicos en el plano $p$-$V$:
+
+| Proceso | Constante | $W = \\int p\\,dV$ | Q | ΔU |
+|---------|-----------|-------------------|---|-----|
+| Isócoro | $V$ | $0$ | $nC_v\\Delta T$ | $Q$ |
+| Isobárico | $p$ | $p\\Delta V$ | $nC_p\\Delta T$ | $Q - W$ |
+| Isotermo | $T$ | $nRT\\ln(V_2/V_1)$ | $W$ | $0$ |
+| Adiabático | $Q = 0$ | $-\\Delta U$ | $0$ | $-W$ |
+
+El proceso adiabático satisface además $pV^\\gamma = \\text{cte}$, con $\\gamma = C_p/C_v$ (5/3 para gases monoatómicos, 7/5 para diatómicos como el aire). Por eso el aire que se comprime rápidamente en una bomba de bicicleta se calienta: la compresión adiabática no permite tiempo para que el calor escape.
+
+Manipula la simulación para observar isotermas: a mayor $T$, la isoterma se aleja del origen; cambiar $n$ escala todo verticalmente.
 `,
         widget: "chem-gas",
       },
@@ -295,13 +446,25 @@ Procesos típicos:
         title: "Segundo principio y entropía",
         keywords: ["segundo principio", "entropía", "Carnot", "irreversibilidad"],
         body: `
-Existe una función de estado $S$ tal que en un proceso reversible $dS = \\delta Q_\\text{rev}/T$. Para todo proceso real:
+El primer principio prohíbe procesos que violen la conservación de la energía. El segundo principio prohíbe procesos que **sí** la conservan pero no ocurren nunca: una taza de café no se calienta espontáneamente enfriando el aire que la rodea, aunque la energía total se conservaría.
+
+Existe una función de estado $S$ —la **entropía**— tal que en un proceso reversible:
+
+$$dS = \\frac{\\delta Q_\\text{rev}}{T}$$
+
+y, para todo proceso real (incluyendo el aislado universo):
 
 $$\\Delta S_{\\text{universo}} \\ge 0$$
 
-El **rendimiento de Carnot**, máximo posible entre dos focos a $T_h$ y $T_c$:
+La igualdad solo se alcanza en procesos reversibles, que son una idealización. Todo proceso real es irreversible y aumenta la entropía del universo.
+
+> **Interpretación estadística (Boltzmann):** $S = k_B \\ln \\Omega$, donde $\\Omega$ es el número de microestados compatibles con el macroestado. La entropía mide el desorden o, mejor dicho, la *multiplicidad*: hay muchísimos más microestados que corresponden a "gas uniforme en la habitación" que a "todo el gas en una esquina". Por eso las cosas tienden a desordenarse.
+
+**Carnot.** El rendimiento máximo posible para una máquina que opera entre dos focos a $T_h$ y $T_c$:
 
 $$\\eta_C = 1 - \\frac{T_c}{T_h}$$
+
+Este límite es **independiente del fluido y del diseño**. Por eso las centrales térmicas modernas se diseñan con vapor a 600 °C y agua de refrigeración a 30 °C: cada grado adicional de $T_h$ o cada grado menos de $T_c$ ganan eficiencia.
 `,
       },
       {
@@ -309,9 +472,27 @@ $$\\eta_C = 1 - \\frac{T_c}{T_h}$$
         title: "Modos de transferencia de calor",
         keywords: ["conducción", "convección", "radiación", "Fourier", "Stefan-Boltzmann"],
         body: `
-- **Conducción** (Fourier): $\\dot q = -k A\\,dT/dx$.
-- **Convección** (Newton): $\\dot q = hA(T_s - T_\\infty)$.
-- **Radiación** (Stefan–Boltzmann): $\\dot q = \\varepsilon\\sigma A(T_s^4 - T_\\infty^4)$, con $\\sigma = 5{,}67\\times 10^{-8}\\,\\mathrm{W/(m^2 K^4)}$.
+El calor se transfiere por tres mecanismos distintos, normalmente actuando en simultáneo.
+
+**Conducción** (sólidos, fluidos en reposo). Ley de Fourier:
+
+$$\\dot q = -k A\\,\\frac{dT}{dx}$$
+
+El signo menos refleja que el calor fluye de mayor a menor temperatura. La conductividad $k$ varía cinco órdenes de magnitud entre el aire ($k \\approx 0{,}025$) y el cobre ($k \\approx 400$ W/m·K). Por eso aislamos con materiales porosos que atrapan aire estanco.
+
+**Convección** (transferencia entre una superficie y un fluido en movimiento). Ley de Newton del enfriamiento:
+
+$$\\dot q = h A (T_s - T_\\infty)$$
+
+El coeficiente $h$ depende del régimen (laminar/turbulento), la geometría y las propiedades del fluido. Convección natural: el fluido se mueve por su propia diferencia de densidad. Convección forzada: hay un ventilador o bomba.
+
+**Radiación** (transferencia por ondas electromagnéticas, sin medio). Ley de Stefan–Boltzmann:
+
+$$\\dot q = \\varepsilon\\sigma A(T_s^4 - T_\\infty^4)$$
+
+con $\\sigma = 5{,}67\\times 10^{-8}\\,\\mathrm{W/(m^2 K^4)}$ y $\\varepsilon$ la emisividad de la superficie (1 para un cuerpo negro ideal). La dependencia con $T^4$ hace que la radiación sea despreciable a temperatura ambiente y dominante en superficies muy calientes (filamentos, fundiciones, el Sol).
+
+En ingeniería se trata cada modo con su propia "resistencia térmica" y se combinan en serie/paralelo como en un circuito eléctrico. La simulación muestra el perfil estacionario en una pared compuesta.
 `,
         widget: "eng-heat",
       },
@@ -324,7 +505,7 @@ $$\\eta_C = 1 - \\frac{T_c}{T_h}$$
     title: "Electromagnetismo",
     category: "fisica",
     level: "avanzado",
-    readingMinutes: 20,
+    readingMinutes: 26,
     summary:
       "Ley de Coulomb, campos eléctrico y magnético, leyes de Maxwell y ondas EM.",
     sections: [
@@ -333,11 +514,27 @@ $$\\eta_C = 1 - \\frac{T_c}{T_h}$$
         title: "Ley de Coulomb y campo eléctrico",
         keywords: ["Coulomb", "campo eléctrico", "carga"],
         body: `
-La fuerza entre dos cargas puntuales:
+La interacción electromagnética es la responsable de prácticamente todos los fenómenos macroscópicos no gravitatorios: enlaces químicos, propiedades de los materiales, luz, electrónica. Tiene dos manifestaciones unificadas: campo eléctrico y campo magnético.
+
+La fuerza entre dos cargas puntuales en reposo es la **ley de Coulomb**:
 
 $$\\vec F = \\frac{1}{4\\pi\\varepsilon_0}\\,\\frac{q_1 q_2}{r^2}\\,\\hat r$$
 
-El campo eléctrico es la fuerza por unidad de carga: $\\vec E = \\vec F/q$.
+con $1/(4\\pi\\varepsilon_0) \\approx 9 \\times 10^9$ N·m²/C². Es atractiva entre cargas opuestas, repulsiva entre iguales. Su forma $1/r^2$ es idéntica a la de Newton para gravedad, pero la constante de Coulomb es ~$10^{36}$ veces mayor que la gravitatoria por par electrón-protón. Por eso la gravedad solo importa para masas enormes: a escala atómica no se nota.
+
+El **campo eléctrico** $\\vec E$ se define como la fuerza por unidad de carga de prueba:
+
+$$\\vec E(\\vec r) = \\vec F/q$$
+
+Esto convierte a la fuerza en un campo: una propiedad del espacio que rodea a las cargas, independiente de la carga de prueba. El campo de una carga puntual:
+
+$$\\vec E = \\frac{1}{4\\pi\\varepsilon_0}\\,\\frac{q}{r^2}\\,\\hat r$$
+
+Para distribuciones complejas usamos el **principio de superposición** (las fuentes se suman vectorialmente) o la **ley de Gauss**:
+
+$$\\oint \\vec E \\cdot d\\vec A = \\frac{Q_\\text{enc}}{\\varepsilon_0}$$
+
+Útil cuando hay simetría esférica, cilíndrica o plana: convierte un cálculo integral en uno trivial.
 `,
       },
       {
@@ -345,11 +542,21 @@ El campo eléctrico es la fuerza por unidad de carga: $\\vec E = \\vec F/q$.
         title: "Corriente, resistencia y ley de Ohm",
         keywords: ["corriente", "resistencia", "Ohm", "potencia eléctrica"],
         body: `
-La corriente $I = dq/dt$ se mide en amperios. Para conductores óhmicos:
+La **corriente eléctrica** $I = dq/dt$ mide la carga que atraviesa una sección por unidad de tiempo. Se mide en amperios (1 A = 1 C/s). Por convención fluye en el sentido de las cargas positivas, aunque en metales los portadores son electrones que se mueven en sentido opuesto.
+
+Para un conductor "óhmico" (la mayoría de metales a temperatura moderada), la corriente es proporcional a la diferencia de potencial:
 
 $$V = I R$$
 
-La potencia disipada: $P = VI = I^2 R = V^2/R$.
+con $R$ la **resistencia** en ohmios. La ley de Ohm no es una ley fundamental sino una propiedad empírica de ciertos materiales; los semiconductores y los componentes electrónicos no óhmicos (diodos, transistores) la violan deliberadamente.
+
+Microscópicamente, $R = \\rho L/A$ donde $\\rho$ es la **resistividad** del material (Ω·m), $L$ la longitud y $A$ la sección. Un cable largo y delgado tiene más resistencia que uno corto y grueso.
+
+La **potencia disipada** por efecto Joule:
+
+$$P = VI = I^2 R = \\frac{V^2}{R}$$
+
+Es la energía eléctrica que se convierte en calor por las colisiones de los electrones con la red cristalina. Por eso las líneas de alta tensión transportan electricidad a cientos de kV: para el mismo $P$, un $V$ alto significa un $I$ bajo y por tanto pérdidas $I^2R$ pequeñas.
 `,
         widget: "phys-ohm",
       },
@@ -358,28 +565,72 @@ La potencia disipada: $P = VI = I^2 R = V^2/R$.
         title: "Circuitos RC",
         keywords: ["RC", "constante de tiempo", "carga", "descarga"],
         body: `
-En un circuito RC en serie con tensión $V$, la carga del condensador:
+Un circuito RC en serie con una fuente de tensión continua $V$ es el ejemplo más simple de respuesta dinámica: el condensador no se carga instantáneamente sino siguiendo una exponencial.
+
+La ecuación que rige la carga $q(t)$ del condensador, aplicando Kirchhoff:
+
+$$R\\frac{dq}{dt} + \\frac{q}{C} = V$$
+
+Resolviéndola con condición inicial $q(0) = 0$:
 
 $$V_C(t) = V\\left(1 - e^{-t/\\tau}\\right), \\qquad \\tau = RC$$
 
-Tras $5\\tau$ se alcanza ~99% de la tensión de la fuente.
+La **constante de tiempo** $\\tau = RC$ tiene unidades de segundos y mide la rapidez de carga. Tras $1\\tau$ la tensión alcanza ~63%; tras $3\\tau$, ~95%; tras $5\\tau$, ~99% (en la práctica se considera "cargado").
+
+La corriente, por su parte, decae:
+
+$$I(t) = \\frac{V}{R} e^{-t/\\tau}$$
+
+Empieza máxima ($V/R$, como si el condensador fuera un cortocircuito) y termina nula (cuando el condensador iguala la tensión de la fuente, no hay diferencia de potencial que mueva carga).
+
+El RC aparece en filtros, temporizadores, antirrebote de pulsadores, modelos de membranas neuronales… Es la primera ecuación diferencial que un ingeniero electrónico aprende a resolver.
 `,
         widget: "phys-rc",
+      },
+      {
+        id: "induccion",
+        title: "Inducción electromagnética",
+        keywords: ["inducción", "Faraday", "flujo", "Lenz"],
+        body: `
+Faraday descubrió en 1831 que un campo magnético variable induce una **fuerza electromotriz** en un circuito:
+
+$$\\varepsilon = -\\frac{d\\Phi_B}{dt}$$
+
+donde $\\Phi_B = \\int \\vec B \\cdot d\\vec A$ es el flujo magnético. El signo menos (ley de Lenz) indica que la corriente inducida se opone al cambio de flujo: la naturaleza "resiste" a la perturbación.
+
+Esta ley es la base de:
+
+- **Generadores eléctricos**: una bobina gira en un campo magnético, el flujo varía sinusoidalmente y se induce una corriente alterna.
+- **Transformadores**: dos bobinas acopladas magnéticamente; la relación de tensiones es la relación de espiras.
+- **Frenos electromagnéticos**, **inducción en placas de cocina**, **dinamos**.
+
+La inducción es uno de los puentes que unifican electricidad y magnetismo: campos eléctricos y magnéticos no son entidades separadas sino dos caras del mismo tensor electromagnético.
+`,
       },
       {
         id: "maxwell",
         title: "Ecuaciones de Maxwell",
         keywords: ["Maxwell", "Gauss", "Faraday", "Ampère"],
         body: `
-En el vacío y forma diferencial:
+Las cuatro ecuaciones de Maxwell condensan **toda** la electrodinámica clásica. En el vacío y forma diferencial:
 
-$$\\nabla\\cdot\\vec E = \\rho/\\varepsilon_0$$
-$$\\nabla\\cdot\\vec B = 0$$
-$$\\nabla\\times\\vec E = -\\partial \\vec B/\\partial t$$
-$$\\nabla\\times\\vec B = \\mu_0 \\vec J + \\mu_0\\varepsilon_0\\,\\partial\\vec E/\\partial t$$
+$$\\nabla\\cdot\\vec E = \\rho/\\varepsilon_0 \\quad \\text{(Gauss eléctrica: las cargas son fuentes de E)}$$
 
-De aquí surgen las **ondas electromagnéticas** que se propagan a $c = 1/\\sqrt{\\mu_0\\varepsilon_0}$.
+$$\\nabla\\cdot\\vec B = 0 \\quad \\text{(Gauss magnética: no hay monopolos magnéticos)}$$
+
+$$\\nabla\\times\\vec E = -\\frac{\\partial \\vec B}{\\partial t} \\quad \\text{(Faraday: B variable induce E rotacional)}$$
+
+$$\\nabla\\times\\vec B = \\mu_0 \\vec J + \\mu_0\\varepsilon_0\\,\\frac{\\partial\\vec E}{\\partial t} \\quad \\text{(Ampère–Maxwell)}$$
+
+El último término —**la corriente de desplazamiento**, contribución original de Maxwell— es el que cierra el sistema y permite predecir las **ondas electromagnéticas**: combinando las dos ecuaciones rotacionales se obtiene la ecuación de onda para $\\vec E$ y $\\vec B$, con velocidad:
+
+$$c = \\frac{1}{\\sqrt{\\mu_0\\varepsilon_0}} \\approx 3 \\times 10^8 \\,\\text{m/s}$$
+
+Maxwell calculó esta velocidad en 1865 y observó que coincidía con la velocidad medida de la luz. **Conclusión:** la luz es una onda electromagnética. Una de las síntesis teóricas más impresionantes de la historia.
+
+Las ondas EM existen en todo el espectro, desde las ondas de radio (km) hasta los rayos gamma (fm), pasando por microondas, infrarrojo, visible, UV y rayos X. Todas se propagan a $c$ en el vacío.
 `,
+        widget: "phys-em-wave",
       },
     ],
   },
@@ -390,7 +641,7 @@ De aquí surgen las **ondas electromagnéticas** que se propagan a $c = 1/\\sqrt
     title: "Óptica geométrica y ondulatoria",
     category: "fisica",
     level: "intermedio",
-    readingMinutes: 14,
+    readingMinutes: 18,
     summary:
       "Reflexión, refracción, lentes delgadas, difracción y polarización.",
     sections: [
@@ -399,9 +650,19 @@ De aquí surgen las **ondas electromagnéticas** que se propagan a $c = 1/\\sqrt
         title: "Reflexión y refracción",
         keywords: ["reflexión", "refracción", "Snell", "índice"],
         body: `
-**Reflexión**: el ángulo de incidencia es igual al de reflexión. **Refracción** (ley de Snell):
+La óptica geométrica trata la luz como rayos rectilíneos, una aproximación válida cuando la longitud de onda es muy pequeña frente a los objetos involucrados.
+
+**Ley de la reflexión.** El ángulo de incidencia es igual al de reflexión, ambos medidos desde la normal a la superficie. El rayo incidente, el reflejado y la normal son coplanarios.
+
+**Ley de Snell** (refracción al pasar a un medio con distinto índice $n$):
 
 $$n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2$$
+
+El índice de refracción $n = c/v$ mide cuánto se ralentiza la luz en el medio (1 en vacío, 1,33 en agua, 1,5 en vidrio común, ~2,4 en diamante). Cuanto mayor $n$, más se "dobla" el rayo hacia la normal.
+
+> **Reflexión total interna.** Si $n_1 > n_2$ y $\\theta_1$ supera el ángulo crítico $\\theta_c = \\arcsin(n_2/n_1)$, no hay refracción posible: toda la luz se refleja. Es lo que permite que la fibra óptica conduzca luz por kilómetros sin pérdidas significativas, y lo que hace que los diamantes brillen tanto (ángulo crítico pequeño, atrapan la luz dentro).
+
+La simulación permite explorar la dependencia $\\theta_2(\\theta_1)$ y observar la transición a reflexión total.
 `,
         widget: "phys-snell",
       },
@@ -410,23 +671,62 @@ $$n_1 \\sin\\theta_1 = n_2 \\sin\\theta_2$$
         title: "Lentes delgadas",
         keywords: ["lente", "distancia focal", "imagen"],
         body: `
-La ecuación de la lente delgada:
+Una lente convergente concentra rayos paralelos en un único punto, el **foco**, situado a distancia $f$ del centro óptico. Las divergentes los esparcen como si vinieran de un foco virtual.
+
+La **ecuación de la lente delgada** relaciona la distancia objeto $s_o$, la distancia imagen $s_i$ y la focal $f$:
 
 $$\\frac{1}{f} = \\frac{1}{s_o} + \\frac{1}{s_i}$$
 
-con aumento $M = -s_i/s_o$. Convención: $f > 0$ para lente convergente.
+con aumento lateral:
+
+$$M = -\\frac{s_i}{s_o}$$
+
+Convenio (Hecht): distancias positivas si están del lado donde corresponden físicamente al rayo (objeto a la izquierda, imagen real a la derecha). $f > 0$ para convergente, $f < 0$ para divergente. $M < 0$ significa imagen invertida; $|M| > 1$ aumentada.
+
+**Casos típicos** (lente convergente):
+
+| Posición del objeto | Imagen | Aplicación |
+|---------------------|--------|------------|
+| $s_o > 2f$ | Real, invertida, reducida | Cámara fotográfica |
+| $s_o = 2f$ | Real, invertida, igual tamaño | Fotocopiadora 1:1 |
+| $f < s_o < 2f$ | Real, invertida, aumentada | Proyector |
+| $s_o = f$ | En el infinito | Colimador |
+| $s_o < f$ | **Virtual**, derecha, aumentada | Lupa |
+
+La animación permite mover el objeto y ver la imagen formarse en tiempo real.
 `,
+        widget: "phys-lens",
       },
       {
         id: "difraccion",
         title: "Difracción y patrón de doble rendija",
         keywords: ["difracción", "Young", "doble rendija", "interferencia"],
         body: `
-La separación entre máximos en un experimento de Young:
+Cuando la luz pasa por una abertura comparable a su longitud de onda, deja de comportarse como rayos: se difracta y, si hay varias aberturas, interfiere.
+
+El **experimento de Young** (1801) usó dos rendijas paralelas iluminadas por una fuente monocromática y observó franjas oscuras y brillantes en una pantalla lejana. La separación entre máximos sucesivos:
 
 $$\\Delta y = \\frac{\\lambda L}{d}$$
 
-donde $d$ es la separación de las rendijas y $L$ la distancia a la pantalla.
+donde $d$ es la separación entre rendijas y $L$ la distancia a la pantalla. De esta fórmula se puede medir $\\lambda$ con precisión —fue así como se establecieron las longitudes de onda del visible.
+
+Este experimento fue **la prueba decisiva** de la naturaleza ondulatoria de la luz. Pero su versión cuántica (un solo fotón a la vez, o un solo electrón) reveló además que las partículas individuales también producen el patrón de interferencia: la materia tiene naturaleza ondulatoria. Es uno de los fenómenos más profundos y desconcertantes de la física.
+
+Las redes de difracción (muchas rendijas) producen máximos muy estrechos en posiciones $d\\sin\\theta = m\\lambda$ y son la base de los espectrómetros.
+`,
+      },
+      {
+        id: "polarizacion",
+        title: "Polarización",
+        keywords: ["polarización", "Malus", "luz polarizada"],
+        body: `
+La luz es una onda **transversal**: $\\vec E$ y $\\vec B$ vibran perpendicularmente a la dirección de propagación. La **polarización** indica en qué dirección oscila $\\vec E$.
+
+La luz solar y la de las bombillas es **no polarizada**: superposición aleatoria de todas las direcciones transversales. Un **polarizador** transmite solo una componente. Si la luz polarizada con intensidad $I_0$ pasa por un segundo polarizador a ángulo $\\theta$ del primero:
+
+$$I = I_0 \\cos^2\\theta \\quad \\text{(ley de Malus)}$$
+
+Aplicaciones: gafas de sol polarizadas (filtran reflejos del agua o el asfalto, polarizados horizontalmente), pantallas LCD, fotografía profesional, tensiones en materiales transparentes (fotoelasticidad).
 `,
       },
     ],
@@ -438,7 +738,7 @@ donde $d$ es la separación de las rendijas y $L$ la distancia a la pantalla.
     title: "Relatividad especial",
     category: "fisica",
     level: "avanzado",
-    readingMinutes: 12,
+    readingMinutes: 16,
     summary: "Postulados de Einstein, dilatación temporal, contracción de Lorentz, equivalencia masa-energía.",
     sections: [
       {
@@ -446,8 +746,14 @@ donde $d$ es la separación de las rendijas y $L$ la distancia a la pantalla.
         title: "Postulados de Einstein",
         keywords: ["relatividad", "postulado", "velocidad de la luz"],
         body: `
-1. Las leyes de la física son las mismas en todo sistema inercial.
-2. La velocidad de la luz $c$ es la misma para todos los observadores inerciales, sin importar el movimiento de la fuente.
+La relatividad especial (1905) reemplaza la mecánica de Newton para velocidades comparables a $c$. Se construye sobre dos postulados engañosamente simples:
+
+1. **Principio de relatividad**: las leyes de la física son las mismas en todo sistema de referencia inercial. Ningún experimento mecánico, óptico o electromagnético interno permite saber si te mueves o estás en reposo.
+2. **Constancia de $c$**: la velocidad de la luz en el vacío es la misma para todos los observadores inerciales, **sin importar el movimiento de la fuente o el observador**.
+
+El segundo postulado entra en conflicto frontal con el sentido común galileano. Si voy a 100 km/h y enciendo los faros, los fotones no salen a $c + 100$ km/h: salen a $c$. Y un observador en reposo también los mide a $c$. ¿Cómo es posible? La respuesta de Einstein fue radical: **el tiempo y el espacio no son absolutos**. Cada observador tiene su propio reloj y su propia regla, y se relacionan por las transformaciones de Lorentz.
+
+Toda la estructura siguiente —dilatación del tiempo, contracción de longitudes, $E = mc^2$— se deduce de estos dos postulados, sin más hipótesis físicas adicionales.
 `,
       },
       {
@@ -455,11 +761,25 @@ donde $d$ es la separación de las rendijas y $L$ la distancia a la pantalla.
         title: "Dilatación del tiempo y contracción de longitudes",
         keywords: ["dilatación", "Lorentz", "γ", "contracción"],
         body: `
-Definimos $\\gamma = 1/\\sqrt{1 - v^2/c^2}$. Un observador en reposo ve:
+Definimos el **factor de Lorentz**:
 
-$$\\Delta t = \\gamma\\,\\Delta t_0, \\qquad L = L_0/\\gamma$$
+$$\\gamma = \\frac{1}{\\sqrt{1 - v^2/c^2}}$$
 
-donde los subíndices $0$ refieren al sistema propio.
+Para $v \\ll c$, $\\gamma \\approx 1$ y recuperamos la mecánica newtoniana. Para $v \\to c$, $\\gamma \\to \\infty$.
+
+**Dilatación del tiempo.** Un reloj que se mueve a velocidad $v$ respecto a ti tic-taquea más lento por un factor $\\gamma$:
+
+$$\\Delta t = \\gamma\\,\\Delta t_0$$
+
+donde $\\Delta t_0$ es el intervalo medido en el sistema propio del reloj. Si fueras a 0,866 c, $\\gamma = 2$: tus relojes irían a la mitad de velocidad para un observador en Tierra.
+
+**Contracción de longitudes.** Un objeto que se mueve a velocidad $v$ se mide más corto en la dirección del movimiento por un factor $\\gamma$:
+
+$$L = L_0/\\gamma$$
+
+Estos efectos son simétricos: cada observador mide los relojes y reglas del otro como dilatados/contraídos. **No hay paradoja**: simplemente "ahora" no significa lo mismo para ambos (relatividad de la simultaneidad).
+
+> **Verificación experimental:** los muones cósmicos producidos en la alta atmósfera deberían decaer antes de llegar al suelo si solo viviesen $\\tau_0 \\approx 2{,}2\\,\\mu$s. Llegan en grandes cantidades porque, vistos desde Tierra, su tiempo propio se dilata por $\\gamma$ (~10 a velocidades típicas). Los GPS también requieren correcciones relativistas (especial y general) para no acumular errores de kilómetros al día.
 `,
       },
       {
@@ -467,11 +787,23 @@ donde los subíndices $0$ refieren al sistema propio.
         title: "Energía y masa",
         keywords: ["E=mc²", "energía relativista", "masa-energía"],
         body: `
-La energía total de una partícula libre:
+La famosa relación de Einstein no aparece como postulado sino como consecuencia. Para una partícula libre de masa $m$ y momento $p$:
 
 $$E^2 = (pc)^2 + (mc^2)^2$$
 
-En reposo: $E = mc^2$. La energía cinética relativista: $E_c = (\\gamma - 1)mc^2$.
+Casos especiales:
+
+- En reposo ($p = 0$): $E = mc^2$. La masa es energía. Una manzana de 100 g almacena $\\sim 10^{16}$ J, equivalente a varias bombas atómicas. Esta energía es accesible solo en procesos nucleares.
+- Para fotones ($m = 0$): $E = pc$. Los fotones tienen energía y momento sin tener masa en reposo.
+- A bajas velocidades: $E \\approx mc^2 + \\tfrac{1}{2}mv^2$. Recuperamos la cinética newtoniana más una "energía en reposo" constante (que no afecta a la dinámica clásica).
+
+La equivalencia masa-energía se confirma diariamente en aceleradores de partículas (creación de pares, fisión, fusión) y es la base del balance energético en estrellas y reactores nucleares.
+
+La energía cinética relativista verdadera es:
+
+$$E_c = (\\gamma - 1)mc^2$$
+
+que diverge cuando $v \\to c$: por eso ningún cuerpo masivo puede alcanzar la velocidad de la luz; haría falta energía infinita.
 `,
       },
     ],
@@ -483,7 +815,7 @@ En reposo: $E = mc^2$. La energía cinética relativista: $E_c = (\\gamma - 1)mc
     title: "Mecánica cuántica: postulados básicos",
     category: "fisica",
     level: "avanzado",
-    readingMinutes: 15,
+    readingMinutes: 20,
     summary:
       "Función de onda, principio de incertidumbre, ecuación de Schrödinger y ejemplos elementales.",
     sections: [
@@ -492,9 +824,17 @@ En reposo: $E = mc^2$. La energía cinética relativista: $E_c = (\\gamma - 1)mc
         title: "Dualidad onda-partícula",
         keywords: ["de Broglie", "fotón", "dualidad"],
         body: `
-A toda partícula de momento $p$ se asocia una longitud de onda:
+A finales del siglo XIX la física parecía cerrada: Newton para mecánica, Maxwell para electromagnetismo. Pero algunos experimentos (radiación del cuerpo negro, efecto fotoeléctrico, espectros atómicos) no encajaban. La salida fue postular que la energía está **cuantizada**.
+
+Einstein (1905) explicó el efecto fotoeléctrico postulando que la luz se compone de paquetes discretos —**fotones**— de energía $E = hf$. Hasta entonces se la creía estrictamente onda.
+
+De Broglie (1924) extendió la idea: si las ondas tienen propiedades de partícula, ¿por qué no las partículas propiedades de onda? Postuló que a toda partícula de momento $p$ se asocia una longitud de onda:
 
 $$\\lambda = \\frac{h}{p}, \\qquad h = 6{,}626\\times 10^{-34}\\,\\mathrm{J\\cdot s}$$
+
+Para objetos macroscópicos (una pelota de tenis), $\\lambda$ es ~$10^{-34}$ m: indetectable. Para electrones ($p$ pequeño), $\\lambda$ es ~Å, comparable a distancias atómicas. Por eso los electrones difractan en cristales (Davisson–Germer, 1927) y se usan microscopios electrónicos para resolver detalles más finos que los del óptico.
+
+La dualidad no es una contradicción: las partículas cuánticas son entidades nuevas que se manifiestan como onda en unos experimentos y como partícula en otros. La descripción correcta es la mecánica cuántica.
 `,
       },
       {
@@ -502,9 +842,21 @@ $$\\lambda = \\frac{h}{p}, \\qquad h = 6{,}626\\times 10^{-34}\\,\\mathrm{J\\cdo
         title: "Principio de incertidumbre de Heisenberg",
         keywords: ["incertidumbre", "Heisenberg", "Δx Δp"],
         body: `
+La famosa relación de Heisenberg (1927):
+
 $$\\Delta x \\,\\Delta p \\ge \\frac{\\hbar}{2}$$
 
-Existe un compromiso fundamental entre la precisión simultánea con que se conocen posición y momento.
+establece que **no es posible** conocer simultáneamente la posición y el momento de una partícula con precisión arbitraria. Cuanto más estrechamente localizamos un electrón, más se dispersa su distribución de momentos, y viceversa.
+
+> No es una limitación instrumental sino una propiedad intrínseca de la naturaleza cuántica. No depende del experimento ni del observador.
+
+Una relación análoga existe para energía y tiempo:
+
+$$\\Delta E\\,\\Delta t \\ge \\hbar/2$$
+
+que permite la existencia de partículas virtuales (responsables de las fuerzas fundamentales) durante intervalos de tiempo muy breves.
+
+Una consecuencia es que el "estado fundamental" de un oscilador cuántico no tiene energía cero: tendría $\\Delta x = 0$ y $\\Delta p = 0$, prohibido. Existe una **energía de punto cero** $E_0 = \\tfrac{1}{2}\\hbar\\omega$ que persiste incluso a 0 K.
 `,
       },
       {
@@ -512,11 +864,25 @@ Existe un compromiso fundamental entre la precisión simultánea con que se cono
         title: "Ecuación de Schrödinger",
         keywords: ["Schrödinger", "función de onda", "Hamiltoniano"],
         body: `
-Para una partícula no relativista en un potencial $V(\\vec r)$:
+El estado cuántico de un sistema se describe por una **función de onda compleja** $\\Psi(\\vec r, t)$. Su interpretación (Born) es probabilística: $|\\Psi|^2$ es la densidad de probabilidad de encontrar la partícula en $\\vec r$ en el instante $t$.
+
+La evolución temporal está gobernada por la **ecuación de Schrödinger**:
 
 $$i\\hbar\\frac{\\partial \\Psi}{\\partial t} = -\\frac{\\hbar^2}{2m}\\nabla^2\\Psi + V\\Psi$$
 
-Las soluciones estacionarias se obtienen separando variables: $\\Psi(\\vec r, t) = \\psi(\\vec r) e^{-iEt/\\hbar}$.
+El operador del miembro derecho es el **Hamiltoniano** $\\hat H$ (energía cinética + potencial). La ecuación es lineal: vale el principio de superposición (los estados pueden combinarse y el resultado es otro estado válido).
+
+Para sistemas estacionarios separamos variables: $\\Psi(\\vec r, t) = \\psi(\\vec r) e^{-iEt/\\hbar}$, y obtenemos la **ecuación de Schrödinger independiente del tiempo**:
+
+$$\\hat H \\psi = E \\psi$$
+
+un problema de autovalores. Las energías permitidas $E_n$ son los autovalores del Hamiltoniano. Para un átomo de hidrógeno: $E_n = -13{,}6/n^2$ eV, exactamente lo que Bohr postuló por intuición.
+
+Para una partícula en un pozo unidimensional infinito de anchura $L$:
+
+$$E_n = \\frac{n^2 \\pi^2 \\hbar^2}{2mL^2}, \\qquad n = 1, 2, 3, \\dots$$
+
+La cuantización surge naturalmente al imponer que $\\psi$ se anule en las paredes.
 `,
       },
       {
@@ -524,9 +890,21 @@ Las soluciones estacionarias se obtienen separando variables: $\\Psi(\\vec r, t)
         title: "Decaimiento radiactivo",
         keywords: ["decaimiento", "vida media", "exponencial", "λ"],
         body: `
-El número de núcleos restantes evoluciona como:
+El decaimiento radiactivo es un proceso cuántico genuino: cada núcleo individual decae aleatoriamente, pero el conjunto sigue una ley estadística precisa. Si la probabilidad de decaimiento por unidad de tiempo es $\\lambda$ (constante), la población restante sigue:
 
-$$N(t) = N_0 e^{-\\lambda t}, \\qquad t_{1/2} = \\frac{\\ln 2}{\\lambda}$$
+$$N(t) = N_0 e^{-\\lambda t}$$
+
+La **vida media** $t_{1/2}$ es el tiempo necesario para que la mitad de los núcleos haya decaído:
+
+$$t_{1/2} = \\frac{\\ln 2}{\\lambda}$$
+
+Es independiente de la edad del núcleo (los átomos no "envejecen": un C-14 de hace mil años tiene la misma probabilidad de decaer en el próximo segundo que uno recién creado).
+
+Aplicaciones:
+
+- **Datación radiactiva**: el C-14 tiene $t_{1/2} \\approx 5730$ años, útil para arqueología hasta ~50 mil años. El U-Pb tiene $t_{1/2}$ del orden de miles de millones de años, útil en geocronología.
+- **Medicina nuclear**: isótopos como Tc-99m (6 h) marcan tejidos en gammagrafías y se eliminan rápidamente.
+- **Reactores y armas**: la cinética del decaimiento gobierna el comportamiento de la fisión.
 `,
         widget: "phys-decay",
       },
@@ -539,7 +917,7 @@ $$N(t) = N_0 e^{-\\lambda t}, \\qquad t_{1/2} = \\frac{\\ln 2}{\\lambda}$$
     title: "Mecánica de fluidos",
     category: "fisica",
     level: "intermedio",
-    readingMinutes: 12,
+    readingMinutes: 16,
     summary: "Presión, principio de Arquímedes, ecuación de Bernoulli, viscosidad.",
     sections: [
       {
@@ -547,9 +925,17 @@ $$N(t) = N_0 e^{-\\lambda t}, \\qquad t_{1/2} = \\frac{\\ln 2}{\\lambda}$$
         title: "Presión y principio de Pascal",
         keywords: ["presión", "Pascal", "estática"],
         body: `
-$$p = \\frac{F}{A}, \\qquad p(h) = p_0 + \\rho g h$$
+La **presión** es la fuerza por unidad de área que un fluido ejerce sobre las paredes (o sobre cualquier superficie inmersa). Se mide en pascales (1 Pa = 1 N/m²). En un fluido en reposo es **isotrópica**: actúa con el mismo valor en todas las direcciones desde un punto.
 
-El principio de Pascal: una variación de presión aplicada a un fluido confinado se transmite íntegramente a todos sus puntos (base de la prensa hidráulica).
+$$p = \\frac{F}{A}$$
+
+En un líquido en reposo bajo gravedad la presión crece linealmente con la profundidad:
+
+$$p(h) = p_0 + \\rho g h$$
+
+donde $p_0$ es la presión en la superficie. Por eso la presión a 10 m de profundidad en agua es ya $\\sim 2$ atm.
+
+**Principio de Pascal.** Una variación de presión aplicada a un fluido confinado se transmite íntegramente a todos sus puntos. Es la base de la **prensa hidráulica**: aplicas una fuerza pequeña sobre un pistón pequeño y obtienes una fuerza grande sobre uno grande, mantenida la presión constante. La amplificación es la razón de áreas; la conservación de energía exige que el desplazamiento sea inversamente proporcional.
 `,
       },
       {
@@ -557,11 +943,23 @@ El principio de Pascal: una variación de presión aplicada a un fluido confinad
         title: "Empuje de Arquímedes",
         keywords: ["Arquímedes", "empuje", "flotación"],
         body: `
-Todo cuerpo sumergido experimenta un empuje vertical igual al peso del fluido desplazado:
+Todo cuerpo total o parcialmente sumergido experimenta una fuerza vertical hacia arriba —el **empuje** o **boyante**— igual al peso del fluido desplazado:
 
-$$E = \\rho_f g V_{\\text{desplazado}}$$
+$$E = \\rho_f \\, g \\, V_{\\text{desplazado}}$$
 
-Flota si $\\rho_{cuerpo} < \\rho_f$.
+La explicación es directa: la presión hidrostática es mayor en la base inferior del cuerpo que en la superior, y la diferencia neta es exactamente el peso del fluido desplazado.
+
+**Condiciones de flotación:**
+
+| Condición | Resultado |
+|-----------|-----------|
+| $\\rho_{\\text{cuerpo}} < \\rho_f$ | Flota |
+| $\\rho_{\\text{cuerpo}} = \\rho_f$ | Equilibrio neutro (suspendido) |
+| $\\rho_{\\text{cuerpo}} > \\rho_f$ | Hunde |
+
+Un barco de acero flota porque su densidad **media** (incluyendo el aire interior) es menor que la del agua. Un submarino regula su flotabilidad llenando o vaciando tanques de lastre con agua.
+
+> El principio le sirvió a Arquímedes para detectar adulteración en una corona supuestamente de oro. Si el peso aparente sumergido era menor del esperado, había mezcla con un metal menos denso (plata).
 `,
       },
       {
@@ -569,11 +967,38 @@ Flota si $\\rho_{cuerpo} < \\rho_f$.
         title: "Ecuación de Bernoulli",
         keywords: ["Bernoulli", "conservación energía", "velocidad presión"],
         body: `
-Para un flujo estacionario, incompresible y sin viscosidad:
+Para un flujo **estacionario, incompresible y sin viscosidad** a lo largo de una línea de corriente, se conserva la suma:
 
 $$p + \\tfrac{1}{2}\\rho v^2 + \\rho g h = \\text{cte}$$
 
-Donde $v$ aumenta, $p$ disminuye (efecto Venturi).
+Es la conservación de la energía mecánica por unidad de volumen: presión + cinética + potencial gravitatoria.
+
+**Consecuencia contraintuitiva.** Donde la velocidad aumenta, la presión disminuye. Es el efecto Venturi y explica:
+
+- La sustentación de un perfil aerodinámico (el aire sobre el ala viaja más rápido que bajo ella → menor presión arriba → fuerza neta hacia arriba). Atención: este es el modelo *de divulgación*; la sustentación real involucra también deflexión del flujo (Newton).
+- Un atomizador o una pistola de pintura: aire rápido sobre el extremo de un tubo crea baja presión que succiona el líquido.
+- El medidor Venturi para caudales en tuberías.
+
+La animación interactiva muestra el perfil de presión y velocidad en un tubo con estrechamiento. Mueve los radios y observa cómo, por la ecuación de continuidad $A\\,v = $ cte, la velocidad sube en la garganta y la presión cae.
+`,
+        widget: "phys-fluid",
+      },
+      {
+        id: "viscosidad",
+        title: "Viscosidad y régimen de flujo",
+        keywords: ["viscosidad", "Reynolds", "laminar", "turbulento"],
+        body: `
+La **viscosidad** $\\mu$ mide la resistencia interna de un fluido a deformarse. La miel tiene $\\mu \\sim 10$ Pa·s, el agua $10^{-3}$, el aire $\\sim 1{,}8\\times 10^{-5}$.
+
+Para un flujo en un tubo, el cociente entre fuerzas inerciales y viscosas es el **número de Reynolds**:
+
+$$\\mathrm{Re} = \\frac{\\rho v D}{\\mu}$$
+
+- $\\mathrm{Re} < 2300$: **flujo laminar**, capas paralelas, perfil parabólico de velocidad. Predecible, ordenado.
+- $\\mathrm{Re} > 4000$: **flujo turbulento**, remolinos caóticos, mezcla intensa. Aumenta drásticamente las pérdidas por fricción.
+- $2300 < \\mathrm{Re} < 4000$: zona de transición, comportamiento errático.
+
+La distinción es crucial en ingeniería: el flujo de sangre en capilares es laminar; en una tubería de agua doméstica, turbulento; en aerodinámica de aviones, mixto con regiones de cada tipo. La transición fue uno de los grandes problemas del siglo XX y sigue sin tener una teoría completa.
 `,
       },
     ],
