@@ -72,16 +72,20 @@ export function InteractiveChart({
       <div className="grid grid-cols-1 md:grid-cols-[1fr_220px]">
         <div className="p-3" style={{ height }}>
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 10, right: 16, bottom: 24, left: 0 }}>
+            <LineChart
+              data={data}
+              margin={{ top: 28, right: 24, bottom: xLabel ? 44 : 24, left: yLabel ? 28 : 8 }}
+            >
               <CartesianGrid stroke="var(--border)" strokeDasharray="2 4" />
               <XAxis
                 dataKey={xKey}
                 stroke="var(--muted-foreground)"
                 fontSize={10}
                 tickLine={false}
+                tickMargin={6}
                 label={
                   xLabel
-                    ? { value: xLabel, position: "insideBottom", offset: -8, fill: "var(--muted-foreground)", fontSize: 10 }
+                    ? { value: xLabel, position: "insideBottom", offset: -16, fill: "var(--muted-foreground)", fontSize: 10 }
                     : undefined
                 }
               />
@@ -89,9 +93,11 @@ export function InteractiveChart({
                 stroke="var(--muted-foreground)"
                 fontSize={10}
                 tickLine={false}
+                tickMargin={4}
+                width={48}
                 label={
                   yLabel
-                    ? { value: yLabel, angle: -90, position: "insideLeft", fill: "var(--muted-foreground)", fontSize: 10 }
+                    ? { value: yLabel, angle: -90, position: "insideLeft", offset: 4, dy: 30, fill: "var(--muted-foreground)", fontSize: 10 }
                     : undefined
                 }
               />
@@ -104,7 +110,13 @@ export function InteractiveChart({
                 }}
                 labelStyle={{ color: "var(--muted-foreground)" }}
               />
-              <Legend wrapperStyle={{ fontSize: 11 }} />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                height={20}
+                iconSize={10}
+                wrapperStyle={{ fontSize: 11, top: 0, right: 8, paddingBottom: 4 }}
+              />
               <ReferenceLine y={0} stroke="var(--border-strong)" />
               {series.map((s) => (
                 <Line
