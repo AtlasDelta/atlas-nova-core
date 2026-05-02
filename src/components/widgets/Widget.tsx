@@ -1512,6 +1512,21 @@ const REGISTRY: Record<WidgetKey, () => ReactElement> = {
   "eng-heat": EngHeat,
   "eng-rankine": EngRankine,
   "eng-queue": EngQueue,
+  "phys-energy": PhysEnergy,
+  "phys-collision": PhysCollision,
+  "phys-em-wave": PhysEMWave,
+  "phys-lens": PhysLens,
+  "phys-fluid": PhysFluid,
+  "chem-lechatelier": ChemLeChatelier,
+  "chem-orbitals": ChemOrbitals,
+  "chem-buffer": ChemBuffer,
+  "math-riemann": MathRiemann,
+  "math-vectorfield": MathVectorField,
+  "math-distribution": MathDistribution,
+  "math-conic": MathConic,
+  "eng-rlc": EngRLC,
+  "eng-moody": EngMoody,
+  "eng-thevenin": EngThevenin,
 };
 
 export function Widget({ name }: { name: WidgetKey }) {
