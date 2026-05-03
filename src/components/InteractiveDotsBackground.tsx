@@ -39,7 +39,7 @@ export function InteractiveDotsBackground() {
       const h = sizeRef.current.h;
       // Pick a random edge; spawn just outside, velocity points inward
       const edge = Math.floor(Math.random() * 4);
-      const speed = 0.2 + Math.random() * 0.4;
+      const speed = 0.5 + Math.random() * 0.7;
       let x = 0;
       let y = 0;
       let vx = 0;
