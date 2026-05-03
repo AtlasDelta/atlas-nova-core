@@ -39,7 +39,7 @@ export function InteractiveDotsBackground() {
       const h = sizeRef.current.h;
       // Pick a random edge; spawn just outside, velocity points inward
       const edge = Math.floor(Math.random() * 4);
-      const speed = 0.2 + Math.random() * 0.4;
+      const speed = 0.5 + Math.random() * 0.7;
       let x = 0;
       let y = 0;
       let vx = 0;
@@ -157,24 +157,33 @@ export function InteractiveDotsBackground() {
       for (let i = 0; i < points.length; i++) {
         const p = points[i];
 
-        // MAGNET: attract toward cursor
+        // MAGNET: attract toward cursor (perturbs trajectory but doesn't dominate)
         const dx = cursor.x - p.x;
         const dy = cursor.y - p.y;
         const dist = Math.hypot(dx, dy);
         if (dist < influence && dist > 0.001) {
-          const force = (1 - dist / influence) * 0.12;
+          const force = (1 - dist / influence) * 0.08;
           p.vx += (dx / dist) * force;
           p.vy += (dy / dist) * force;
         }
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.985;
-        p.vy *= 0.985;
+        // Very light damping so points keep traveling across the screen
+        p.vx *= 0.999;
+        p.vy *= 0.999;
 
         // Tiny drift
-        p.vx += (Math.random() - 0.5) * 0.015;
-        p.vy += (Math.random() - 0.5) * 0.015;
+        p.vx += (Math.random() - 0.5) * 0.01;
+        p.vy += (Math.random() - 0.5) * 0.01;
+
+        // Cap speed so magnet attraction doesn't snowball
+        const sp = Math.hypot(p.vx, p.vy);
+        const maxSp = 1.6;
+        if (sp > maxSp) {
+          p.vx = (p.vx / sp) * maxSp;
+          p.vy = (p.vy / sp) * maxSp;
+        }
 
         // Lifecycle
         p.life += 1 / p.ttl;
