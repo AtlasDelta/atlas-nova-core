@@ -5,6 +5,8 @@ interface Point {
   y: number;
   vx: number;
   vy: number;
+  life: number; // 0..1 progress through lifetime
+  ttl: number; // total frames to live
 }
 
 export function InteractiveDotsBackground() {
@@ -22,6 +24,7 @@ export function InteractiveDotsBackground() {
     ty: 0,
   });
   const rafRef = useRef<number | null>(null);
+  const sizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -29,26 +32,78 @@ export function InteractiveDotsBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let width = 0;
-    let height = 0;
     let dpr = window.devicePixelRatio || 1;
 
+    const spawnPoint = (): Point => {
+      const w = sizeRef.current.w;
+      const h = sizeRef.current.h;
+      // Pick a random edge; spawn just outside, velocity points inward
+      const edge = Math.floor(Math.random() * 4);
+      const speed = 0.2 + Math.random() * 0.4;
+      let x = 0;
+      let y = 0;
+      let vx = 0;
+      let vy = 0;
+      const margin = 8;
+      if (edge === 0) {
+        // top
+        x = Math.random() * w;
+        y = -margin;
+        vx = (Math.random() - 0.5) * speed;
+        vy = speed;
+      } else if (edge === 1) {
+        // right
+        x = w + margin;
+        y = Math.random() * h;
+        vx = -speed;
+        vy = (Math.random() - 0.5) * speed;
+      } else if (edge === 2) {
+        // bottom
+        x = Math.random() * w;
+        y = h + margin;
+        vx = (Math.random() - 0.5) * speed;
+        vy = -speed;
+      } else {
+        // left
+        x = -margin;
+        y = Math.random() * h;
+        vx = speed;
+        vy = (Math.random() - 0.5) * speed;
+      }
+      return {
+        x,
+        y,
+        vx,
+        vy,
+        life: 0,
+        ttl: 360 + Math.floor(Math.random() * 360), // ~6-12s @60fps
+      };
+    };
+
+    const targetCount = () => {
+      const area = sizeRef.current.w * sizeRef.current.h;
+      const density = 14000;
+      return Math.max(40, Math.min(180, Math.floor(area / density)));
+    };
+
     const initPoints = () => {
-      const area = width * height;
-      const density = 14000; // px² por punto
-      const count = Math.max(40, Math.min(180, Math.floor(area / density)));
-      pointsRef.current = Array.from({ length: count }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-      }));
+      const count = targetCount();
+      pointsRef.current = Array.from({ length: count }, () => {
+        // Initial seed: spread across screen with random life so they don't all die together
+        const p = spawnPoint();
+        p.x = Math.random() * sizeRef.current.w;
+        p.y = Math.random() * sizeRef.current.h;
+        p.life = Math.random();
+        return p;
+      });
     };
 
     const resize = () => {
       dpr = window.devicePixelRatio || 1;
-      width = window.innerWidth;
-      height = window.innerHeight;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      sizeRef.current.w = width;
+      sizeRef.current.h = height;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = width + "px";
@@ -61,15 +116,12 @@ export function InteractiveDotsBackground() {
       idleMouseRef.current.ty = height / 2;
     };
 
-    const readCss = (varName: string, fallback: string) => {
-      const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-      return v || fallback;
-    };
-
     let lastIdleRetarget = 0;
 
     const draw = (t: number) => {
-      // Idle cursor: random target, smooth pursuit
+      const width = sizeRef.current.w;
+      const height = sizeRef.current.h;
+
       if (!mouseRef.current.active) {
         if (t - lastIdleRetarget > 2500) {
           idleMouseRef.current.tx = Math.random() * width;
@@ -86,51 +138,65 @@ export function InteractiveDotsBackground() {
 
       ctx.clearRect(0, 0, width, height);
 
-      const primaryRGB = "45, 212, 191"; // teal accent
-      const fgRGB = "226, 232, 240"; // light foreground
+      const primaryRGB = "45, 212, 191";
+      const fgRGB = "226, 232, 240";
 
       const points = pointsRef.current;
-      const influence = 140;
+      const influence = 220;
       const linkDist = 130;
 
+      // Keep total count stable: replace dead points
+      const desired = targetCount();
+      if (points.length < desired) {
+        for (let i = points.length; i < desired; i++) points.push(spawnPoint());
+      } else if (points.length > desired) {
+        points.length = desired;
+      }
+
       // Update positions
-      for (const p of points) {
-        // Cursor repulsion / attraction (light pull)
-        const dx = p.x - cursor.x;
-        const dy = p.y - cursor.y;
+      for (let i = 0; i < points.length; i++) {
+        const p = points[i];
+
+        // MAGNET: attract toward cursor
+        const dx = cursor.x - p.x;
+        const dy = cursor.y - p.y;
         const dist = Math.hypot(dx, dy);
         if (dist < influence && dist > 0.001) {
-          const force = (1 - dist / influence) * 0.35;
-          p.vx += (dx / dist) * force * 0.15;
-          p.vy += (dy / dist) * force * 0.15;
+          const force = (1 - dist / influence) * 0.12;
+          p.vx += (dx / dist) * force;
+          p.vy += (dy / dist) * force;
         }
 
         p.x += p.vx;
         p.y += p.vy;
-        p.vx *= 0.96;
-        p.vy *= 0.96;
+        p.vx *= 0.985;
+        p.vy *= 0.985;
 
-        // Gentle baseline drift
-        p.vx += (Math.random() - 0.5) * 0.02;
-        p.vy += (Math.random() - 0.5) * 0.02;
+        // Tiny drift
+        p.vx += (Math.random() - 0.5) * 0.015;
+        p.vy += (Math.random() - 0.5) * 0.015;
 
-        // Wrap
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-        if (p.y < -10) p.y = height + 10;
-        if (p.y > height + 10) p.y = -10;
+        // Lifecycle
+        p.life += 1 / p.ttl;
+        if (p.life >= 1) {
+          points[i] = spawnPoint();
+        }
       }
 
-      // Draw links
+      // Draw links (alpha modulated by both points' life envelopes)
       for (let i = 0; i < points.length; i++) {
         const a = points[i];
+        const aFade = Math.sin(Math.PI * a.life); // 0→1→0
+        if (aFade <= 0.02) continue;
         for (let j = i + 1; j < points.length; j++) {
           const b = points[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const d = Math.hypot(dx, dy);
           if (d < linkDist) {
-            const alpha = (1 - d / linkDist) * 0.6;
+            const bFade = Math.sin(Math.PI * b.life);
+            const alpha = (1 - d / linkDist) * 0.6 * aFade * bFade;
+            if (alpha <= 0.01) continue;
             ctx.strokeStyle = `rgba(${fgRGB}, ${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.beginPath();
@@ -141,15 +207,17 @@ export function InteractiveDotsBackground() {
         }
       }
 
-      // Draw points (highlight ones near cursor)
+      // Draw points
       for (const p of points) {
+        const fade = Math.sin(Math.PI * p.life);
+        if (fade <= 0.02) continue;
         const dx = p.x - cursor.x;
         const dy = p.y - cursor.y;
         const dist = Math.hypot(dx, dy);
         const near = dist < influence;
         const r = near ? 2.6 : 1.8;
         const color = near ? primaryRGB : fgRGB;
-        const alpha = near ? 1.0 : 0.85;
+        const alpha = (near ? 1.0 : 0.85) * fade;
         ctx.fillStyle = `rgba(${color}, ${alpha})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
