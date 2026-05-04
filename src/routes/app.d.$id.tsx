@@ -368,7 +368,7 @@ function DocumentEditor() {
           {view !== "editor" && (
             <div className="min-h-0 overflow-auto bg-white">
               <div ref={previewRef} className="lp-doc max-w-3xl mx-auto p-10 text-black">
-                <LatexPreview source={previewSrc} models={modelMap} docs={docMap} />
+                <LatexPreview source={previewSrc} docs={docMap} />
               </div>
             </div>
           )}
