@@ -986,7 +986,7 @@ y_{n+1} &= y_n + \\tfrac{h}{6}(k_1 + 2k_2 + 2k_3 + k_4)
 
 Error global $O(h^4)$ con cuatro evaluaciones por paso. Es el método "estándar" para problemas no rígidos: se enseña primero, se usa en simulaciones físicas, animación, juegos, etc.
 
-**Métodos adaptativos (RKF45, Dormand-Prince).** Calculan dos estimaciones de orden distinto y usan su diferencia como **estimador del error local**. Si el error es muy grande, reducen $h$; si es muy pequeño, lo agrandan. Mantienen el error por debajo de una tolerancia con el menor coste posible. Son los que llaman las funciones `solve_ivp` de SciPy o `ode45` de MATLAB.
+**Métodos adaptativos (RKF45, Dormand-Prince).** Calculan dos estimaciones de orden distinto y usan su diferencia como **estimador del error local**. Si el error es muy grande, reducen $h$; si es muy pequeño, lo agrandan. Mantienen el error por debajo de una tolerancia con el menor coste posible. Son los que llaman las funciones \`solve_ivp\` de SciPy o \`ode45\` de MATLAB.
 
 **Métodos implícitos.** Para problemas **rígidos** (donde la solución tiene escalas temporales muy distintas, típico en cinética química o circuitos con elementos muy dispares), los métodos explícitos exigen pasos minúsculos por estabilidad. Métodos implícitos (Euler implícito, BDF, Radau) son más robustos pero requieren resolver una ecuación no lineal en cada paso (con Newton).
 
