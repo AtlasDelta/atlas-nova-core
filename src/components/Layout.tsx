@@ -34,11 +34,10 @@ export function Layout() {
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-[1600px] mx-auto px-6 h-14 flex items-center gap-6">
           <Link to="/" className="flex items-center gap-2 font-display font-semibold">
-            <span className="text-foreground">AtlasDelta</span>
+            <span className="text-foreground">AtlasDelta<span className="text-muted-foreground">//</span>Revamped</span>
           </Link>
 
           <nav className="hidden sm:flex items-center gap-1 ml-4">
-            {navLink("/", "Inicio", true)}
             {navLink("/library", "Repositorio")}
             {!loading && user && navLink("/app", "Workspace")}
           </nav>
