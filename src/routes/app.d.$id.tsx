@@ -8,7 +8,7 @@ import { LatexPreview } from "@/components/LatexPreview";
 import { LinksDialog, LinksSidebar } from "@/components/DocumentLinks";
 import { fetchLinkedModels, fetchLinkedDocuments, type LinkedModel, type LinkedDocument } from "@/lib/document-links";
 import { YjsSupabaseProvider } from "@/lib/yjs-supabase-provider";
-import type { Graph } from "@/components/GraphEditor";
+
 import { ChevronLeft, Loader2, Users, Wifi, WifiOff, Download, Link2, PanelRightClose, PanelRightOpen } from "lucide-react";
 
 export const Route = createFileRoute("/app/d/$id")({
