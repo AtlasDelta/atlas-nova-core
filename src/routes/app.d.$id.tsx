@@ -93,12 +93,6 @@ function DocumentEditor() {
     })();
   }, [id]);
 
-  const modelMap = useMemo(() => {
-    const m = new Map<string, { name: string; graph: Graph }>();
-    linkedModels.forEach((lm) => m.set(lm.model_id, { name: lm.model.name, graph: lm.model.graph }));
-    return m;
-  }, [linkedModels]);
-
   const docMap = useMemo(() => {
     const m = new Map<string, { title: string; content: string }>();
     linkedDocs.forEach((ld) => m.set(ld.target_document_id, { title: ld.target.title, content: ld.target.content }));
