@@ -379,7 +379,6 @@ function DocumentEditor() {
             models={linkedModels}
             docs={linkedDocs}
             onOpenManager={() => setLinksOpen(true)}
-            onInsertModel={(lm) => insertSnippet(`\n\\includemodel{${lm.model_id}}[${lm.model.name}]\n`)}
             onInsertDoc={(ld) => insertSnippet(`\n\\input{${ld.target_document_id}}\n`)}
           />
         )}
