@@ -118,13 +118,6 @@ export function LinksDialog({ documentId, open, onClose, onChange, onInsert }: P
                         {lm.model.name}
                       </Link>
                       <button
-                        onClick={() => onInsert(`\n\\includemodel{${lm.model_id}}[${lm.model.name}]\n`)}
-                        className="text-[11px] border border-border px-2 py-0.5 hover:border-primary hover:text-primary"
-                        title="Insertar como figura en el documento"
-                      >
-                        ↓ insertar
-                      </button>
-                      <button
                         onClick={async () => {
                           await unlinkModel(lm.id);
                           await reload();
