@@ -36,8 +36,7 @@ Escribe aquí. Soporta \\textbf{negrita}, \\emph{cursiva} y matemáticas en lín
   \\item Segundo punto
 \\end{itemize}
 
-% Vincula modelos y documentos desde el panel lateral, después insértalos:
-% \\includemodel{<id-del-modelo>}[Esquema del sistema]
+% Vincula documentos desde el panel lateral, después insértalos:
 % \\input{<id-del-documento>}
 
 \\end{document}
