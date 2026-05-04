@@ -954,7 +954,7 @@ Error: $O(h^4)$. Mucho más precisa con el mismo número de evaluaciones; es **e
 
 **Cuadratura de Gauss-Legendre.** En vez de espaciar uniformemente los nodos, los elige óptimamente: con $n$ nodos integra exactamente polinomios de grado $2n-1$. Es el estándar en cálculos científicos serios.
 
-**Métodos adaptativos.** Refinan automáticamente la malla en regiones donde $f$ varía rápidamente. La función `quad` de SciPy o `integral` de MATLAB usan adaptativo de Gauss-Kronrod.
+**Métodos adaptativos.** Refinan automáticamente la malla en regiones donde $f$ varía rápidamente. La función \`quad\` de SciPy o \`integral\` de MATLAB usan adaptativo de Gauss-Kronrod.
 
 > **Cuándo qué.** Para funciones suaves, Simpson o Gauss-Legendre. Para funciones con discontinuidades o picos, métodos adaptativos. Para integrales en muchas dimensiones, **Monte Carlo** (siguiente sección): el error escala como $1/\\sqrt n$ independientemente de la dimensión, mientras que la cuadratura clásica sufre la "maldición de la dimensionalidad" ($n^d$ evaluaciones para $d$ dimensiones).
 
