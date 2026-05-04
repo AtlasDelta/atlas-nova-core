@@ -59,6 +59,22 @@ function AuthPage() {
     }
   }
 
+  async function googleSignIn() {
+    setError(null);
+    setLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/app`,
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      navigate({ to: "/app" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al iniciar sesión con Google");
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
