@@ -118,13 +118,6 @@ export function LinksDialog({ documentId, open, onClose, onChange, onInsert }: P
                         {lm.model.name}
                       </Link>
                       <button
-                        onClick={() => onInsert(`\n\\includemodel{${lm.model_id}}[${lm.model.name}]\n`)}
-                        className="text-[11px] border border-border px-2 py-0.5 hover:border-primary hover:text-primary"
-                        title="Insertar como figura en el documento"
-                      >
-                        ↓ insertar
-                      </button>
-                      <button
                         onClick={async () => {
                           await unlinkModel(lm.id);
                           await reload();
@@ -236,11 +229,10 @@ interface SidebarProps {
   models: LinkedModel[];
   docs: LinkedDocument[];
   onOpenManager: () => void;
-  onInsertModel: (linkedModel: LinkedModel) => void;
   onInsertDoc: (linkedDoc: LinkedDocument) => void;
 }
 
-export function LinksSidebar({ models, docs, onOpenManager, onInsertModel, onInsertDoc }: SidebarProps) {
+export function LinksSidebar({ models, docs, onOpenManager, onInsertDoc }: SidebarProps) {
   return (
     <aside className="w-56 border-l border-border bg-surface/30 flex flex-col text-xs">
       <div className="px-3 py-2 border-b border-border flex items-center justify-between">
@@ -268,17 +260,10 @@ export function LinksSidebar({ models, docs, onOpenManager, onInsertModel, onIns
                   to="/app/m/$id"
                   params={{ id: m.model_id }}
                   className="truncate flex-1 hover:text-primary"
-                  title={m.model.name}
+                  title={`Abrir ${m.model.name} en el editor de grafos`}
                 >
                   ◇ {m.model.name}
                 </Link>
-                <button
-                  onClick={() => onInsertModel(m)}
-                  className="opacity-0 group-hover:opacity-100 text-[10px] text-muted-foreground hover:text-primary"
-                  title="Insertar figura"
-                >
-                  ↓
-                </button>
               </li>
             ))}
           </ul>

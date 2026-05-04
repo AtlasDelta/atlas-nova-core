@@ -8,7 +8,7 @@ import { LatexPreview } from "@/components/LatexPreview";
 import { LinksDialog, LinksSidebar } from "@/components/DocumentLinks";
 import { fetchLinkedModels, fetchLinkedDocuments, type LinkedModel, type LinkedDocument } from "@/lib/document-links";
 import { YjsSupabaseProvider } from "@/lib/yjs-supabase-provider";
-import type { Graph } from "@/components/GraphEditor";
+
 import { ChevronLeft, Loader2, Users, Wifi, WifiOff, Download, Link2, PanelRightClose, PanelRightOpen } from "lucide-react";
 
 export const Route = createFileRoute("/app/d/$id")({
@@ -36,8 +36,7 @@ Escribe aquí. Soporta \\textbf{negrita}, \\emph{cursiva} y matemáticas en lín
   \\item Segundo punto
 \\end{itemize}
 
-% Vincula modelos y documentos desde el panel lateral, después insértalos:
-% \\includemodel{<id-del-modelo>}[Esquema del sistema]
+% Vincula documentos desde el panel lateral, después insértalos:
 % \\input{<id-del-documento>}
 
 \\end{document}
@@ -93,12 +92,6 @@ function DocumentEditor() {
       }
     })();
   }, [id]);
-
-  const modelMap = useMemo(() => {
-    const m = new Map<string, { name: string; graph: Graph }>();
-    linkedModels.forEach((lm) => m.set(lm.model_id, { name: lm.model.name, graph: lm.model.graph }));
-    return m;
-  }, [linkedModels]);
 
   const docMap = useMemo(() => {
     const m = new Map<string, { title: string; content: string }>();
@@ -368,7 +361,7 @@ function DocumentEditor() {
           {view !== "editor" && (
             <div className="min-h-0 overflow-auto bg-white">
               <div ref={previewRef} className="lp-doc max-w-3xl mx-auto p-10 text-black">
-                <LatexPreview source={previewSrc} models={modelMap} docs={docMap} />
+                <LatexPreview source={previewSrc} docs={docMap} />
               </div>
             </div>
           )}
@@ -379,7 +372,6 @@ function DocumentEditor() {
             models={linkedModels}
             docs={linkedDocs}
             onOpenManager={() => setLinksOpen(true)}
-            onInsertModel={(lm) => insertSnippet(`\n\\includemodel{${lm.model_id}}[${lm.model.name}]\n`)}
             onInsertDoc={(ld) => insertSnippet(`\n\\input{${ld.target_document_id}}\n`)}
           />
         )}
