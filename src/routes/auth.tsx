@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
@@ -54,6 +55,22 @@ function AuthPage() {
         setError(msg);
       }
     } finally {
+      setLoading(false);
+    }
+  }
+
+  async function googleSignIn() {
+    setError(null);
+    setLoading(true);
+    try {
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: `${window.location.origin}/app`,
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      navigate({ to: "/app" });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al iniciar sesión con Google");
       setLoading(false);
     }
   }
@@ -118,6 +135,24 @@ function AuthPage() {
             >
               {loading && <Loader2 className="h-4 w-4 animate-spin" />}
               {mode === "signin" ? "▸ Acceder al workspace" : "▸ Crear workspace"}
+            </button>
+
+            <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-muted-foreground">
+              <div className="flex-1 h-px bg-border" />
+              <span>o</span>
+              <div className="flex-1 h-px bg-border" />
+            </div>
+
+            <button
+              type="button"
+              onClick={googleSignIn}
+              disabled={loading}
+              className="w-full border border-border bg-background hover:border-primary hover:text-primary px-4 py-2.5 text-sm font-medium transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" aria-hidden>
+                <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.24 1.5-1.7 4.4-5.5 4.4-3.3 0-6-2.74-6-6.1s2.7-6.1 6-6.1c1.9 0 3.16.81 3.88 1.5l2.65-2.55C16.94 3.7 14.7 2.7 12 2.7 6.86 2.7 2.7 6.86 2.7 12s4.16 9.3 9.3 9.3c5.37 0 8.92-3.77 8.92-9.07 0-.61-.07-1.08-.15-1.55H12z"/>
+              </svg>
+              Continuar con Google
             </button>
 
             <button
