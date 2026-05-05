@@ -17,7 +17,7 @@ export function Layout() {
     return (
       <Link
         to={to}
-        className={`text-xs px-2 py-1 border-b-2 transition-colors ${
+        className={`text-xs px-2 py-1 leading-none border-t-2 border-t-transparent border-b-2 transition-colors ${
           active
             ? "border-primary text-primary"
             : "border-transparent text-muted-foreground hover:text-foreground"
