@@ -22,14 +22,14 @@ export const Route = createFileRoute("/")({
 });
 
 const ROTATING_HEADLINES: { pre: string; highlight: string; post: string }[] = [
-  { pre: "Una plataforma para", highlight: "modelar fenómenos físicos", post: "y documentarlos con rigor." },
-  { pre: "Un entorno para", highlight: "construir sistemas por bloques", post: "con puertos físicos tipados." },
-  { pre: "Un espacio para", highlight: "redactar papers en LaTeX", post: "junto a tus colegas en tiempo real." },
-  { pre: "Un repositorio de", highlight: "artículos científicos abiertos", post: "en Física, Química, Matemática e Ingeniería." },
-  { pre: "Una herramienta para", highlight: "simular sistemas dinámicos", post: "sin escribir una sola línea de código." },
-  { pre: "Un lugar donde", highlight: "el diagrama y la ecuación", post: "viven en el mismo documento." },
-  { pre: "Un asistente para", highlight: "explorar intuiciones físicas", post: "antes de comprometerlas en código." },
-  { pre: "Una IDE pensada para", highlight: "ingenieros e investigadores", post: "que necesitan rigor y velocidad." },
+  { pre: "Un lugar para", highlight: "imaginar cómo funciona el mundo", post: "y verlo cobrar vida." },
+  { pre: "Aprende ciencia", highlight: "jugando con ideas", post: "en lugar de memorizarlas." },
+  { pre: "Convierte tus dudas en", highlight: "experimentos visuales", post: "que puedes tocar y modificar." },
+  { pre: "Una biblioteca abierta de", highlight: "ciencia explicada con claridad", post: "para curiosos de cualquier nivel." },
+  { pre: "Crea, escribe y comparte", highlight: "tus propias ideas", post: "junto a otras mentes inquietas." },
+  { pre: "Donde los dibujos, las fórmulas", highlight: "y la intuición", post: "se encuentran en un mismo lugar." },
+  { pre: "Explora la ciencia", highlight: "sin necesidad de programar", post: "ni saberlo todo de antemano." },
+  { pre: "Un espacio pensado para", highlight: "estudiantes, curiosos y creadores", post: "que quieren entender el porqué." },
 ];
 
 function Home() {

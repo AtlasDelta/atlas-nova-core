@@ -12,10 +12,11 @@ interface Point {
 export function InteractiveDotsBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointsRef = useRef<Point[]>([]);
-  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
+  const mouseRef = useRef<{ x: number; y: number; active: boolean; lastMove: number }>({
     x: -9999,
     y: -9999,
     active: false,
+    lastMove: 0,
   });
   const idleMouseRef = useRef<{ x: number; y: number; tx: number; ty: number }>({
     x: 0,
@@ -121,6 +122,10 @@ export function InteractiveDotsBackground() {
     const draw = (t: number) => {
       const width = sizeRef.current.w;
       const height = sizeRef.current.h;
+
+      if (mouseRef.current.active && performance.now() - mouseRef.current.lastMove > 1000) {
+        mouseRef.current.active = false;
+      }
 
       if (!mouseRef.current.active) {
         if (t - lastIdleRetarget > 2500) {
@@ -240,6 +245,7 @@ export function InteractiveDotsBackground() {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
       mouseRef.current.active = true;
+      mouseRef.current.lastMove = performance.now();
     };
     const onLeave = () => {
       mouseRef.current.active = false;
@@ -249,6 +255,7 @@ export function InteractiveDotsBackground() {
         mouseRef.current.x = e.touches[0].clientX;
         mouseRef.current.y = e.touches[0].clientY;
         mouseRef.current.active = true;
+        mouseRef.current.lastMove = performance.now();
       }
     };
 
