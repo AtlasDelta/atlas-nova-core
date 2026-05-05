@@ -12,10 +12,11 @@ interface Point {
 export function InteractiveDotsBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pointsRef = useRef<Point[]>([]);
-  const mouseRef = useRef<{ x: number; y: number; active: boolean }>({
+  const mouseRef = useRef<{ x: number; y: number; active: boolean; lastMove: number }>({
     x: -9999,
     y: -9999,
     active: false,
+    lastMove: 0,
   });
   const idleMouseRef = useRef<{ x: number; y: number; tx: number; ty: number }>({
     x: 0,
