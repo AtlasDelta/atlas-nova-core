@@ -11,6 +11,14 @@ export const MATH_ARTICLES: Article[] = [
       "Límites, derivadas, reglas de derivación, optimización y aproximación local. La herramienta para entender el cambio.",
     sections: [
       {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+El cálculo fue inventado de forma independiente por **Isaac Newton** (entre 1665 y 1675, motivado por la mecánica) y **Gottfried Wilhelm Leibniz** (publicado en 1684, con notación $dy/dx$ que usamos hoy). Su disputa por la prioridad envenenó la ciencia inglesa durante un siglo. **Cauchy** y **Weierstrass** formalizaron en el s. XIX el concepto de límite que les faltaba.
+`,
+      },
+      {
         id: "limites",
         title: "Límites y continuidad",
         keywords: ["límite", "continuidad", "ε-δ"],
@@ -195,6 +203,18 @@ donde $M$ es una cota de $|f^{(n+1)}|$ en el intervalo. Este error decrece facto
 `,
         widget: "math-taylor",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — máximos y mínimos.** Caja sin tapa de base cuadrada y volumen $V=32\,\mathrm{L}$. Minimizar superficie: $S(x)=x^2 + 4xV/x^2 = x^2 + 128/x$. $S'(x) = 2x - 128/x^2 = 0 \Rightarrow x^3=64 \Rightarrow x = 4\,\mathrm{dm}$, altura 2 dm.
+
+**Problema 2 — razón de cambio.** Globo esférico inflándose a 100 cm³/s. ¿A qué velocidad crece el radio cuando $r=10\,\mathrm{cm}$? $V=\tfrac{4}{3}\pi r^3 \Rightarrow dV/dt = 4\pi r^2\,dr/dt \Rightarrow dr/dt = 100/(400\pi) \approx 0{,}08\,\mathrm{cm/s}$.
+
+**Aplicaciones:** optimización en economía, cinemática, machine learning (gradientes).
+`,
+      },
     ],
   },
   {
@@ -206,6 +226,14 @@ donde $M$ es una cota de $|f^{(n+1)}|$ en el intervalo. Este error decrece facto
     summary:
       "Antiderivadas, técnicas de integración, integral definida y teorema fundamental del cálculo. La operación inversa de la derivada y la herramienta para acumular cantidades.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Arquímedes** ya calculaba áreas y volúmenes con métodos infinitesimales (el método de exhaución). **Cavalieri**, **Fermat** y **Wallis** prepararon el terreno; **Newton** y **Leibniz** unificaron derivación e integración con el teorema fundamental. **Riemann (1854)** dio la definición rigurosa de integral; **Lebesgue (1902)** la generalizó.
+`,
+      },
       {
         id: "primitiva",
         title: "Antiderivadas o primitivas",
@@ -325,6 +353,18 @@ Es decir, **la derivada de la integral con respecto a su límite superior es el 
 > **Integrales impropias.** Cuando los límites son infinitos o el integrando explota se requiere una definición por límites: $\\int_1^\\infty 1/x^2\\,dx = \\lim_{R\\to\\infty}[-1/x]_1^R = 1$. Pueden converger o diverger.
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — área entre curvas.** Entre $y=x^2$ y $y=2x$: cortes en $x=0,2$. Área $= \int_0^2 (2x-x^2)\,dx = [x^2-x^3/3]_0^2 = 4 - 8/3 = 4/3$.
+
+**Problema 2 — trabajo de un resorte.** Resorte con $k=200\,\mathrm{N/m}$ comprimido 10 cm: $W = \int_0^{0{,}1} kx\,dx = \tfrac{1}{2}k x^2 = 1\,\mathrm{J}$.
+
+**Aplicaciones:** centroides y momentos en ingeniería, probabilidades continuas, valor presente en finanzas.
+`,
+      },
     ],
   },
   {
@@ -336,6 +376,14 @@ Es decir, **la derivada de la integral con respecto a su límite superior es el 
     summary:
       "Espacios vectoriales, matrices, sistemas lineales, determinantes y autovalores. La gramática de las transformaciones lineales.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+Los chinos usaban algoritmos tipo Gauss en el s. III a.C. (*Nueve Capítulos*). **Cayley y Sylvester** formalizaron las matrices en el s. XIX. **Hilbert** y **von Neumann** extendieron el álgebra lineal a espacios de dimensión infinita, indispensables para la mecánica cuántica.
+`,
+      },
       {
         id: "vectores",
         title: "Vectores y espacios vectoriales",
@@ -543,6 +591,18 @@ donde $D$ es diagonal con los autovalores y $P$ tiene los autovectores en column
 `,
         widget: "math-eigen",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — sistema 2×2.** $\begin{cases}2x+y=5\\x-y=1\end{cases}$. Sumando: $3x=6 \Rightarrow x=2$, $y=1$.
+
+**Problema 2 — autovalores.** $A=\begin{pmatrix}2&1\\0&3\end{pmatrix}$. Triangular → autovalores 2 y 3. Indica que $A$ estira por 2 y 3 en sus direcciones propias.
+
+**Aplicaciones:** gráficos 3D (matrices de transformación), PageRank de Google, compresión de imágenes (SVD), redes neuronales.
+`,
+      },
     ],
   },
   {
@@ -554,6 +614,14 @@ donde $D$ es diagonal con los autovalores y $P$ tiene los autovectores en column
     summary:
       "Tipos de EDO, métodos elementales y modelos canónicos. El lenguaje natural de la dinámica.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+Las EDO surgen con Newton al modelar el movimiento. Los **Bernoulli**, **Euler** y **Lagrange** desarrollaron técnicas de resolución en el s. XVIII. **Poincaré (s. XIX)** inició el estudio cualitativo, base de la teoría del caos descubierta por **Lorenz (1963)** modelando la atmósfera.
+`,
+      },
       {
         id: "separables",
         title: "EDO de primer orden: separables y lineales",
@@ -666,6 +734,18 @@ $$a y'' + b y' + c y = f(t)$$
 - **Variación de parámetros**: técnica más general, requiere la solución homogénea.
 
 **Resonancia.** Si $f(t) = F\\cos(\\omega t)$ y $\\omega$ coincide con la frecuencia natural $\\omega_0$ del sistema sin amortiguamiento, la amplitud de $y_p$ **diverge linealmente con el tiempo**. La resonancia explica el colapso del puente de Tacoma Narrows (1940), por qué un columpio se eleva con pequeños empujes sincronizados, y la base de la afinación de instrumentos musicales.
+`,
+      },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — desintegración radiactiva.** $dN/dt = -\lambda N$ con $\lambda = \ln 2/T_{1/2}$. Para C-14 ($T_{1/2}=5730$ años), tras 11460 años queda 25 % → datación arqueológica.
+
+**Problema 2 — modelo logístico.** $dP/dt = rP(1-P/K)$. Población humana (estimada $K\sim 11000$ M) crece sigmoidalmente, no exponencialmente.
+
+**Aplicaciones:** dinámicas de poblaciones, circuitos, propagación de epidemias (SIR), control.
 `,
       },
     ],
@@ -893,6 +973,14 @@ El TCL es el "puente" entre la teoría de la probabilidad y la práctica de la e
       "Algoritmos para resolver problemas matemáticos con un computador: raíces, integrales, sistemas y EDO.",
     sections: [
       {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Newton** ya proponía iteraciones para resolver ecuaciones. La era moderna llegó con **Gauss**, **Jacobi**, **Runge** y **Kutta**. La aparición de los computadores en la posguerra (ENIAC, 1946) hizo de los métodos numéricos una disciplina central; las primeras predicciones meteorológicas operativas datan de 1955.
+`,
+      },
+      {
         id: "newton",
         title: "Newton–Raphson para encontrar raíces",
         keywords: ["Newton", "raíz", "convergencia cuadrática"],
@@ -997,6 +1085,18 @@ Error global $O(h^4)$ con cuatro evaluaciones por paso. Es el método "estándar
 **Errores y estabilidad.** El error global crece como $K\\,h^p$ con $p$ el orden del método y $K$ dependiente de $f$ y del intervalo. Pero también hay un **error de redondeo** que crece con el número de pasos. Por eso reducir $h$ ad infinitum no mejora la precisión; hay un $h$ óptimo.
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — Newton-Raphson.** Resolver $x^2-2=0$ con $x_0=1$: $x_{n+1}=x_n - (x_n^2-2)/(2x_n) = (x_n+2/x_n)/2$. $x_1=1{,}5$, $x_2=1{,}4167$, $x_3=1{,}41421$ — convergencia cuadrática a $\sqrt 2$.
+
+**Problema 2 — Simpson.** $\int_0^1 e^{-x^2}dx \approx \tfrac{1}{6}(1 + 4 e^{-1/4} + e^{-1}) \approx 0{,}7472$, error $\sim 10^{-3}$.
+
+**Aplicaciones:** simulación de fluidos (CFD), análisis estructural por elementos finitos, predicción del clima, gráficos por ordenador.
+`,
+      },
     ],
   },
   {
@@ -1008,6 +1108,14 @@ Error global $O(h^4)$ con cuatro evaluaciones por paso. Es el método "estándar
     summary:
       "Recta, circunferencia, cónicas y vectores en el plano. La geometría traducida al lenguaje del álgebra.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**René Descartes**, en *La Géométrie* (1637), introdujo el sistema de coordenadas que lleva su nombre, fusionando álgebra y geometría. **Fermat**, en paralelo, llegó a ideas similares. Esta unión permitió a Newton y Leibniz inventar el cálculo y, siglos más tarde, dio lugar a la geometría diferencial de Riemann, base de la relatividad general.
+`,
+      },
       {
         id: "recta",
         title: "La recta y sus formas",
@@ -1084,6 +1192,18 @@ El **discriminante** $B^2 - 4AC$ las clasifica: $<0$ elipse (incluyendo circunfe
 > **Rotación y traslación.** Si la cónica no está alineada con los ejes ni centrada, los términos $Bxy$, $Dx$, $Ey$ no son cero. Una **rotación** (matriz ortogonal) elimina el $Bxy$; una **traslación** (cambio de origen) elimina $Dx$ y $Ey$. Tras estas dos transformaciones la cónica vuelve a su forma canónica.
 `,
         widget: "math-conic",
+      },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — distancia punto-recta.** Distancia de $(3,4)$ a la recta $3x+4y-2=0$: $|3\cdot 3+4\cdot 4-2|/\sqrt{9+16}=23/5=4{,}6$.
+
+**Problema 2 — cónicas.** Elipse con $a=5, b=3$: $c=\sqrt{a^2-b^2}=4$, excentricidad $e=4/5=0{,}8$. La órbita de la Tierra tiene $e\approx 0{,}017$ — casi circular.
+
+**Aplicaciones:** GPS (trilateración), órbitas, gráficos vectoriales, robótica.
+`,
       },
     ],
   },
