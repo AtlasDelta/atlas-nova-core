@@ -12,6 +12,14 @@ export const PHYSICS_ARTICLES: Article[] = [
       "Cinemática, leyes de Newton, fuerzas, fricción, trabajo, energía y momento. La columna vertebral de la física no relativista.",
     sections: [
       {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+La mecánica clásica nace con **Galileo Galilei** (s. XVII), quien con planos inclinados midió la caída de los cuerpos y demostró que aceleran uniformemente bajo gravedad, derribando 2000 años de física aristotélica. **Isaac Newton**, en sus *Principia Mathematica* (1687), sintetizó los trabajos previos de Galileo, Kepler y Descartes en tres leyes y la ley de gravitación universal: por primera vez una sola teoría predecía tanto la caída de una manzana como el movimiento de los planetas. **Lagrange (1788)** y **Hamilton (1833)** reformularon la mecánica con principios variacionales más generales, base de la física moderna.
+`,
+      },
+      {
         id: "cinematica",
         title: "Cinemática: posición, velocidad y aceleración",
         keywords: ["cinemática", "MRU", "MRUA", "velocidad", "aceleración", "posición"],
@@ -199,6 +207,22 @@ El **coeficiente de restitución** $e$ cuantifica la "elasticidad": $e = 1$ elá
 `,
         widget: "phys-collision",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — frenado.** Un coche a $108\,\mathrm{km/h}$ (30 m/s) frena con $\mu_k = 0{,}7$ sobre asfalto seco. ¿Distancia de frenado?
+
+Aceleración de frenado: $a = -\mu_k g = -6{,}87\,\mathrm{m/s^2}$. Con $v^2 = v_0^2 + 2ad$ y $v=0$: $d = v_0^2/(2|a|) = 900/13{,}74 \approx 65{,}5\,\mathrm{m}$.
+
+**Problema 2 — colisión inelástica.** Una bala de 10 g a 400 m/s se incrusta en un bloque de 2 kg en reposo sobre superficie sin fricción. ¿Velocidad final?
+
+Conservación del momento: $m_b v_b = (m_b + m_B)\,v_f \Rightarrow v_f = (0{,}01 \cdot 400)/2{,}01 \approx 1{,}99\,\mathrm{m/s}$. Energía cinética perdida: $99\%$ (transformada en calor y deformación).
+
+**Aplicaciones reales:** sistemas ABS, diseño de cinturones de seguridad, balística forense, montañas rusas (conservación de energía).
+`,
+      },
     ],
   },
 
@@ -212,6 +236,14 @@ El **coeficiente de restitución** $e$ cuantifica la "elasticidad": $e = 1$ elá
     summary:
       "Oscilador armónico, péndulos, ondas mecánicas, superposición, efecto Doppler.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Christian Huygens** construyó el primer reloj de péndulo en 1656, observando que su periodo casi no depende de la amplitud (isocronismo aproximado). En el siglo XIX, **Helmholtz**, **Rayleigh** y **Fourier** establecieron la teoría matemática de las ondas, fundamento de la acústica, la óptica y, mucho después, la mecánica cuántica.
+`,
+      },
       {
         id: "oscilador-armonico",
         title: "Oscilador armónico simple",
@@ -356,6 +388,18 @@ Caso especial: si la fuente alcanza a la propia onda ($v_s \\to c$), la fórmula
 `,
         widget: "phys-doppler",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — masa-resorte.** Un resorte de $k = 200\,\mathrm{N/m}$ con masa de 0,5 kg oscila. Frecuencia angular $\omega = \sqrt{k/m} = 20\,\mathrm{rad/s}$ → $f \approx 3{,}18\,\mathrm{Hz}$. Si la amplitud es 5 cm, la velocidad máxima es $v_{max} = \omega A = 1\,\mathrm{m/s}$.
+
+**Problema 2 — onda en una cuerda.** Cuerda de guitarra de 65 cm afinada en La (440 Hz) en su modo fundamental. La longitud de onda es $2L = 1{,}3\,\mathrm{m}$, así que la velocidad de propagación es $v = f\lambda = 572\,\mathrm{m/s}$. De $v=\sqrt{T/\mu}$ con $\mu \sim 10^{-3}\,\mathrm{kg/m}$ se obtiene $T\approx 327\,\mathrm{N}$ — sí, tu guitarra tira con esa fuerza.
+
+**Aplicaciones:** instrumentos musicales, sismología, ecografías, antenas.
+`,
+      },
     ],
   },
 
@@ -369,6 +413,14 @@ Caso especial: si la fuente alcanza a la propia onda ($v_s \\to c$), la fórmula
     summary:
       "Temperatura, calor, leyes de la termodinámica, ciclos y entropía.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+La termodinámica nació con la **revolución industrial**. **Sadi Carnot (1824)** estudió la eficiencia máxima de las máquinas de vapor antes incluso de que existiera el concepto formal de energía. **James Joule** demostró experimentalmente la equivalencia entre calor y trabajo (1843). **Clausius (1865)** introdujo la entropía y la flecha del tiempo. **Boltzmann** dio interpretación estadística a la entropía: $S = k_B \ln W$, fórmula grabada en su tumba en Viena.
+`,
+      },
       {
         id: "temperatura-calor",
         title: "Temperatura, calor y trabajo",
@@ -496,6 +548,18 @@ En ingeniería se trata cada modo con su propia "resistencia térmica" y se comb
 `,
         widget: "eng-heat",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — gas ideal.** 2 mol de aire a 27 °C y 1 atm. Volumen: $V = nRT/P = 2 \cdot 8{,}314 \cdot 300/101325 \approx 0{,}049\,\mathrm{m^3}$ = 49 L.
+
+**Problema 2 — eficiencia Carnot.** Una central térmica opera entre 550 °C (caldera) y 30 °C (río). $\eta_{max} = 1 - 303/823 \approx 63\%$. Las plantas reales rondan el 40 % por irreversibilidades.
+
+**Aplicaciones:** motores, frigoríficos, climatización, biología (metabolismo), cosmología.
+`,
+      },
     ],
   },
 
@@ -509,6 +573,14 @@ En ingeniería se trata cada modo con su propia "resistencia térmica" y se comb
     summary:
       "Ley de Coulomb, campos eléctrico y magnético, leyes de Maxwell y ondas EM.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Coulomb (1785)** estableció con su balanza de torsión la ley de fuerzas entre cargas. **Oersted (1820)** descubrió por accidente que una corriente desvía una brújula, conectando electricidad y magnetismo. **Faraday** descubrió la inducción (1831) sin conocer matemáticas avanzadas. **James Clerk Maxwell (1865)** unificó todo en cuatro ecuaciones y predijo que la luz es una onda electromagnética — confirmado por **Hertz** en 1887.
+`,
+      },
       {
         id: "coulomb",
         title: "Ley de Coulomb y campo eléctrico",
@@ -632,6 +704,18 @@ Las ondas EM existen en todo el espectro, desde las ondas de radio (km) hasta lo
 `,
         widget: "phys-em-wave",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — campo de un cable.** Un cable largo lleva $I = 10\,\mathrm{A}$. A 5 cm: $B = \mu_0 I/(2\pi r) = 4\times 10^{-5}\,\mathrm{T}$, comparable al campo magnético terrestre.
+
+**Problema 2 — circuito RC.** $R = 10\,\mathrm{k\Omega}$, $C = 100\,\mathrm{\mu F}$ → $\tau = 1\,\mathrm{s}$. Tras 5 constantes (5 s) está cargado al 99,3 %.
+
+**Aplicaciones:** generadores, motores, transformadores, comunicaciones, MRI.
+`,
+      },
     ],
   },
 
@@ -645,6 +729,14 @@ Las ondas EM existen en todo el espectro, desde las ondas de radio (km) hasta lo
     summary:
       "Reflexión, refracción, lentes delgadas, difracción y polarización.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Snell (1621)** y **Descartes (1637)** formularon la ley de refracción. **Newton** defendió la teoría corpuscular de la luz; **Huygens** la ondulatoria. La cuestión se zanjó con el experimento de la doble rendija de **Thomas Young (1801)**, que mostró interferencia. Más tarde la mecánica cuántica restituyó parcialmente el carácter corpuscular: la luz es ambas cosas a la vez.
+`,
+      },
       {
         id: "reflexion-refraccion",
         title: "Reflexión y refracción",
@@ -729,6 +821,18 @@ $$I = I_0 \\cos^2\\theta \\quad \\text{(ley de Malus)}$$
 Aplicaciones: gafas de sol polarizadas (filtran reflejos del agua o el asfalto, polarizados horizontalmente), pantallas LCD, fotografía profesional, tensiones en materiales transparentes (fotoelasticidad).
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — lente convergente.** Objeto a $d_o = 30\,\mathrm{cm}$ de una lente con $f = 20\,\mathrm{cm}$. $1/d_i = 1/f - 1/d_o = 1/60$ → $d_i = 60\,\mathrm{cm}$, aumento $-2$ (invertida, doble de tamaño).
+
+**Problema 2 — doble rendija.** Rendijas separadas $d=0{,}1\,\mathrm{mm}$, pantalla a $L=2\,\mathrm{m}$, luz de $\lambda=600\,\mathrm{nm}$. Separación de franjas: $\Delta y = \lambda L/d = 1{,}2\,\mathrm{cm}$.
+
+**Aplicaciones:** gafas, cámaras, microscopios, fibras ópticas, holografía, LIDAR.
+`,
+      },
     ],
   },
 
@@ -741,6 +845,14 @@ Aplicaciones: gafas de sol polarizadas (filtran reflejos del agua o el asfalto, 
     readingMinutes: 16,
     summary: "Postulados de Einstein, dilatación temporal, contracción de Lorentz, equivalencia masa-energía.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+A finales del XIX las ecuaciones de Maxwell parecían incompatibles con la mecánica de Newton. **Michelson y Morley (1887)** intentaron medir el "éter" sin éxito. **Einstein (1905)**, con apenas 26 años y trabajando en una oficina de patentes en Berna, publicó cuatro artículos que revolucionaron la física. Uno postulaba que la velocidad de la luz es la misma para todos los observadores: nacía la relatividad especial.
+`,
+      },
       {
         id: "postulados",
         title: "Postulados de Einstein",
@@ -806,6 +918,18 @@ $$E_c = (\\gamma - 1)mc^2$$
 que diverge cuando $v \\to c$: por eso ningún cuerpo masivo puede alcanzar la velocidad de la luz; haría falta energía infinita.
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — dilatación.** Un muón viaja al 99 % de $c$. $\gamma \approx 7$. Su vida propia es 2,2 µs; en el laboratorio dura $\approx 15{,}4\,\mathrm{\mu s}$, lo que explica que muones cósmicos lleguen a la superficie terrestre.
+
+**Problema 2 — equivalencia masa-energía.** Aniquilar 1 g de materia con 1 g de antimateria libera $E = (2\times 10^{-3})c^2 \approx 1{,}8\times 10^{14}\,\mathrm{J}$ — equivalente a 43 kilotones de TNT.
+
+**Aplicaciones:** GPS (corrige relatividad), aceleradores de partículas, energía nuclear.
+`,
+      },
     ],
   },
 
@@ -819,6 +943,14 @@ que diverge cuando $v \\to c$: por eso ningún cuerpo masivo puede alcanzar la v
     summary:
       "Función de onda, principio de incertidumbre, ecuación de Schrödinger y ejemplos elementales.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+A principios del s. XX surgieron varios "fallos" de la física clásica: el espectro del cuerpo negro, el efecto fotoeléctrico, las líneas espectrales. **Planck (1900)** introdujo la cuantización ad hoc para explicar el cuerpo negro. **Einstein (1905)** explicó el efecto fotoeléctrico con cuantos de luz (fotones). **De Broglie**, **Schrödinger**, **Heisenberg**, **Born** y **Dirac** construyeron entre 1924 y 1928 la mecánica cuántica moderna, base de toda la tecnología semiconductora actual.
+`,
+      },
       {
         id: "dualidad",
         title: "Dualidad onda-partícula",
@@ -908,6 +1040,18 @@ Aplicaciones:
 `,
         widget: "phys-decay",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — longitud de onda de De Broglie.** Electrón a $v = 10^6\,\mathrm{m/s}$. $\lambda = h/(mv) = 6{,}63\times 10^{-34}/(9{,}11\times 10^{-31}\cdot 10^6) \approx 0{,}73\,\mathrm{nm}$, comparable a distancias atómicas → de ahí la difracción de electrones.
+
+**Problema 2 — incertidumbre.** Si conocemos la posición de un electrón con precisión $\Delta x = 10^{-10}\,\mathrm{m}$ (un átomo): $\Delta p \ge \hbar/(2\Delta x) \Rightarrow \Delta v \ge 5{,}8\times 10^5\,\mathrm{m/s}$. Imposible "ver" un electrón quieto.
+
+**Aplicaciones:** transistores, láseres, MRI, criptografía cuántica, computación cuántica.
+`,
+      },
     ],
   },
 
@@ -920,6 +1064,14 @@ Aplicaciones:
     readingMinutes: 16,
     summary: "Presión, principio de Arquímedes, ecuación de Bernoulli, viscosidad.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Arquímedes (s. III a.C.)** descubrió en su famoso baño el principio del empuje. **Daniel Bernoulli (1738)**, en *Hydrodynamica*, formuló la conservación de la energía para fluidos ideales. **Navier (1822)** y **Stokes (1845)** derivaron las ecuaciones que gobiernan los fluidos viscosos, todavía objeto de uno de los Problemas del Milenio del Clay Institute.
+`,
+      },
       {
         id: "presion",
         title: "Presión y principio de Pascal",
@@ -999,6 +1151,18 @@ $$\\mathrm{Re} = \\frac{\\rho v D}{\\mu}$$
 - $2300 < \\mathrm{Re} < 4000$: zona de transición, comportamiento errático.
 
 La distinción es crucial en ingeniería: el flujo de sangre en capilares es laminar; en una tubería de agua doméstica, turbulento; en aerodinámica de aviones, mixto con regiones de cada tipo. La transición fue uno de los grandes problemas del siglo XX y sigue sin tener una teoría completa.
+`,
+      },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — flotación.** Un iceberg ($\rho_{hielo}=917\,\mathrm{kg/m^3}$) en agua de mar ($\rho=1025$): la fracción sumergida es $917/1025 \approx 89\%$. Sólo el 11 % asoma sobre la superficie.
+
+**Problema 2 — Bernoulli.** Aire a 200 km/h sobre un ala vs 180 km/h debajo: diferencia de presión $\Delta P = \tfrac{1}{2}\rho(v_1^2-v_2^2)\approx 630\,\mathrm{Pa}$. Sobre $20\,\mathrm{m^2}$: 12,6 kN de sustentación, suficiente para un avión ligero.
+
+**Aplicaciones:** aerodinámica, hidráulica, hemodinámica, meteorología.
 `,
       },
     ],

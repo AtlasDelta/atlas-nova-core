@@ -11,6 +11,14 @@ export const CHEMISTRY_ARTICLES: Article[] = [
       "Modelos atómicos, números cuánticos, configuración electrónica y tendencias periódicas. Cómo la estructura del átomo explica el comportamiento de cada elemento.",
     sections: [
       {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+La idea atómica sobrevivió como especulación filosófica durante 2000 años hasta que **John Dalton (1808)** la convirtió en hipótesis científica. La tabla periódica de **Mendeléyev (1869)** organizó los elementos por propiedades, prediciendo huecos (galio, germanio) que se confirmaron años después. La estructura interna se reveló entre 1897 y 1932: electrón (Thomson), núcleo (Rutherford), neutrón (Chadwick).
+`,
+      },
+      {
         id: "modelos",
         title: "De Dalton a Bohr: la evolución del átomo",
         keywords: ["átomo", "Dalton", "Thomson", "Rutherford", "Bohr"],
@@ -107,6 +115,18 @@ Mendeléyev (1869) ordenó los elementos por masa atómica creciente y descubri�
 > **Aplicación.** Conocer las tendencias permite predecir, sin medir, que el cesio será mejor reductor que el potasio, que el oxígeno será más electronegativo que el azufre, o que el francio sería líquido a temperatura ambiente (si fuese estable).
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — configuración del oxígeno.** $\text{O}\,(Z=8)$: $1s^2 2s^2 2p^4$. En $2p$ hay 4 electrones en 3 orbitales: por Hund, dos quedan desapareados → el O$_2$ es paramagnético (lo demuestra un imán cerca de oxígeno líquido).
+
+**Problema 2 — energía del hidrógeno.** Transición $n=3\to n=2$: $\Delta E = 13{,}6(1/4 - 1/9) = 1{,}89\,\mathrm{eV}$ → $\lambda = 656\,\mathrm{nm}$, la línea H$_\alpha$ roja de la serie de Balmer.
+
+**Aplicaciones:** espectroscopía, láseres, datación isotópica, química nuclear.
+`,
+      },
     ],
   },
   {
@@ -118,6 +138,14 @@ Mendeléyev (1869) ordenó los elementos por masa atómica creciente y descubri�
     summary:
       "Enlaces iónico, covalente y metálico, hibridación de orbitales y la geometría de las moléculas según VSEPR. La forma molecular determina función.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Gilbert Lewis (1916)** propuso que los enlaces consisten en pares de electrones compartidos, dibujando los famosos diagramas de puntos. **Linus Pauling**, en *The Nature of the Chemical Bond* (1939), unió química y mecánica cuántica explicando hibridación, electronegatividad y resonancia — trabajo que le valió el Nobel.
+`,
+      },
       {
         id: "tipos-enlace",
         title: "Tipos de enlace y su origen",
@@ -202,6 +230,18 @@ Los pares libres son más "voluminosos" porque solo están atraídos por un núc
 VSEPR es predictivo pero no explica *por qué* aparecen pares libres ni la naturaleza energética del enlace; para eso se necesita la teoría de orbitales moleculares.
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — geometría del agua.** O con 2 enlaces y 2 pares libres → AX$_2$E$_2$ → angular, $\sim 104{,}5°$ (menor que 109,5° tetraédrico por repulsión de los pares libres). Polaridad → momento dipolar 1,85 D, responsable de los puentes de hidrógeno.
+
+**Problema 2 — CO$_2$ vs H$_2$O.** Ambos triatómicos, pero CO$_2$ es lineal (sin pares libres en C) y apolar; H$_2$O es angular y polar. Por eso CO$_2$ sublima fácil y H$_2$O hierve a 100 °C.
+
+**Aplicaciones:** diseño de fármacos, polímeros, materiales semiconductores, bioquímica.
+`,
+      },
     ],
   },
   {
@@ -213,6 +253,14 @@ VSEPR es predictivo pero no explica *por qué* aparecen pares libres ni la natur
     summary:
       "Tipos de reacción, balance de ecuaciones, mol y reactivo limitante. La contabilidad cuantitativa de la química.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Antoine Lavoisier**, considerado padre de la química moderna, demostró en el s. XVIII la conservación de la masa en reacciones químicas y rebatió la teoría del flogisto. Su mujer **Marie-Anne Paulze** ilustró sus libros y tradujo trabajos clave del inglés. Lavoisier murió guillotinado en 1794: "la República no necesita sabios".
+`,
+      },
       {
         id: "tipos-reaccion",
         title: "Clasificación de las reacciones químicas",
@@ -281,6 +329,18 @@ $$CH_4 + 2\\,O_2 \\to CO_2 + 2\\,H_2O$$
 $n_{CH_4} = 32/16 = 2$ mol → produce 2 mol de $CO_2$ ($88\\,\\text{g}$) y consume 4 mol de $O_2$ ($128\\,\\text{g}$). Si solo dispusiéramos de $96\\,\\text{g}$ de $O_2$ (3 mol), el oxígeno sería el limitante y solo reaccionaría $1{,}5$ mol de $CH_4$, sobrando $0{,}5$ mol.
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — combustión del metano.** $\mathrm{CH_4 + 2O_2 \to CO_2 + 2H_2O}$. Quemar 16 g (1 mol) de CH$_4$ requiere 64 g de O$_2$ y produce 44 g de CO$_2$ + 36 g de H$_2$O. Energía liberada: $\sim 890\,\mathrm{kJ}$.
+
+**Problema 2 — reactivo limitante.** 4 g de H$_2$ (2 mol) y 32 g de O$_2$ (1 mol) para formar agua: $2H_2 + O_2 \to 2H_2O$ requiere proporción 2:1. Aquí los 2 mol de H$_2$ reaccionan con 1 mol de O$_2$ → 2 mol de H$_2$O = 36 g. No sobra nada (proporción exacta).
+
+**Aplicaciones:** procesos industriales, farmacia, metalurgia, alimentación.
+`,
+      },
     ],
   },
   {
@@ -292,6 +352,14 @@ $n_{CH_4} = 32/16 = 2$ mol → produce 2 mol de $CO_2$ ($88\\,\\text{g}$) y cons
     summary:
       "Velocidad de reacción, leyes de velocidad, mecanismos y dependencia con la temperatura. Cómo de rápido ocurren las reacciones y por qué.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+A finales del XIX, **Svante Arrhenius** (Nobel 1903) propuso que la velocidad de reacción depende exponencialmente de la temperatura, idea que tardó años en aceptarse. **Henry Eyring (1935)** desarrolló la teoría del estado de transición, base de la cinética moderna y de la enzimología.
+`,
+      },
       {
         id: "velocidad",
         title: "Velocidad de reacción y ley de velocidad",
@@ -385,6 +453,18 @@ Una gráfica de $\\ln k$ frente a $1/T$ es una **recta** de pendiente $-E_a/R$. 
 `,
         widget: "chem-arrhenius",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — vida media.** Reacción de primer orden con $k = 0{,}01\,\mathrm{s^{-1}}$. $t_{1/2} = \ln 2/k \approx 69\,\mathrm{s}$. Tras 5 vidas medias (345 s) queda $1/32 \approx 3\%$.
+
+**Problema 2 — Arrhenius.** Una reacción se duplica entre 25 y 35 °C. $E_a = R T_1 T_2 \ln 2/(T_2 - T_1) \approx 53\,\mathrm{kJ/mol}$ — típico de reacciones bioquímicas, por eso la fiebre acelera el metabolismo.
+
+**Aplicaciones:** caducidad de medicamentos, conservación de alimentos (Q$_{10}$ del frigorífico), catálisis industrial.
+`,
+      },
     ],
   },
   {
@@ -396,6 +476,14 @@ Una gráfica de $\\ln k$ frente a $1/T$ es una **recta** de pendiente $-E_a/R$. 
     summary:
       "Constante de equilibrio, principio de Le Chatelier y conexión con la termodinámica. Por qué casi ninguna reacción es completa.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Cato Guldberg y Peter Waage (1864)** formularon la ley de acción de masas. **Le Chatelier (1884)** enunció su famoso principio cualitativo de respuesta al estrés. La conexión rigurosa entre equilibrio y termodinámica vino con **J. W. Gibbs**.
+`,
+      },
       {
         id: "constante",
         title: "La constante de equilibrio",
@@ -493,6 +581,18 @@ Una representación de $\\ln K$ frente a $1/T$ da una recta de pendiente $-\\Del
 `,
         widget: "chem-equilibrium",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — síntesis de Haber.** $N_2 + 3H_2 \rightleftharpoons 2NH_3$, $\Delta H < 0$. Temperaturas altas favorecen la cinética pero perjudican el equilibrio; alta presión favorece NH$_3$ (4 mol → 2 mol gas). Por eso se trabaja a 200 atm y 450 °C con catalizador de Fe.
+
+**Problema 2 — cociente de reacción.** Si $K=10$ y $Q=0{,}1$ → $Q<K$, la reacción avanza hacia productos.
+
+**Aplicaciones:** producción de fertilizantes, refinería, biomedicina (hemoglobina-O$_2$).
+`,
+      },
     ],
   },
   {
@@ -504,6 +604,14 @@ Una representación de $\\ln K$ frente a $1/T$ da una recta de pendiente $-\\Del
     summary:
       "pH, ácidos y bases débiles, sistemas tampón y curvas de titulación. La química del agua y de la vida.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Arrhenius** definió ácidos y bases (1884) por la liberación de H$^+$ y OH$^-$. **Brønsted y Lowry (1923)** generalizaron a transferencia de protones. **G. N. Lewis** abstrajo aún más: aceptores y donores de pares de electrones. **Søren Sørensen** introdujo el pH en 1909 trabajando para la cervecería Carlsberg.
+`,
+      },
       {
         id: "ph",
         title: "Definición y escala de pH",
@@ -633,6 +741,18 @@ Las titulaciones modernas suelen seguirse con un **pH-metro** para mayor precisi
 `,
         widget: "chem-titration",
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — pH de un ácido fuerte.** HCl 0,01 M → $[\mathrm{H^+}]=10^{-2}$ → pH 2.
+
+**Problema 2 — buffer.** Tampón ácido acético/acetato 0,1 M cada uno: pH = pKa = 4,74. Añadir 1 mmol de HCl a 100 mL: el pH baja sólo a $\sim 4{,}66$. Sin tampón habría caído a 2.
+
+**Aplicaciones:** sangre humana (pH 7,40 ± 0,05), agricultura, fermentación, depuración.
+`,
+      },
     ],
   },
   {
@@ -644,6 +764,14 @@ Las titulaciones modernas suelen seguirse con un **pH-metro** para mayor precisi
     summary:
       "Entalpía, entropía y energía libre. La maquinaria que decide qué reacciones son posibles.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Hess (1840)** demostró que el calor de reacción es independiente del camino. **Gibbs (1875)** y **Helmholtz** introdujeron las energías libres que predicen espontaneidad. La síntesis con la mecánica estadística (**Boltzmann, Gibbs**) cerró la fundamentación.
+`,
+      },
       {
         id: "entalpia",
         title: "Entalpía y termoquímica",
@@ -741,6 +869,18 @@ $$T^* = \\frac{\\Delta H}{\\Delta S}$$
 **Trabajo útil.** $\\Delta G$ representa el **trabajo máximo no expansivo** (eléctrico, químico, etc.) que una reacción puede entregar. En una pila electroquímica: $\\Delta G = -nFE$.
 `,
       },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — espontaneidad.** Disolución de NH$_4$NO$_3$: $\Delta H > 0$ (endotérmica) pero $\Delta S \gg 0$ (gran aumento de desorden). A T ambiente $\Delta G < 0$ → espontánea (las bolsas frías comerciales).
+
+**Problema 2 — entalpía de combustión.** Combustión completa de octano (C$_8$H$_{18}$): $\Delta H \approx -5470\,\mathrm{kJ/mol}$. Por gramo: $\sim 48\,\mathrm{kJ/g}$, similar a la gasolina real.
+
+**Aplicaciones:** baterías, biocombustibles, refrigeración, diseño de procesos.
+`,
+      },
     ],
   },
   {
@@ -752,6 +892,14 @@ $$T^* = \\frac{\\Delta H}{\\Delta S}$$
     summary:
       "Estados de oxidación, balance de redox, celdas galvánicas y ecuación de Nernst. Cómo se convierte energía química en eléctrica y viceversa.",
     sections: [
+      {
+        id: "historia-y-contexto",
+        title: "Historia y contexto",
+        keywords: ["historia", "contexto", "origen"],
+        body: `
+**Alessandro Volta** inventó la pila (1800) apilando discos de zinc y cobre. **Michael Faraday** estableció las leyes cuantitativas de la electrólisis (1834). En el s. XX la electroquímica permitió la producción industrial de aluminio (Hall–Héroult) y, hoy, las baterías de ion-litio (Nobel 2019 a Goodenough, Whittingham y Yoshino).
+`,
+      },
       {
         id: "oxidacion",
         title: "Estados de oxidación y reacciones redox",
@@ -866,6 +1014,18 @@ $$E^\\circ = \\frac{RT}{nF}\\ln K \\;\\Longleftrightarrow\\; \\Delta G^\\circ = 
 > **Pilas reales.** En baterías comerciales (alcalinas, Li-ion) el voltaje real es algo menor que el termodinámico debido a sobrepotenciales (cinética lenta) y caídas óhmicas (resistencia interna). Por eso el voltaje de una batería cae cuando se le exige mucha corriente.
 
 **Corrosión.** Es una reacción electroquímica espontánea: el hierro se oxida ($\\mathrm{Fe \\to Fe^{2+} + 2e^-}$) y el O₂ atmosférico se reduce. Las técnicas de protección incluyen pintura (barrera), galvanizado (Zn como ánodo de sacrificio) y protección catódica (conectar a un metal aún más activo, como Mg).
+`,
+      },
+          {
+        id: "problemas-resueltos",
+        title: "Problemas resueltos y aplicaciones",
+        keywords: ["ejemplos", "problemas resueltos", "aplicaciones"],
+        body: `
+**Problema 1 — pila Daniell.** Zn|Zn$^{2+}$ || Cu$^{2+}$|Cu. $E°_{cat}-E°_{an} = 0{,}34 - (-0{,}76) = 1{,}10\,\mathrm{V}$.
+
+**Problema 2 — Nernst.** Si $[\mathrm{Cu^{2+}}]=10^{-3}$ M y $[\mathrm{Zn^{2+}}]=1$ M: $E = 1{,}10 - (0{,}0592/2)\log(1/10^{-3}) \approx 1{,}01\,\mathrm{V}$.
+
+**Aplicaciones:** baterías, electrólisis del agua para hidrógeno verde, galvanoplastia, sensores de glucosa.
 `,
       },
     ],
