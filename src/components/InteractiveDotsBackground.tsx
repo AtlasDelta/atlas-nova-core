@@ -245,6 +245,7 @@ export function InteractiveDotsBackground() {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
       mouseRef.current.active = true;
+      mouseRef.current.lastMove = performance.now();
     };
     const onLeave = () => {
       mouseRef.current.active = false;
@@ -254,6 +255,7 @@ export function InteractiveDotsBackground() {
         mouseRef.current.x = e.touches[0].clientX;
         mouseRef.current.y = e.touches[0].clientY;
         mouseRef.current.active = true;
+        mouseRef.current.lastMove = performance.now();
       }
     };
 
