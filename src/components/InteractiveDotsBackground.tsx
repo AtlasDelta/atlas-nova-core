@@ -123,6 +123,10 @@ export function InteractiveDotsBackground() {
       const width = sizeRef.current.w;
       const height = sizeRef.current.h;
 
+      if (mouseRef.current.active && performance.now() - mouseRef.current.lastMove > 1000) {
+        mouseRef.current.active = false;
+      }
+
       if (!mouseRef.current.active) {
         if (t - lastIdleRetarget > 2500) {
           idleMouseRef.current.tx = Math.random() * width;
