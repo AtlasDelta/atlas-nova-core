@@ -1,37 +1,87 @@
 import { useEffect, useRef } from "react";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import type { PlotSpec } from "@/lib/plots";
+import { compute2D, compute3D, derivativeTrace, buildAnalysisAnnotations } from "@/lib/plot-eval";
+
+export interface PlotEntry {
+  name: string;
+  kind: "2d" | "3d";
+  spec: PlotSpec;
+}
 
 interface LatexPreviewProps {
   source: string;
   className?: string;
   /** Documentos vinculados accesibles vía \input{id|title}. */
   docs?: Map<string, { title: string; content: string }>;
+  /** Gráficas accesibles (incluyendo transitivas) vía \plot{id|nombre}. */
+  plots?: Map<string, PlotEntry>;
 }
 
-/**
- * Renderiza un subset de LaTeX:
- * - \section, \subsection, \subsubsection
- * - \textbf, \textit, \emph, \texttt
- * - \begin{equation}/\end{equation}, \[...\], $...$, $$...$$
- * - \begin{itemize}/\begin{enumerate}
- * - \title, \author, \date, \maketitle
- * - \input{id-o-titulo} (transclusión recursiva, tope 8 niveles)
- *
- * Nota: el editor de grafos es una herramienta independiente. Los modelos
- * pueden vincularse al documento como referencia navegable, pero no se
- * embeben como figuras dentro del LaTeX.
- */
-export function LatexPreview({ source, className, docs }: LatexPreviewProps) {
+export function LatexPreview({ source, className, docs, plots }: LatexPreviewProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ref.current) return;
     const expanded = expandInputs(source, docs ?? new Map(), 8, new Set());
     ref.current.innerHTML = renderLatex(expanded);
-  }, [source, docs]);
+    void renderPlotsInto(ref.current, plots ?? new Map());
+  }, [source, docs, plots]);
 
   return <div ref={ref} className={className} />;
+}
+
+async function renderPlotsInto(root: HTMLElement, plots: Map<string, PlotEntry>) {
+  const targets = Array.from(root.querySelectorAll<HTMLDivElement>("[data-plot-target]"));
+  if (targets.length === 0) return;
+  const mod = await import("plotly.js-dist-min");
+  const Plotly = (mod as { default?: { newPlot: (...a: unknown[]) => void } }).default ?? (mod as unknown as { newPlot: (...a: unknown[]) => void });
+  for (const el of targets) {
+    const key = el.dataset.plotTarget!;
+    const entry = plots.get(key) ?? Array.from(plots.values()).find((p) => p.name.toLowerCase() === key.toLowerCase());
+    if (!entry) {
+      el.innerHTML = `<div style="padding:12px;border:1px dashed #cbd5e1;color:#64748b;font:11px monospace">[gráfica no resuelta: ${escapeHtml(key)}]</div>`;
+      continue;
+    }
+    const traces = buildTracesForEmbed(entry.spec, entry.kind);
+    const layout = entry.kind === "2d"
+      ? { paper_bgcolor: "white", plot_bgcolor: "white", font: { color: "#0f172a", size: 10 }, margin: { l: 40, r: 10, t: 25, b: 30 }, title: entry.name, xaxis: { gridcolor: "#e2e8f0" }, yaxis: { gridcolor: "#e2e8f0" } }
+      : { paper_bgcolor: "white", font: { color: "#0f172a", size: 10 }, margin: { l: 0, r: 0, t: 25, b: 0 }, title: entry.name, scene: { xaxis: { gridcolor: "#e2e8f0", color: "#0f172a" }, yaxis: { gridcolor: "#e2e8f0", color: "#0f172a" }, zaxis: { gridcolor: "#e2e8f0", color: "#0f172a" }, bgcolor: "white" } };
+    Plotly.newPlot(el, traces, layout, { displaylogo: false, responsive: true });
+  }
+}
+
+function buildTracesForEmbed(spec: PlotSpec, kind: "2d" | "3d"): Array<Record<string, unknown>> {
+  const traces: Array<Record<string, unknown>> = [];
+  if (kind === "2d") {
+    const view = spec.view as { xMin: number; xMax: number };
+    for (const s of spec.series) {
+      if (!s.visible) continue;
+      const t = compute2D(s, view);
+      if (!t) continue;
+      traces.push({ type: "scatter", mode: t.mode, name: t.name, x: t.x, y: t.y, line: { color: t.color, width: 2 }, marker: { color: t.color, size: 5 }, fill: t.fill });
+    }
+    if (spec.analysis?.showDerivative) {
+      const s = spec.series.find((x) => x.id === spec.analysis!.showDerivative);
+      if (s && s.kind === "function-2d") {
+        const t = derivativeTrace(s, view);
+        traces.push({ type: "scatter", mode: "lines", name: t.name, x: t.x, y: t.y, line: { color: t.color, width: 1, dash: "dot" } });
+      }
+    }
+    for (const ann of buildAnalysisAnnotations(spec)) {
+      traces.push({ type: "scatter", mode: "markers", name: ann.name, x: ann.x, y: ann.y, marker: { color: ann.color, size: 8, symbol: "circle-open" } });
+    }
+  } else {
+    for (const s of spec.series) {
+      if (!s.visible) continue;
+      const t = compute3D(s);
+      if (!t) continue;
+      if (t.type === "surface") traces.push({ type: "surface", name: t.name, x: t.x, y: t.y, z: t.z, colorscale: [[0, t.color], [1, "#ffffff"]], showscale: false });
+      else traces.push({ type: "scatter3d", mode: "lines", name: t.name, x: t.x, y: t.y, z: t.z, line: { color: t.color, width: 4 } });
+    }
+  }
+  return traces;
 }
 
 function expandInputs(
