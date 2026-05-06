@@ -5,8 +5,9 @@ import { Awareness } from "y-protocols/awareness";
 import { supabase } from "@/integrations/supabase/client";
 import { LatexEditor, type LatexEditorHandle } from "@/components/LatexEditor";
 import { LatexPreview } from "@/components/LatexPreview";
-import { LinksDialog, LinksSidebar } from "@/components/DocumentLinks";
+import { LinksDialog, LinksSidebar, type DocLinksData } from "@/components/DocumentLinks";
 import { fetchLinkedModels, fetchLinkedDocuments, type LinkedModel, type LinkedDocument } from "@/lib/document-links";
+import { resolveAccessiblePlots, type LinkedPlot } from "@/lib/plots";
 import { YjsSupabaseProvider } from "@/lib/yjs-supabase-provider";
 
 import { ChevronLeft, Loader2, Users, Wifi, WifiOff, Download, Link2, PanelRightClose, PanelRightOpen } from "lucide-react";
