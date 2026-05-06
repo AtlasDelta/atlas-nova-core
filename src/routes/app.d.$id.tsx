@@ -84,17 +84,41 @@ function DocumentEditor() {
   }, [id]);
 
   // Cargar vínculos al montar y construir mapas para el preview
-  useEffect(() => {
-    (async () => {
-      try {
-        const [m, d] = await Promise.all([fetchLinkedModels(id), fetchLinkedDocuments(id)]);
-        setLinkedModels(m);
-        setLinkedDocs(d);
-      } catch (e) {
-        console.warn("Failed to load links", e);
-      }
-    })();
-  }, [id]);
+  const reloadLinks = async () => {
+    try {
+      const [m, d, accPlots, directRows] = await Promise.all([
+        fetchLinkedModels(id),
+        fetchLinkedDocuments(id),
+        resolveAccessiblePlots(id),
+        supabase.from("document_plots").select("id,plot_id,plots(id,name,kind)").eq("document_id", id),
+      ]);
+      setLinkedModels(m);
+      setLinkedDocs(d);
+      setAccessiblePlots(accPlots);
+      setDirectPlots(
+        (directRows.data ?? [])
+          .filter((r) => r.plots)
+          .map((r) => {
+            const p = r.plots as unknown as { id: string; name: string; kind: "2d" | "3d" };
+            return { linkId: r.id, plotId: r.plot_id, name: p.name, kind: p.kind };
+          }),
+      );
+    } catch (e) {
+      console.warn("Failed to load links", e);
+    }
+  };
+  useEffect(() => { void reloadLinks(); /* eslint-disable-next-line */ }, [id]);
+
+  const plotMap = useMemo(() => {
+    const m = new Map<string, { name: string; kind: "2d" | "3d"; spec: import("@/lib/plots").PlotSpec }>();
+    for (const p of accessiblePlots) m.set(p.plot_id, { name: p.plot.name, kind: p.plot.kind, spec: p.plot.spec });
+    return m;
+  }, [accessiblePlots]);
+
+  const transitivePlots = useMemo(() => {
+    const direct = new Set(directPlots.map((p) => p.plotId));
+    return accessiblePlots.filter((p) => !direct.has(p.plot_id));
+  }, [directPlots, accessiblePlots]);
 
   const docMap = useMemo(() => {
     const m = new Map<string, { title: string; content: string }>();
