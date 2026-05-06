@@ -173,17 +173,15 @@ export async function createPlot(name: string, kind: "2d" | "3d"): Promise<strin
         };
   const { data, error } = await supabase
     .from("plots")
-    .insert({ user_id: userData.user.id, name, kind, spec: spec as unknown as object })
+    .insert({ user_id: userData.user.id, name, kind, spec: spec as unknown as Record<string, unknown> } as never)
     .select("id")
     .single();
   if (error || !data) throw error ?? new Error("error");
-  return data.id;
+  return (data as { id: string }).id;
 }
 
 export async function updatePlot(id: string, patch: Partial<Pick<PlotRow, "name" | "description" | "spec" | "thumbnail">>): Promise<void> {
-  const payload: Record<string, unknown> = { ...patch };
-  if (payload.spec) payload.spec = patch.spec as unknown as object;
-  const { error } = await supabase.from("plots").update(payload).eq("id", id);
+  const { error } = await supabase.from("plots").update(patch as never).eq("id", id);
   if (error) throw error;
 }
 
