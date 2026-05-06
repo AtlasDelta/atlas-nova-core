@@ -5,8 +5,9 @@ import { Awareness } from "y-protocols/awareness";
 import { supabase } from "@/integrations/supabase/client";
 import { LatexEditor, type LatexEditorHandle } from "@/components/LatexEditor";
 import { LatexPreview } from "@/components/LatexPreview";
-import { LinksDialog, LinksSidebar } from "@/components/DocumentLinks";
+import { LinksDialog, LinksSidebar, type DocLinksData } from "@/components/DocumentLinks";
 import { fetchLinkedModels, fetchLinkedDocuments, type LinkedModel, type LinkedDocument } from "@/lib/document-links";
+import { resolveAccessiblePlots, type LinkedPlot } from "@/lib/plots";
 import { YjsSupabaseProvider } from "@/lib/yjs-supabase-provider";
 
 import { ChevronLeft, Loader2, Users, Wifi, WifiOff, Download, Link2, PanelRightClose, PanelRightOpen } from "lucide-react";
@@ -67,6 +68,8 @@ function DocumentEditor() {
   // Vínculos
   const [linkedModels, setLinkedModels] = useState<LinkedModel[]>([]);
   const [linkedDocs, setLinkedDocs] = useState<LinkedDocument[]>([]);
+  const [directPlots, setDirectPlots] = useState<Array<{ linkId: string; plotId: string; name: string; kind: "2d" | "3d" }>>([]);
+  const [accessiblePlots, setAccessiblePlots] = useState<LinkedPlot[]>([]);
   const [linksOpen, setLinksOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -81,17 +84,41 @@ function DocumentEditor() {
   }, [id]);
 
   // Cargar vínculos al montar y construir mapas para el preview
-  useEffect(() => {
-    (async () => {
-      try {
-        const [m, d] = await Promise.all([fetchLinkedModels(id), fetchLinkedDocuments(id)]);
-        setLinkedModels(m);
-        setLinkedDocs(d);
-      } catch (e) {
-        console.warn("Failed to load links", e);
-      }
-    })();
-  }, [id]);
+  const reloadLinks = async () => {
+    try {
+      const [m, d, accPlots, directRows] = await Promise.all([
+        fetchLinkedModels(id),
+        fetchLinkedDocuments(id),
+        resolveAccessiblePlots(id),
+        supabase.from("document_plots").select("id,plot_id,plots(id,name,kind)").eq("document_id", id),
+      ]);
+      setLinkedModels(m);
+      setLinkedDocs(d);
+      setAccessiblePlots(accPlots);
+      setDirectPlots(
+        (directRows.data ?? [])
+          .filter((r) => r.plots)
+          .map((r) => {
+            const p = r.plots as unknown as { id: string; name: string; kind: "2d" | "3d" };
+            return { linkId: r.id, plotId: r.plot_id, name: p.name, kind: p.kind };
+          }),
+      );
+    } catch (e) {
+      console.warn("Failed to load links", e);
+    }
+  };
+  useEffect(() => { void reloadLinks(); /* eslint-disable-next-line */ }, [id]);
+
+  const plotMap = useMemo(() => {
+    const m = new Map<string, { name: string; kind: "2d" | "3d"; spec: import("@/lib/plots").PlotSpec }>();
+    for (const p of accessiblePlots) m.set(p.plot_id, { name: p.plot.name, kind: p.plot.kind, spec: p.plot.spec });
+    return m;
+  }, [accessiblePlots]);
+
+  const transitivePlots = useMemo(() => {
+    const direct = new Set(directPlots.map((p) => p.plotId));
+    return accessiblePlots.filter((p) => !direct.has(p.plot_id));
+  }, [directPlots, accessiblePlots]);
 
   const docMap = useMemo(() => {
     const m = new Map<string, { title: string; content: string }>();
@@ -361,7 +388,7 @@ function DocumentEditor() {
           {view !== "editor" && (
             <div className="min-h-0 overflow-auto bg-white">
               <div ref={previewRef} className="lp-doc max-w-3xl mx-auto p-10 text-black">
-                <LatexPreview source={previewSrc} docs={docMap} />
+                <LatexPreview source={previewSrc} docs={docMap} plots={plotMap} />
               </div>
             </div>
           )}
@@ -371,8 +398,11 @@ function DocumentEditor() {
           <LinksSidebar
             models={linkedModels}
             docs={linkedDocs}
+            directPlots={directPlots}
+            transitivePlots={transitivePlots}
             onOpenManager={() => setLinksOpen(true)}
             onInsertDoc={(ld) => insertSnippet(`\n\\input{${ld.target_document_id}}\n`)}
+            onInsertPlot={(pid) => insertSnippet(`\n\\plot{${pid}}\n`)}
           />
         )}
       </div>
@@ -381,9 +411,11 @@ function DocumentEditor() {
         documentId={id}
         open={linksOpen}
         onClose={() => setLinksOpen(false)}
-        onChange={({ models, docs }) => {
-          setLinkedModels(models);
-          setLinkedDocs(docs);
+        onChange={(data: DocLinksData) => {
+          setLinkedModels(data.models);
+          setLinkedDocs(data.docs);
+          setDirectPlots(data.directPlots);
+          setAccessiblePlots(data.accessiblePlots);
         }}
         onInsert={insertSnippet}
       />

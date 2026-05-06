@@ -26,6 +26,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LibraryIndexRouteImport } from './routes/library.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as LibrarySlugRouteImport } from './routes/library.$slug'
+import { Route as AppPIdRouteImport } from './routes/app.p.$id'
 import { Route as AppMIdRouteImport } from './routes/app.m.$id'
 import { Route as AppDIdRouteImport } from './routes/app.d.$id'
 
@@ -114,6 +115,11 @@ const LibrarySlugRoute = LibrarySlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => LibraryRoute,
 } as any)
+const AppPIdRoute = AppPIdRouteImport.update({
+  id: '/p/$id',
+  path: '/p/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppMIdRoute = AppMIdRouteImport.update({
   id: '/m/$id',
   path: '/m/$id',
@@ -145,6 +151,7 @@ export interface FileRoutesByFullPath {
   '/library/': typeof LibraryIndexRoute
   '/app/d/$id': typeof AppDIdRoute
   '/app/m/$id': typeof AppMIdRoute
+  '/app/p/$id': typeof AppPIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -164,6 +171,7 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryIndexRoute
   '/app/d/$id': typeof AppDIdRoute
   '/app/m/$id': typeof AppMIdRoute
+  '/app/p/$id': typeof AppPIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/library/': typeof LibraryIndexRoute
   '/app/d/$id': typeof AppDIdRoute
   '/app/m/$id': typeof AppMIdRoute
+  '/app/p/$id': typeof AppPIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -209,6 +218,7 @@ export interface FileRouteTypes {
     | '/library/'
     | '/app/d/$id'
     | '/app/m/$id'
+    | '/app/p/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -228,6 +238,7 @@ export interface FileRouteTypes {
     | '/library'
     | '/app/d/$id'
     | '/app/m/$id'
+    | '/app/p/$id'
   id:
     | '__root__'
     | '/'
@@ -249,6 +260,7 @@ export interface FileRouteTypes {
     | '/library/'
     | '/app/d/$id'
     | '/app/m/$id'
+    | '/app/p/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -389,6 +401,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibrarySlugRouteImport
       parentRoute: typeof LibraryRoute
     }
+    '/app/p/$id': {
+      id: '/app/p/$id'
+      path: '/p/$id'
+      fullPath: '/app/p/$id'
+      preLoaderRoute: typeof AppPIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/m/$id': {
       id: '/app/m/$id'
       path: '/m/$id'
@@ -410,12 +429,14 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppDIdRoute: typeof AppDIdRoute
   AppMIdRoute: typeof AppMIdRoute
+  AppPIdRoute: typeof AppPIdRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppDIdRoute: AppDIdRoute,
   AppMIdRoute: AppMIdRoute,
+  AppPIdRoute: AppPIdRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
