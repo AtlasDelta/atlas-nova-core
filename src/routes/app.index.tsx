@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2, Plus, Trash2, Copy, FileText, FileCode2 } from "lucide-react";
+import { Loader2, Plus, Trash2, Copy, FileText, FileCode2, LineChart } from "lucide-react";
 import { Tag } from "@/components/ui-bits";
+import { listPlots, createPlot, deletePlot, type PlotRow } from "@/lib/plots";
 
 interface Model {
   id: string;
