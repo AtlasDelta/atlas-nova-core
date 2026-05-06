@@ -244,7 +244,7 @@ export async function resolveAccessiblePlots(documentId: string): Promise<Linked
       .select("id,plot_id,alias,plots(id,name,kind,spec)")
       .eq("document_id", docId);
     for (const r of plotsRows ?? []) {
-      const p = r.plots as { id: string; name: string; kind: "2d" | "3d"; spec: PlotSpec } | null;
+      const p = r.plots as unknown as { id: string; name: string; kind: "2d" | "3d"; spec: PlotSpec } | null;
       if (!p) continue;
       if (seenPlots.has(p.id)) continue;
       seenPlots.add(p.id);
