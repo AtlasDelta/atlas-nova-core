@@ -39,7 +39,6 @@ export function Layout() {
 
           <nav className="hidden sm:flex items-center gap-1">
             {navLink("/library", "Repositorio")}
-            {!loading && user && navLink("/app", "Workspace")}
           </nav>
 
           <div className="ml-auto flex items-center gap-4 text-xs leading-none">
