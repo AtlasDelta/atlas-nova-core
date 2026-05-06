@@ -1,0 +1,1 @@
+ALTER TABLE public.documents ALTER COLUMN model_id DROP NOT NULL;

@@ -266,12 +266,11 @@ function DocumentsTab() {
     setErr(null);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setErr("Sesión inválida"); setCreating(false); return; }
-    if (!newModel) { setErr("Selecciona un modelo"); setCreating(false); return; }
     const { data, error } = await supabase
       .from("documents")
       .insert({
         user_id: user.id,
-        model_id: newModel,
+        model_id: newModel || null,
         title: newTitle.trim() || "Documento sin título",
       })
       .select("id")
@@ -294,9 +293,8 @@ function DocumentsTab() {
           {loading ? "cargando…" : `${docs.length} documento${docs.length === 1 ? "" : "s"}`}
         </p>
         <button
-          onClick={() => { setShowNew(true); setNewModel(models[0]?.id ?? ""); }}
-          disabled={models.length === 0}
-          className="bg-primary text-primary-foreground px-4 py-2 text-sm flex items-center gap-2 hover:glow-primary transition-all disabled:opacity-50"
+          onClick={() => { setShowNew(true); setNewModel(""); }}
+          className="bg-primary text-primary-foreground px-4 py-2 text-sm flex items-center gap-2 hover:glow-primary transition-all"
         >
           <Plus className="h-4 w-4" /> Nuevo documento
         </button>
@@ -306,18 +304,12 @@ function DocumentsTab() {
 
       {loading ? (
         <div className="flex justify-center py-20"><Loader2 className="h-6 w-6 text-primary animate-spin" /></div>
-      ) : models.length === 0 ? (
-        <div className="border border-dashed border-border p-12 text-center">
-          <FileCode2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="font-display text-lg mb-2">Necesitas un modelo primero</h3>
-          <p className="text-sm text-muted-foreground">Cada documento LaTeX se vincula a un modelo del Graph Editor.</p>
-        </div>
       ) : docs.length === 0 ? (
         <div className="border border-dashed border-border p-12 text-center">
           <FileCode2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="font-display text-lg mb-2">Sin documentos todavía</h3>
-          <p className="text-sm text-muted-foreground mb-6">Crea uno para documentar tus simulaciones.</p>
-          <button onClick={() => { setShowNew(true); setNewModel(models[0]?.id ?? ""); }}
+          <p className="text-sm text-muted-foreground mb-6">Crea uno para empezar a escribir.</p>
+          <button onClick={() => { setShowNew(true); setNewModel(""); }}
             className="border border-primary text-primary px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground transition-colors">
             ▸ Crear primer documento
           </button>
@@ -332,7 +324,7 @@ function DocumentsTab() {
                   <h3 className="font-display font-medium text-base truncate flex-1">{d.title}</h3>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-3">
-                  <Tag tone="muted">◇ {d.model_name ?? "modelo"}</Tag>
+                  {d.model_name ? <Tag tone="muted">◇ {d.model_name}</Tag> : <Tag tone="muted">sin modelo</Tag>}
                   <span className="ml-auto">{new Date(d.updated_at).toLocaleDateString()}</span>
                 </div>
               </Link>
@@ -363,9 +355,10 @@ function DocumentsTab() {
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1.5">Modelo asociado</label>
-                <select required value={newModel} onChange={(e) => setNewModel(e.target.value)}
+                <label className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1.5">Modelo asociado <span className="text-muted-foreground/60 normal-case">(opcional)</span></label>
+                <select value={newModel} onChange={(e) => setNewModel(e.target.value)}
                   className="w-full bg-background border border-border px-3 py-2 text-sm font-mono focus:border-primary focus:outline-none">
+                  <option value="">— Sin modelo —</option>
                   {models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 </select>
               </div>
