@@ -388,7 +388,7 @@ function DocumentEditor() {
           {view !== "editor" && (
             <div className="min-h-0 overflow-auto bg-white">
               <div ref={previewRef} className="lp-doc max-w-3xl mx-auto p-10 text-black">
-                <LatexPreview source={previewSrc} docs={docMap} />
+                <LatexPreview source={previewSrc} docs={docMap} plots={plotMap} />
               </div>
             </div>
           )}
@@ -398,8 +398,11 @@ function DocumentEditor() {
           <LinksSidebar
             models={linkedModels}
             docs={linkedDocs}
+            directPlots={directPlots}
+            transitivePlots={transitivePlots}
             onOpenManager={() => setLinksOpen(true)}
             onInsertDoc={(ld) => insertSnippet(`\n\\input{${ld.target_document_id}}\n`)}
+            onInsertPlot={(pid) => insertSnippet(`\n\\plot{${pid}}\n`)}
           />
         )}
       </div>
@@ -408,9 +411,11 @@ function DocumentEditor() {
         documentId={id}
         open={linksOpen}
         onClose={() => setLinksOpen(false)}
-        onChange={({ models, docs }) => {
-          setLinkedModels(models);
-          setLinkedDocs(docs);
+        onChange={(data: DocLinksData) => {
+          setLinkedModels(data.models);
+          setLinkedDocs(data.docs);
+          setDirectPlots(data.directPlots);
+          setAccessiblePlots(data.accessiblePlots);
         }}
         onInsert={insertSnippet}
       />
