@@ -324,7 +324,7 @@ function DocumentsTab() {
                   <h3 className="font-display font-medium text-base truncate flex-1">{d.title}</h3>
                 </div>
                 <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-3">
-                  <Tag tone="muted">◇ {d.model_name ?? "modelo"}</Tag>
+                  {d.model_name ? <Tag tone="muted">◇ {d.model_name}</Tag> : <Tag tone="muted">sin modelo</Tag>}
                   <span className="ml-auto">{new Date(d.updated_at).toLocaleDateString()}</span>
                 </div>
               </Link>
