@@ -362,9 +362,10 @@ function DocumentsTab() {
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1.5">Modelo asociado</label>
-                <select required value={newModel} onChange={(e) => setNewModel(e.target.value)}
+                <label className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1.5">Modelo asociado <span className="text-muted-foreground/60 normal-case">(opcional)</span></label>
+                <select value={newModel} onChange={(e) => setNewModel(e.target.value)}
                   className="w-full bg-background border border-border px-3 py-2 text-sm font-mono focus:border-primary focus:outline-none">
+                  <option value="">— Sin modelo —</option>
                   {models.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
                 </select>
               </div>
