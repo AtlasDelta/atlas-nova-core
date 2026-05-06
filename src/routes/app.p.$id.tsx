@@ -20,7 +20,7 @@ function PlotEditor() {
   const [err, setErr] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const plotDivRef = useRef<HTMLDivElement>(null);
-  const PlotlyRef = useRef<typeof import("plotly.js-dist-min") | null>(null);
+  const PlotlyRef = useRef<{ react: (...args: unknown[]) => void } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,12 +66,13 @@ function PlotEditor() {
     let cancelled = false;
     (async () => {
       if (!PlotlyRef.current) {
-        PlotlyRef.current = await import("plotly.js-dist-min");
+        const mod = await import("plotly.js-dist-min");
+        PlotlyRef.current = (mod as { default?: { react: (...a: unknown[]) => void } }).default ?? (mod as unknown as { react: (...a: unknown[]) => void });
       }
       if (cancelled || !plotDivRef.current) return;
       const Plotly = PlotlyRef.current!;
       const layout = buildLayout(row.spec, row.kind);
-      Plotly.react(plotDivRef.current, traces as unknown as Plotly.Data[], layout, { displaylogo: false, responsive: true });
+      Plotly.react(plotDivRef.current, traces, layout, { displaylogo: false, responsive: true });
     })();
     return () => { cancelled = true; };
   }, [row, traces]);
