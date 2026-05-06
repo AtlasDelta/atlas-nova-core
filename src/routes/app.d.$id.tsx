@@ -68,6 +68,8 @@ function DocumentEditor() {
   // Vínculos
   const [linkedModels, setLinkedModels] = useState<LinkedModel[]>([]);
   const [linkedDocs, setLinkedDocs] = useState<LinkedDocument[]>([]);
+  const [directPlots, setDirectPlots] = useState<Array<{ linkId: string; plotId: string; name: string; kind: "2d" | "3d" }>>([]);
+  const [accessiblePlots, setAccessiblePlots] = useState<LinkedPlot[]>([]);
   const [linksOpen, setLinksOpen] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
