@@ -266,12 +266,11 @@ function DocumentsTab() {
     setErr(null);
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setErr("Sesión inválida"); setCreating(false); return; }
-    if (!newModel) { setErr("Selecciona un modelo"); setCreating(false); return; }
     const { data, error } = await supabase
       .from("documents")
       .insert({
         user_id: user.id,
-        model_id: newModel,
+        model_id: newModel || null,
         title: newTitle.trim() || "Documento sin título",
       })
       .select("id")
