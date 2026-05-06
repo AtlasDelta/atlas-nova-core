@@ -68,7 +68,7 @@ function Workspace() {
         </div>
       </div>
 
-      {tab === "models" ? <ModelsTab /> : <DocumentsTab />}
+      {tab === "models" ? <ModelsTab /> : tab === "documents" ? <DocumentsTab /> : <PlotsTab />}
     </div>
   );
 }
