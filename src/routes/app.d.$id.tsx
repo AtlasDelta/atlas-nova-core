@@ -47,7 +47,7 @@ const PALETTE = ["#22d3ee", "#a78bfa", "#f472b6", "#fbbf24", "#34d399", "#f87171
 interface DocMeta {
   id: string;
   title: string;
-  model_id: string;
+  model_id: string | null;
   model_name?: string;
 }
 
