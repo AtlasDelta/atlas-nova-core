@@ -377,3 +377,133 @@ function DocumentsTab() {
     </>
   );
 }
+
+// ─── PLOTS TAB ───────────────────────────────────────────────────────
+function PlotsTab() {
+  const navigate = useNavigate();
+  const [plots, setPlots] = useState<PlotRow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showNew, setShowNew] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newKind, setNewKind] = useState<"2d" | "3d">("2d");
+  const [creating, setCreating] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const fetchPlots = useCallback(async () => {
+    setLoading(true);
+    try {
+      setPlots(await listPlots());
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "error");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { fetchPlots(); }, [fetchPlots]);
+
+  async function create(e: React.FormEvent) {
+    e.preventDefault();
+    setCreating(true);
+    setErr(null);
+    try {
+      const id = await createPlot(newName.trim() || "Gráfica sin título", newKind);
+      navigate({ to: "/app/p/$id", params: { id } });
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "error");
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  async function remove(id: string) {
+    if (!confirm("¿Borrar esta gráfica?")) return;
+    await deletePlot(id);
+    fetchPlots();
+  }
+
+  return (
+    <>
+      <div className="flex justify-between items-center mb-4">
+        <p className="text-xs text-muted-foreground">{loading ? "cargando…" : `${plots.length} gráfica${plots.length === 1 ? "" : "s"}`}</p>
+        <button onClick={() => setShowNew(true)} className="bg-primary text-primary-foreground px-4 py-2 text-sm flex items-center gap-2 hover:glow-primary transition-all">
+          <Plus className="h-4 w-4" /> Nueva gráfica
+        </button>
+      </div>
+
+      {err && <div className="border border-danger/50 bg-danger/5 text-danger text-xs px-3 py-2 mb-4">▸ {err}</div>}
+
+      {loading ? (
+        <div className="flex justify-center py-20"><Loader2 className="h-6 w-6 text-primary animate-spin" /></div>
+      ) : plots.length === 0 ? (
+        <div className="border border-dashed border-border p-12 text-center">
+          <LineChart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="font-display text-lg mb-2">Sin gráficas todavía</h3>
+          <p className="text-sm text-muted-foreground mb-6">Construye una expresión 2D o una superficie 3D.</p>
+          <button onClick={() => setShowNew(true)} className="border border-primary text-primary px-4 py-2 text-sm hover:bg-primary hover:text-primary-foreground transition-colors">
+            ▸ Crear primera gráfica
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {plots.map((p) => (
+            <div key={p.id} className="border border-border bg-surface hover:border-primary/50 transition-colors group corner-marks">
+              <Link to="/app/p/$id" params={{ id: p.id }} className="block p-5">
+                <div className="flex items-start gap-2 mb-2">
+                  <LineChart className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <h3 className="font-display font-medium text-base truncate flex-1">{p.name}</h3>
+                </div>
+                {p.description && <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{p.description}</p>}
+                <div className="flex items-center gap-2 text-[10px] text-muted-foreground mt-3">
+                  <Tag tone="primary">{p.kind.toUpperCase()}</Tag>
+                  <span className="text-muted-foreground/70">{(p.spec?.series?.length ?? 0)} serie{(p.spec?.series?.length ?? 0) === 1 ? "" : "s"}</span>
+                  <span className="ml-auto">{new Date(p.updated_at).toLocaleDateString()}</span>
+                </div>
+              </Link>
+              <div className="border-t border-border px-3 py-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <button onClick={() => remove(p.id)} className="ml-auto text-xs text-muted-foreground hover:text-danger p-1 flex items-center gap-1">
+                  <Trash2 className="h-3 w-3" /> Borrar
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showNew && (
+        <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setShowNew(false)}>
+          <form onClick={(e) => e.stopPropagation()} onSubmit={create} className="w-full max-w-md bg-surface border border-border corner-marks">
+            <div className="border-b border-border px-5 py-3 flex items-center justify-between">
+              <h2 className="font-display font-semibold">Nueva gráfica</h2>
+              <span className="text-[10px] tracking-widest text-muted-foreground">INIT</span>
+            </div>
+            <div className="p-5 space-y-4">
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1.5">Nombre</label>
+                <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Ej. Trayectoria del proyectil"
+                  className="w-full bg-background border border-border px-3 py-2 text-sm font-mono focus:border-primary focus:outline-none" />
+              </div>
+              <div>
+                <label className="text-[10px] uppercase tracking-widest text-muted-foreground block mb-1.5">Tipo</label>
+                <div className="flex border border-border">
+                  {(["2d", "3d"] as const).map((k) => (
+                    <button key={k} type="button" onClick={() => setNewKind(k)}
+                      className={`flex-1 px-3 py-2 text-sm uppercase tracking-widest ${newKind === k ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}>
+                      {k}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="border-t border-border px-5 py-3 flex justify-end gap-2">
+              <button type="button" onClick={() => setShowNew(false)} className="text-xs text-muted-foreground hover:text-foreground px-3 py-1.5">Cancelar</button>
+              <button type="submit" disabled={creating} className="bg-primary text-primary-foreground px-4 py-1.5 text-sm flex items-center gap-2 disabled:opacity-50">
+                {creating && <Loader2 className="h-3 w-3 animate-spin" />} Crear
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+    </>
+  );
+}
