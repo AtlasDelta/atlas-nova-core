@@ -98,6 +98,48 @@ export type Database = {
           },
         ]
       }
+      document_plots: {
+        Row: {
+          alias: string | null
+          created_at: string
+          document_id: string
+          id: string
+          plot_id: string
+          user_id: string
+        }
+        Insert: {
+          alias?: string | null
+          created_at?: string
+          document_id: string
+          id?: string
+          plot_id: string
+          user_id: string
+        }
+        Update: {
+          alias?: string | null
+          created_at?: string
+          document_id?: string
+          id?: string
+          plot_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_plots_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_plots_plot_id_fkey"
+            columns: ["plot_id"]
+            isOneToOne: false
+            referencedRelation: "plots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           content: string
@@ -173,6 +215,42 @@ export type Database = {
           name?: string
           parameters?: Json
           status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      plots: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          kind: string
+          name: string
+          spec: Json
+          thumbnail: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          spec?: Json
+          thumbnail?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          kind?: string
+          name?: string
+          spec?: Json
+          thumbnail?: string | null
           updated_at?: string
           user_id?: string
         }
