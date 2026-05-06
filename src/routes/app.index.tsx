@@ -36,7 +36,7 @@ const DOMAINS = [
   { id: "control", label: "Control" },
 ];
 
-type Tab = "models" | "documents";
+type Tab = "models" | "documents" | "plots";
 
 function Workspace() {
   const [tab, setTab] = useState<Tab>("models");
@@ -47,12 +47,13 @@ function Workspace() {
         <div>
           <div className="text-xs text-primary tracking-widest mb-1">// WORKSPACE</div>
           <h1 className="text-3xl font-display font-semibold">Tu biblioteca</h1>
-          <p className="text-sm text-muted-foreground mt-1">Modelos, documentos y simulaciones.</p>
+          <p className="text-sm text-muted-foreground mt-1">Modelos, documentos y gráficas.</p>
         </div>
         <div className="flex border border-border">
           {([
             { id: "models", label: "Modelos", icon: FileText },
             { id: "documents", label: "Documentos LaTeX", icon: FileCode2 },
+            { id: "plots", label: "Gráficas", icon: LineChart },
           ] as const).map(({ id, label, icon: Icon }) => (
             <button
               key={id}
