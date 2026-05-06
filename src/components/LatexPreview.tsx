@@ -169,6 +169,11 @@ function renderLatex(src: string): string {
   body = body.replace(/\$\$([\s\S]*?)\$\$/g, (_m, expr) => ph(`<div class="lp-eq" data-pdf-section>${renderMath(expr.trim(), true)}</div>`));
   body = body.replace(/\$([^$\n]+)\$/g, (_m, expr) => ph(renderMath(expr.trim(), false)));
 
+  // Embedded plots: \plot{id-o-nombre}
+  body = body.replace(/\\plot\{([^}]+)\}/g, (_m, key: string) =>
+    ph(`<div class="lp-plot" data-pdf-section><div data-plot-target="${escapeHtml(key.trim())}" style="width:100%;height:380px;background:#f8fafc;border:1px solid #e2e8f0"></div></div>`),
+  );
+
   // itemize / enumerate
   body = body.replace(/\\begin\{(itemize|enumerate)\}([\s\S]*?)\\end\{\1\}/g, (_m, kind, inner) => {
     const items = inner.split(/\\item\s*/).slice(1).map((it: string) => `<li>${it.trim()}</li>`).join("");
